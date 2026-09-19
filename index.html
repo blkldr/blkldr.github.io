@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Black Ledger // Monolith Protocol</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background-color: #050505; color: #E5E5E5; font-family: 'Space Grotesk', sans-serif; }
+    .mono { font-family: 'Space Mono', monospace; }
+    .blurred { filter: blur(7px); user-select: none; pointer-events: none; }
+    .scanline {
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+      background-size: 100% 3px, 6px 100%;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 flex flex-col items-center justify-start scanline">
+
+  <!-- HUD STATUS HEADER -->
+  <header class="w-full max-w-md border border-neutral-800 p-3 mb-4 bg-neutral-950/90 rounded flex justify-between items-center text-[11px] mono">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+      <span class="text-neutral-400">LEDGER PROTOCOL // 30-DAY</span>
+    </div>
+    <div class="text-neutral-300">
+      ARCHIVE: <span id="counterDisplay" class="text-white font-bold">#000,142</span>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="w-full max-w-md flex flex-col gap-4">
+
+    <!-- SUBMISSION TERMINAL -->
+    <div id="vaultStage" class="border border-neutral-800 bg-neutral-950/80 p-5 rounded-lg">
+      <div class="flex justify-between items-center mb-1">
+        <h1 class="text-base font-bold tracking-tight text-white uppercase mono">The Black Ledger</h1>
+        <span class="text-[10px] mono text-neutral-400 border border-neutral-800 px-2 py-0.5 rounded">ZERO LOGS</span>
+      </div>
+      <p class="text-xs text-neutral-400 mb-4">Deposit the unsaid truth you carry. Payment identity is strictly separated.</p>
+
+      <!-- TEXTAREA -->
+      <div class="relative mb-3">
+        <textarea id="confessionInput" rows="4" maxlength="280"
+          placeholder="Type your unsaid truth here... (Phone numbers & emails auto-scrubbed)" 
+          class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"></textarea>
+        <div class="flex justify-between text-[10px] mono text-neutral-500 mt-1">
+          <span>PII SANITIZER: READY</span>
+          <span id="charCount">0 / 280</span>
+        </div>
+      </div>
+
+      <!-- INITIATE PAYMENT -->
+      <div id="stepInitiate">
+        <button onclick="triggerPayment()" 
+          class="w-full bg-neutral-100 hover:bg-white text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono flex items-center justify-center gap-2 transition active:scale-95">
+          <span>SEAL ENTRY & UNLOCK — ₹13</span>
+        </button>
+        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Direct UPI Intent (PhonePe / GPay / Paytm)</p>
+      </div>
+
+      <!-- VERIFY STEP -->
+      <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
+        <p class="text-xs text-neutral-200 mono font-semibold">Payment Initiated?</p>
+        <p class="text-[11px] text-neutral-400">Enter the 12-digit UPI Reference / UTR Number from your transaction screen:</p>
+        <input type="text" id="utrInput" maxlength="12" placeholder="12-digit UTR (e.g. 428190384721)" 
+          class="w-full bg-neutral-900 border border-neutral-800 rounded p-2.5 text-xs text-white mono focus:border-red-500 focus:outline-none">
+        <button onclick="verifyAndSeal()" 
+          class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95">
+          DECRYPT ARCHIVE & ISSUE BADGE
+        </button>
+      </div>
+    </div>
+
+    <!-- POST-PAYMENT UNLOCKED: PERSONA CARD ARTIFACT -->
+    <div id="personaBlock" class="hidden border border-red-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center">
+      <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">● VERIFIED NODE ARCHIVED</div>
+      <h2 id="personaArchetype" class="text-lg font-bold text-white uppercase tracking-wider mb-1">THE PRAGMATIC SINNER</h2>
+      <p id="personaRarity" class="text-xs text-neutral-400 mb-3">Rarity: 3.4% of participants carry this profile</p>
+
+      <canvas id="storyCanvas" width="1080" height="1920" class="hidden"></canvas>
+      <img id="cardPreview" class="w-52 h-auto border border-neutral-800 rounded shadow-2xl mb-4" alt="Persona Card">
+
+      <a id="downloadBtn" download="BlackLedger_Node.png" 
+        class="w-full bg-neutral-100 text-black py-2.5 px-4 rounded text-xs font-bold uppercase tracking-wider block text-center">
+        DOWNLOAD INSTAGRAM STORY BADGE
+      </a>
+      <p class="text-[10px] text-neutral-500 mt-2">Post on Story to signal your encrypted presence.</p>
+    </div>
+
+    <!-- VAULT STREAM -->
+    <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
+      <div class="flex justify-between items-center mb-3">
+        <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">Live Vault Stream</span>
+        <span id="lockBadge" class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono">LOCKED</span>
+      </div>
+
+      <div class="flex flex-col gap-3 text-xs" id="feedList">
+        <div class="border-l-2 border-neutral-800 pl-3 py-1">
+          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
+            <span>NODE #000139</span>
+            <span>THE SILENT MARTYR</span>
+          </div>
+          <p class="text-neutral-300">
+            Maine pichle 2 saal se ghar par jhooth bola hai ki job achhi chal rahi hai... <span class="vault-blur blurred text-neutral-400">jabki main delivery boy ka kaam karke rent nikal raha hoon taaki papa par loan ka bojh na pade.</span>
+          </p>
+        </div>
+
+        <div class="border-l-2 border-neutral-800 pl-3 py-1">
+          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
+            <span>NODE #000140</span>
+            <span>THE CHRONIC ESCAPIST</span>
+          </div>
+          <p class="text-neutral-300">
+            Meri shaadi meri family ki marzi se fix ho chuki hai... <span class="vault-blur blurred text-neutral-400">lekin main roz raat ko apne ex ki photos dekh kar rota hoon. Main teen zindagiyan tabah karne ja raha hoon.</span>
+          </p>
+        </div>
+
+        <div class="border-l-2 border-neutral-800 pl-3 py-1">
+          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
+            <span>NODE #000141</span>
+            <span>THE SHADOW STRATEGIST</span>
+          </div>
+          <p class="text-neutral-300">
+            Client ka payment mere personal account mein direct aya tha... <span class="vault-blur blurred text-neutral-400">maine agency ko bola ki client ne ghost kar diya aur 70,000 poore khud rakh liye.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function sanitizeInput(text) {
+      return text
+        .replace(/\b\d{10,12}\b/g, '[REDACTED_NUM]')
+        .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[REDACTED_MAIL]')
+        .replace(/@([A-Za-z0-9_]+)/g, '[REDACTED_HANDLE]')
+        .replace(/[A-Z]{5}[0-9]{4}[A-Z]{1}/g, '[REDACTED_PAN]');
+    }
+
+    const input = document.getElementById('confessionInput');
+    input.addEventListener('input', () => {
+      document.getElementById('charCount').innerText = `${input.value.length} / 280`;
+    });
+
+    function triggerPayment() {
+      const text = input.value.trim();
+      if(text.length < 10) {
+        alert("Enter at least 10 characters of your confession.");
+        return;
+      }
+
+      // Safe UPI URI with exact decimal amount
+      const upiUrl = "upi://pay?pa=paytmqr6e274w1yec@paytm&pn=TheBlackLedger&am=13.00&cu=INR&tn=BlackLedgerVault";
+      
+      const link = document.createElement('a');
+      link.href = upiUrl;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      document.getElementById('stepInitiate').classList.add('hidden');
+      document.getElementById('stepVerify').classList.remove('hidden');
+    }
+
+    const archetypes = [
+      { name: "THE SILENT MARTYR", rarity: "4.1% of participants" },
+      { name: "THE PRAGMATIC SINNER", rarity: "2.8% of participants" },
+      { name: "THE SHADOW OBSERVER", rarity: "6.3% of participants" },
+      { name: "THE CALCULATED TRAITOR", rarity: "1.9% of participants" }
+    ];
+
+    function verifyAndSeal() {
+      const utr = document.getElementById('utrInput').value.trim();
+      if(utr.length !== 12 || isNaN(utr)) {
+        alert("Please enter a valid 12-digit UPI Reference / UTR Number from your payment confirmation.");
+        return;
+      }
+
+      const chosen = archetypes[Math.floor(Math.random() * archetypes.length)];
+      const nodeNum = Math.floor(100000 + Math.random() * 900000);
+
+      document.getElementById('vaultStage').classList.add('hidden');
+      document.getElementById('personaBlock').classList.remove('hidden');
+      document.getElementById('personaArchetype').innerText = chosen.name;
+      document.getElementById('personaRarity').innerText = `Rarity: ${chosen.rarity}`;
+
+      document.querySelectorAll('.vault-blur').forEach(el => el.classList.remove('blurred'));
+      const badge = document.getElementById('lockBadge');
+      badge.classList.remove('bg-red-950', 'text-red-400', 'border-red-900');
+      badge.classList.add('bg-green-950', 'text-green-400', 'border-green-900');
+      badge.innerText = "ACCESS GRANTED";
+
+      document.getElementById('counterDisplay').innerText = `#000,143`;
+
+      generateStoryCard(chosen.name, nodeNum, chosen.rarity);
+    }
+
+    function generateStoryCard(archetype, nodeNum, rarity) {
+      const canvas = document.getElementById('storyCanvas');
+      const ctx = canvas.getContext('2d');
+
+      // Base Canvas Background
+      ctx.fillStyle = '#050505';
+      ctx.fillRect(0, 0, 1080, 1920);
+
+      // Frame Border
+      ctx.strokeStyle = '#222222';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(60, 60, 960, 1800);
+
+      // Top Title
+      ctx.fillStyle = '#DC2626';
+      ctx.font = 'bold 36px monospace';
+      ctx.fillText('THE BLACK LEDGER // ARCHIVE PROTOCOL', 120, 200);
+
+      // Node Token Header
+      ctx.fillStyle = '#737373';
+      ctx.font = '30px monospace';
+      ctx.fillText(`TOKEN ID: #${nodeNum} | VERIFIED`, 120, 255);
+
+      // Divider Line
+      ctx.strokeStyle = '#333333';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(120, 290);
+      ctx.lineTo(960, 290);
+      ctx.stroke();
+
+      // Center Archetype
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 64px sans-serif';
+      ctx.fillText(archetype, 120, 920);
+
+      // Rarity
+      ctx.fillStyle = '#DC2626';
+      ctx.font = '34px monospace';
+      ctx.fillText(rarity.toUpperCase(), 120, 985);
+
+      // Micro note
+      ctx.fillStyle = '#525252';
+      ctx.font = '30px monospace';
+      ctx.fillText('CONFESSION PERMANENTLY SEALED IN VAULT', 120, 1055);
+
+      // Footer
+      ctx.fillStyle = '#A3A3A3';
+      ctx.font = '32px monospace';
+      ctx.fillText('PURGE IMMINENT // projectblackledger', 120, 1720);
+
+      const dataUrl = canvas.toDataURL('image/png');
+      document.getElementById('cardPreview').src = dataUrl;
+      document.getElementById('downloadBtn').href = dataUrl;
+    }
+  </script>
+</body>
+</html>
+
