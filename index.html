@@ -16,7 +16,7 @@
     .mono { font-family: 'Space Mono', monospace; }
     .blurred { filter: blur(7px); user-select: none; pointer-events: none; }
     .scanline {
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
       background-size: 100% 3px, 6px 100%;
     }
   </style>
@@ -199,7 +199,6 @@
       let count = 142;
       const blurClass = isUnlocked ? "" : "blurred";
 
-      // Naye submitted confessions sabse pehle dikhenge
       if (data) {
         const items = Object.values(data).reverse();
         count += items.length;
@@ -221,31 +220,31 @@
         });
       }
 
-      // Ultra-Hook Seed Entries: Jo payment trigger karne ke liye heavy curiosity paida karengi
+      // Final High-Stakes Hindi Curiosity Seed Entries
       const viralSeeds = [
         {
           node: "000142",
           archetype: "THE CALCULATED TRAITOR",
-          preview: "Mere best friend ki agle mahine shaadi hai, par uski hone wali biwi...",
-          blurred: "pichle 3 hafte se mere hotel room mein aa rahi hai aur sab cancel karne ko bol rahi hai."
+          preview: "मेरे बेस्ट फ्रेंड को लगता है कि उसकी मंगेतर बहुत सीधी-सादी है, पर सच यह है कि...",
+          blurred: "पिछले महीने जब वह ट्रिप पर गया था, तो उसने 3 रातें मेरे साथ उसी के फ्लैट में बिताई थीं।"
         },
         {
           node: "000141",
           archetype: "THE PRAGMATIC SINNER",
-          preview: "Maine apne company ke founder ka laptop kholkar private investor list aur financials...",
-          blurred: "unke sabse bade rival ko ₹8 lakh cash mein leak kar di aur resign daal diya."
+          preview: "मैंने अपने जीजाजी की अलमारी में एक दूसरा फोन और वो पेपर्स देख लिए हैं जो...",
+          blurred: "दीदी के नाम पर 50 लाख का टर्म इंश्योरेंस करवा के किसी और औरत को नॉमिनी बना चुके हैं।"
         },
         {
           node: "000140",
           archetype: "THE SHADOW OBSERVER",
-          preview: "Ghar walo ko lagta hai main Bangalore mein MNC mein kaam kar raha hoon, sach yeh hai ki...",
-          blurred: "naukri 9 mahine pehle chhoot gayi thi, ab bike taxi chala kar ghar paise bhejta hoon."
+          preview: "कॉलेज के जिस वाशरूम वीडियो को लेकर पूरे कैंपस में हंगामा मचा था, वो किसी अनजाने ने नहीं...",
+          blurred: "बल्कि उसी लड़की के बॉयफ्रेंड ने मेरे फोन से रिकॉर्ड करवा कर सोशल मीडिया पर लीक किया था।"
         },
         {
           node: "000139",
           archetype: "THE SILENT MARTYR",
-          preview: "Meri step-sister ko lagta hai uska admission merit par hua, par uski fees ke liye...",
-          blurred: "maine apna bike aur maa ke bache hue saare kangan secretly bech diye the."
+          preview: "घर में सबको लगता है कि भाई का एक्सीडेंट हुआ था, लेकिन सिर्फ मुझे पता है कि...",
+          blurred: "उस रात उसने कार के ब्रेक खुद ही काटे थे ताकि कर्ज़ चुकाने के लिए इंश्योरेंस का पैसा मिल सके।"
         }
       ];
 
@@ -257,7 +256,7 @@
             <span>NODE #${seed.node}</span>
             <span>${seed.archetype}</span>
           </div>
-          <p class="text-neutral-300">
+          <p class="text-neutral-300 leading-relaxed">
             ${seed.preview} <span class="vault-blur ${blurClass} text-neutral-400">${seed.blurred}</span>
           </p>
         `;
@@ -345,7 +344,7 @@
 
       document.querySelectorAll('.vault-blur').forEach(el => el.classList.remove('blurred'));
       const badge = document.getElementById('lockBadge');
-      badge.classList.remove('bg-red-950', 'text-red-400', 'border-red-900');
+      badge.classList.remove('bg-green-950', 'text-green-400', 'border-green-900');
       badge.classList.add('bg-green-950', 'text-green-400', 'border-green-900');
       badge.innerText = "ACCESS GRANTED";
 
