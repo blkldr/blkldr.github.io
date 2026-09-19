@@ -1,262 +1,1544 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Black Ledger // Monolith Protocol</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body { background-color: #050505; color: #E5E5E5; font-family: 'Space Grotesk', sans-serif; }
-    .mono { font-family: 'Space Mono', monospace; }
-    .blurred { filter: blur(7px); user-select: none; pointer-events: none; }
-    .scanline {
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-      background-size: 100% 3px, 6px 100%;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>THE BLACK LEDGER // 30 DAY PROTOCOL</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root{
+  --bg:#030303;
+  --panel:#080808;
+  --line:#222;
+  --text:#eee;
+  --muted:#777;
+  --red:#ff3030;
+  --green:#63ff91;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Space Grotesk",sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:9999;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.025) 0px,
+    rgba(255,255,255,.025) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:9998;
+  background:radial-gradient(
+    ellipse at center,
+    transparent 25%,
+    rgba(0,0,0,.75) 100%
+  );
+}
+
+.container{
+  width:min(920px,calc(100% - 28px));
+  margin:auto;
+}
+
+header{
+  border-bottom:1px solid var(--line);
+  padding:20px 0;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-family:"Space Mono",monospace;
+  font-size:13px;
+  font-weight:bold;
+  letter-spacing:3px;
+}
+
+.protocol{
+  color:#666;
+  font-family:"Space Mono",monospace;
+  font-size:9px;
+}
+
+.dot{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 10px var(--red);
+  margin-right:6px;
+}
+
+.hero{
+  padding:80px 0 50px;
+  text-align:center;
+}
+
+.eyebrow{
+  color:#666;
+  font-family:"Space Mono",monospace;
+  font-size:9px;
+  letter-spacing:4px;
+  margin-bottom:25px;
+}
+
+h1{
+  font-size:clamp(55px,13vw,110px);
+  line-height:.84;
+  letter-spacing:-6px;
+}
+
+h1 span{color:#555}
+
+.hero p{
+  max-width:590px;
+  margin:30px auto 0;
+  color:#888;
+  line-height:1.8;
+  font-size:14px;
+}
+
+.badge{
+  display:inline-block;
+  margin-top:22px;
+  border:1px solid #222;
+  padding:8px 12px;
+  color:#555;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border:1px solid var(--line);
+  margin-bottom:40px;
+}
+
+.stat{
+  padding:18px;
+  border-right:1px solid var(--line);
+}
+
+.stat:last-child{border-right:0}
+
+.stat small{
+  display:block;
+  color:#555;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+  margin-bottom:7px;
+}
+
+.stat strong{
+  font-family:"Space Mono",monospace;
+  font-size:16px;
+}
+
+.terminal{
+  background:var(--panel);
+  border:1px solid #292929;
+  padding:22px;
+  box-shadow:0 20px 80px rgba(0,0,0,.5);
+}
+
+.terminal-head{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:18px;
+  padding-bottom:15px;
+  border-bottom:1px solid #181818;
+}
+
+.terminal-title,
+.sanitizer{
+  font-family:"Space Mono",monospace;
+  font-size:9px;
+}
+
+.terminal-title{color:#777}
+
+.sanitizer{color:var(--green)}
+
+textarea{
+  width:100%;
+  min-height:180px;
+  resize:vertical;
+  background:#020202;
+  border:1px solid #252525;
+  color:#eee;
+  outline:none;
+  padding:17px;
+  font-family:"Space Mono",monospace;
+  font-size:13px;
+  line-height:1.8;
+}
+
+textarea:focus{border-color:#555}
+
+textarea::placeholder{color:#444}
+
+.meta{
+  display:flex;
+  justify-content:space-between;
+  margin-top:8px;
+  color:#555;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+}
+
+.warning{
+  display:none;
+  margin-top:12px;
+  padding:10px;
+  border-left:2px solid var(--red);
+  background:#100606;
+  color:#a66;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+}
+
+.warning.show{display:block}
+
+.btn{
+  width:100%;
+  border:1px solid #eee;
+  background:#eee;
+  color:#050505;
+  padding:17px;
+  margin-top:22px;
+  cursor:pointer;
+  font-family:"Space Mono",monospace;
+  font-size:10px;
+  font-weight:bold;
+  letter-spacing:1px;
+}
+
+.btn:hover{background:#fff;transform:translateY(-1px)}
+
+.status{
+  text-align:center;
+  min-height:20px;
+  margin-top:13px;
+  color:#777;
+  font-family:"Space Mono",monospace;
+  font-size:9px;
+}
+
+.payment{
+  display:none;
+  margin-top:18px;
+  border:1px solid #292929;
+  padding:20px;
+  background:#050505;
+}
+
+.payment.show{display:block}
+
+.payment-title{
+  font-family:"Space Mono",monospace;
+  font-size:10px;
+  letter-spacing:2px;
+  margin-bottom:18px;
+}
+
+.upi{
+  border:1px dashed #333;
+  text-align:center;
+  padding:18px;
+}
+
+.upi small{
+  display:block;
+  color:#555;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+  margin-bottom:8px;
+}
+
+.upi-id{
+  font-family:"Space Mono",monospace;
+  font-size:14px;
+  word-break:break-all;
+}
+
+.amount{
+  color:#777;
+  font-family:"Space Mono",monospace;
+  font-size:10px;
+  margin-top:8px;
+}
+
+.upi-btn{
+  width:100%;
+  margin-top:15px;
+  padding:15px;
+  background:#0b0b0b;
+  color:#fff;
+  border:1px solid #333;
+  cursor:pointer;
+  font-family:"Space Mono",monospace;
+  font-size:9px;
+}
+
+.upi-btn:hover{border-color:#777}
+
+.utr{
+  margin-top:20px;
+}
+
+.utr label{
+  display:block;
+  color:#666;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+  margin-bottom:8px;
+}
+
+.utr input{
+  width:100%;
+  background:#020202;
+  border:1px solid #292929;
+  color:#fff;
+  padding:14px;
+  outline:none;
+  font-family:"Space Mono",monospace;
+  letter-spacing:2px;
+}
+
+.utr input:focus{border-color:#666}
+
+.verify{
+  width:100%;
+  margin-top:10px;
+  padding:15px;
+  background:#eee;
+  border:0;
+  color:#050505;
+  cursor:pointer;
+  font-family:"Space Mono",monospace;
+  font-weight:bold;
+  font-size:9px;
+}
+
+.node{
+  display:none;
+  margin-top:30px;
+  border:1px solid #303030;
+  padding:28px;
+  text-align:center;
+  background:#070707;
+}
+
+.node.show{display:block}
+
+.sealed{
+  color:var(--green);
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+  letter-spacing:3px;
+}
+
+.node-id{
+  font-family:"Space Mono",monospace;
+  font-size:38px;
+  font-weight:bold;
+  margin:17px 0;
+}
+
+.line{
+  height:1px;
+  background:#222;
+  margin:20px 0;
+}
+
+.label{
+  color:#555;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+  letter-spacing:2px;
+}
+
+.archetype{
+  margin-top:8px;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.rarity{
+  margin-top:8px;
+  color:#777;
+  font-family:"Space Mono",monospace;
+  font-size:9px;
+}
+
+.story{
+  margin-top:22px;
+  padding:12px 17px;
+  background:transparent;
+  border:1px solid #333;
+  color:#fff;
+  cursor:pointer;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+}
+  .story:hover{
+  background:#111;
+}
+
+.vault{
+  margin:85px auto;
+}
+
+.vault-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:18px;
+}
+
+.vault-title{
+  font-family:"Space Mono",monospace;
+  font-size:10px;
+  letter-spacing:3px;
+}
+
+.vault-meta{
+  color:#444;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+}
+
+.entry{
+  border:1px solid #181818;
+  background:#050505;
+  padding:20px;
+  margin-bottom:7px;
+}
+
+.entry-id{
+  color:#4d4d4d;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+  margin-bottom:12px;
+}
+
+.entry-text{
+  color:#999;
+  font-family:"Space Mono",monospace;
+  font-size:11px;
+  line-height:1.8;
+  filter:blur(6px);
+  user-select:none;
+  transition:.5s;
+}
+
+.vault.unlocked .entry-text{
+  filter:blur(0);
+  user-select:text;
+}
+
+.lock{
+  text-align:center;
+  color:#444;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+  padding:20px;
+  letter-spacing:1px;
+}
+
+.vault.unlocked .lock{display:none}
+
+.privacy{
+  border-top:1px solid #151515;
+  border-bottom:1px solid #151515;
+  padding:25px 0;
+  text-align:center;
+  color:#4d4d4d;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+  line-height:1.8;
+}
+
+footer{
+  text-align:center;
+  padding:45px 0 60px;
+  color:#333;
+  font-family:"Space Mono",monospace;
+  font-size:8px;
+  line-height:1.8;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:20px;
+  transform:translate(-50%,100px);
+  opacity:0;
+  z-index:10000;
+  background:#eee;
+  color:#050505;
+  padding:12px 16px;
+  font-family:"Space Mono",monospace;
+  font-size:9px;
+  transition:.3s;
+}
+
+.toast.show{
+  transform:translate(-50%,0);
+  opacity:1;
+}
+
+@media(max-width:600px){
+
+  .container{
+    width:calc(100% - 22px);
+  }
+
+  .hero{
+    padding-top:60px;
+  }
+
+  h1{
+    letter-spacing:-4px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .stat{
+    border-right:0;
+    border-bottom:1px solid var(--line);
+  }
+
+  .stat:last-child{
+    border-bottom:0;
+  }
+
+  .terminal{
+    padding:15px;
+  }
+
+  .terminal-head{
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+  }
+}
+</style>
 </head>
-<body class="min-h-screen p-4 flex flex-col items-center justify-start scanline">
 
-  <!-- HUD STATUS HEADER -->
-  <header class="w-full max-w-md border border-neutral-800 p-3 mb-4 bg-neutral-950/90 rounded flex justify-between items-center text-[11px] mono">
-    <div class="flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
-      <span class="text-neutral-400">LEDGER PROTOCOL // 30-DAY</span>
+<body>
+
+<header>
+  <div class="container header">
+    <div class="logo">BLACK LEDGER</div>
+
+    <div class="protocol">
+      <span class="dot"></span>
+      PROTOCOL // DAY 01 / 30
     </div>
-    <div class="text-neutral-300">
-      ARCHIVE: <span id="counterDisplay" class="text-white font-bold">#000,142</span>
-    </div>
-  </header>
+  </div>
+</header>
 
-  <!-- MAIN CONTAINER -->
-  <main class="w-full max-w-md flex flex-col gap-4">
+<main>
 
-    <!-- SUBMISSION TERMINAL -->
-    <div id="vaultStage" class="border border-neutral-800 bg-neutral-950/80 p-5 rounded-lg">
-      <div class="flex justify-between items-center mb-1">
-        <h1 class="text-base font-bold tracking-tight text-white uppercase mono">The Black Ledger</h1>
-        <span class="text-[10px] mono text-neutral-400 border border-neutral-800 px-2 py-0.5 rounded">ZERO LOGS</span>
-      </div>
-      <p class="text-xs text-neutral-400 mb-4">Deposit the unsaid truth you carry. Payment identity is strictly separated.</p>
+<section class="hero container">
 
-      <!-- TEXTAREA -->
-      <div class="relative mb-3">
-        <textarea id="confessionInput" rows="4" maxlength="280"
-          placeholder="Type your unsaid truth here... (Phone numbers & emails auto-scrubbed)" 
-          class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"></textarea>
-        <div class="flex justify-between text-[10px] mono text-neutral-500 mt-1">
-          <span>PII SANITIZER: READY</span>
-          <span id="charCount">0 / 280</span>
-        </div>
-      </div>
+  <div class="eyebrow">
+    ANONYMOUS CONFESSION ARCHIVE
+  </div>
 
-      <!-- INITIATE PAYMENT -->
-      <div id="stepInitiate">
-        <button onclick="triggerPayment()" 
-          class="w-full bg-neutral-100 hover:bg-white text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono flex items-center justify-center gap-2 transition active:scale-95">
-          <span>SEAL ENTRY & UNLOCK — ₹13</span>
-        </button>
-        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Direct UPI Intent (PhonePe / GPay / Paytm)</p>
-      </div>
+  <h1>
+    WHAT DID<br>
+    <span>YOU DO?</span>
+  </h1>
 
-      <!-- VERIFY STEP -->
-      <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
-        <p class="text-xs text-neutral-200 mono font-semibold">Payment Initiated?</p>
-        <p class="text-[11px] text-neutral-400">Enter the 12-digit UPI Reference / UTR Number from your transaction screen:</p>
-        <input type="text" id="utrInput" maxlength="12" placeholder="12-digit UTR (e.g. 428190384721)" 
-          class="w-full bg-neutral-900 border border-neutral-800 rounded p-2.5 text-xs text-white mono focus:border-red-500 focus:outline-none">
-        <button onclick="verifyAndSeal()" 
-          class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95">
-          DECRYPT ARCHIVE & ISSUE BADGE
-        </button>
-      </div>
+  <p>
+    Ek confession. Ek sealed node.
+    Jo baat kabhi kisi ko nahi batayi —
+    yahan likh do.
+  </p>
+
+  <div class="badge">
+    THIS IS AN ARCHIVE — NOT A THERAPY SERVICE
+  </div>
+
+</section>
+
+
+<section class="container">
+
+  <div class="stats">
+
+    <div class="stat">
+      <small>PROTOCOL</small>
+      <strong>30 DAYS</strong>
     </div>
 
-    <!-- POST-PAYMENT UNLOCKED: PERSONA CARD ARTIFACT -->
-    <div id="personaBlock" class="hidden border border-red-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center">
-      <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">● VERIFIED NODE ARCHIVED</div>
-      <h2 id="personaArchetype" class="text-lg font-bold text-white uppercase tracking-wider mb-1">THE PRAGMATIC SINNER</h2>
-      <p id="personaRarity" class="text-xs text-neutral-400 mb-3">Rarity: 3.4% of participants carry this profile</p>
-
-      <canvas id="storyCanvas" width="1080" height="1920" class="hidden"></canvas>
-      <img id="cardPreview" class="w-52 h-auto border border-neutral-800 rounded shadow-2xl mb-4" alt="Persona Card">
-
-      <a id="downloadBtn" download="BlackLedger_Node.png" 
-        class="w-full bg-neutral-100 text-black py-2.5 px-4 rounded text-xs font-bold uppercase tracking-wider block text-center">
-        DOWNLOAD INSTAGRAM STORY BADGE
-      </a>
-      <p class="text-[10px] text-neutral-500 mt-2">Post on Story to signal your encrypted presence.</p>
+    <div class="stat">
+      <small>ENTRY</small>
+      <strong>₹13</strong>
     </div>
 
-    <!-- VAULT STREAM -->
-    <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
-      <div class="flex justify-between items-center mb-3">
-        <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">Live Vault Stream</span>
-        <span id="lockBadge" class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono">LOCKED</span>
+    <div class="stat">
+      <small>IDENTITY</small>
+      <strong>NOT DISPLAYED</strong>
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="container">
+
+<div class="terminal">
+
+  <div class="terminal-head">
+
+    <div class="terminal-title">
+      // ENTRY TERMINAL
+    </div>
+
+    <div class="sanitizer">
+      ● PII SANITIZER: ACTIVE
+    </div>
+
+  </div>
+
+  <textarea
+    id="confession"
+    maxlength="280"
+    spellcheck="false"
+    placeholder="Maine kabhi kisi ko nahi bataya ki..."
+  ></textarea>
+
+  <div class="meta">
+    <span>MAX 280 CHARACTERS</span>
+    <span id="counter">0 / 280</span>
+  </div>
+
+  <div id="warning" class="warning">
+    Possible personal information detected.
+    Numbers, emails and handles will be redacted.
+  </div>
+
+  <button
+    id="sealButton"
+    class="btn"
+    onclick="preparePayment()"
+  >
+    SEAL ENTRY // ₹13
+  </button>
+
+  <div id="status" class="status"></div>
+
+
+  <div id="payment" class="payment">
+
+    <div class="payment-title">
+      // PAYMENT TERMINAL
+    </div>
+
+    <div class="upi">
+
+      <small>PAY EXACTLY</small>
+
+      <div class="upi-id">
+        ₹13
       </div>
 
-      <div class="flex flex-col gap-3 text-xs" id="feedList">
-        <div class="border-l-2 border-neutral-800 pl-3 py-1">
-          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
-            <span>NODE #000139</span>
-            <span>THE SILENT MARTYR</span>
-          </div>
-          <p class="text-neutral-300">
-            Maine pichle 2 saal se ghar par jhooth bola hai ki job achhi chal rahi hai... <span class="vault-blur blurred text-neutral-400">jabki main delivery boy ka kaam karke rent nikal raha hoon taaki papa par loan ka bojh na pade.</span>
-          </p>
-        </div>
+      <div class="amount">
+        UPI PAYMENT
+      </div>
 
-        <div class="border-l-2 border-neutral-800 pl-3 py-1">
-          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
-            <span>NODE #000140</span>
-            <span>THE CHRONIC ESCAPIST</span>
-          </div>
-          <p class="text-neutral-300">
-            Meri shaadi meri family ki marzi se fix ho chuki hai... <span class="vault-blur blurred text-neutral-400">lekin main roz raat ko apne ex ki photos dekh kar rota hoon. Main teen zindagiyan tabah karne ja raha hoon.</span>
-          </p>
-        </div>
+    </div>
 
-        <div class="border-l-2 border-neutral-800 pl-3 py-1">
-          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
-            <span>NODE #000141</span>
-            <span>THE SHADOW STRATEGIST</span>
-          </div>
-          <p class="text-neutral-300">
-            Client ka payment mere personal account mein direct aya tha... <span class="vault-blur blurred text-neutral-400">maine agency ko bola ki client ne ghost kar diya aur 70,000 poore khud rakh liye.</span>
-          </p>
-        </div>
+    <button
+      class="upi-btn"
+      onclick="openUPI()"
+    >
+      OPEN UPI APP
+    </button>
+
+    <div class="utr">
+
+      <label>
+        AFTER PAYMENT — ENTER 12 DIGIT UTR
+      </label>
+
+      <input
+        id="utr"
+        type="text"
+        inputmode="numeric"
+        maxlength="12"
+        placeholder="12 DIGIT UTR"
+      >
+
+      <button
+        class="verify"
+        onclick="verifyEntry()"
+      >
+        SUBMIT UTR & SEAL NODE
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="node" class="node">
+
+  <div class="sealed">
+    ● ENTRY SEALED
+  </div>
+
+  <div id="nodeId" class="node-id">
+    BL-000000
+  </div>
+
+  <div class="line"></div>
+
+  <div class="label">
+    YOUR LEDGER ARCHETYPE
+  </div>
+
+  <div id="archetype" class="archetype">
+    —
+  </div>
+
+  <div id="rarity" class="rarity">
+    —
+  </div>
+
+  <button
+    class="story"
+    onclick="generateStoryCard()"
+  >
+    GENERATE STORY CARD
+  </button>
+
+</div>
+
+</section>
+
+
+<section class="vault container">
+
+  <div class="vault-head">
+
+    <div class="vault-title">
+      LIVE VAULT // RECENT NODES
+    </div>
+
+    <div class="vault-meta">
+      LOCKED ARCHIVE
+    </div>
+
+  </div>
+
+  <div id="vault">
+
+    <div class="entry">
+      <div class="entry-id">
+        NODE // 00A91F
+      </div>
+
+      <div class="entry-text">
+        I smiled at someone every day knowing
+        I was the reason they stopped trusting people.
       </div>
     </div>
 
-  </main>
+    <div class="entry">
+      <div class="entry-id">
+        NODE // 00B821
+      </div>
 
-  <script>
-    function sanitizeInput(text) {
-      return text
-        .replace(/\b\d{10,12}\b/g, '[REDACTED_NUM]')
-        .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[REDACTED_MAIL]')
-        .replace(/@([A-Za-z0-9_]+)/g, '[REDACTED_HANDLE]')
-        .replace(/[A-Z]{5}[0-9]{4}[A-Z]{1}/g, '[REDACTED_PAN]');
-    }
+      <div class="entry-text">
+        I pretended I had forgotten.
+        I hadn't.
+      </div>
+    </div>
 
-    const input = document.getElementById('confessionInput');
-    input.addEventListener('input', () => {
-      document.getElementById('charCount').innerText = `${input.value.length} / 280`;
-    });
+    <div class="entry">
+      <div class="entry-id">
+        NODE // 00C771
+      </div>
 
-    function triggerPayment() {
-      const text = input.value.trim();
-      if(text.length < 10) {
-        alert("Enter at least 10 characters of your confession.");
-        return;
-      }
+      <div class="entry-text">
+        Nobody knows how different I am
+        from the person they think I am.
+      </div>
+    </div>
 
-      // Safe UPI URI with exact decimal amount
-      const upiUrl = "upi://pay?pa=paytmqr6e274w1yec@paytm&pn=TheBlackLedger&am=13.00&cu=INR&tn=BlackLedgerVault";
-      
-      const link = document.createElement('a');
-      link.href = upiUrl;
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    <div class="lock">
+      ▓▓▓ ARCHIVE CONTENT LOCKED ▓▓▓
+      <br><br>
+      SEAL YOUR OWN NODE TO ACCESS
+    </div>
 
-      document.getElementById('stepInitiate').classList.add('hidden');
-      document.getElementById('stepVerify').classList.remove('hidden');
-    }
+  </div>
 
-    const archetypes = [
-      { name: "THE SILENT MARTYR", rarity: "4.1% of participants" },
-      { name: "THE PRAGMATIC SINNER", rarity: "2.8% of participants" },
-      { name: "THE SHADOW OBSERVER", rarity: "6.3% of participants" },
-      { name: "THE CALCULATED TRAITOR", rarity: "1.9% of participants" }
+</section>
+
+
+<section class="privacy">
+
+  <div class="container">
+    DO NOT SUBMIT PASSWORDS, BANK DETAILS,
+    PHONE NUMBERS OR ADDRESSES.
+    <br>
+    PII FILTERING IS A CONVENIENCE,
+    NOT A GUARANTEE OF ANONYMITY.
+  </div>
+
+</section>
+
+</main>
+
+
+<footer>
+  THE BLACK LEDGER
+  <br>
+  30-DAY CONFESSION PROTOCOL
+  <br><br>
+  YOUR CONFESSION IS YOURS.
+  YOUR NODE IS THE TRACE.
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<script>
+  const confession =
+  document.getElementById("confession");
+
+const counter =
+  document.getElementById("counter");
+
+const warning =
+  document.getElementById("warning");
+
+const statusBox =
+  document.getElementById("status");
+
+const payment =
+  document.getElementById("payment");
+
+const sealButton =
+  document.getElementById("sealButton");
+
+const utr =
+  document.getElementById("utr");
+
+const node =
+  document.getElementById("node");
+
+const vault =
+  document.getElementById("vault");
+
+const nodeId =
+  document.getElementById("nodeId");
+
+const archetype =
+  document.getElementById("archetype");
+
+const rarity =
+  document.getElementById("rarity");
+
+
+/* =========================================
+   UPI DETAILS
+========================================= */
+
+const UPI_ID = "6395870714@ptyes";
+const PAYMENT_AMOUNT = "13";
+
+
+/* =========================================
+   COUNTER
+========================================= */
+
+confession.addEventListener("input", () => {
+
+  counter.textContent =
+    confession.value.length + " / 280";
+
+  detectPII();
+
+});
+
+
+/* =========================================
+   PII DETECTION
+========================================= */
+
+function detectPII(){
+
+  const text = confession.value;
+
+  const phone =
+    /\b\d{10,12}\b/.test(text);
+
+  const email =
+    /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/
+    .test(text);
+
+  const handle =
+    /@[A-Za-z0-9_]{3,}/.test(text);
+
+  const pan =
+    /\b[A-Z]{5}[0-9]{4}[A-Z]\b/i
+    .test(text);
+
+  if(phone || email || handle || pan){
+    warning.classList.add("show");
+  }else{
+    warning.classList.remove("show");
+  }
+
+}
+
+
+/* =========================================
+   SANITIZE
+========================================= */
+
+function sanitize(text){
+
+  return text
+
+    .replace(
+      /\b\d{10,12}\b/g,
+      "[REDACTED_NUM]"
+    )
+
+    .replace(
+      /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+      "[REDACTED_EMAIL]"
+    )
+
+    .replace(
+      /@[A-Za-z0-9_]+/g,
+      "[REDACTED_HANDLE]"
+    )
+
+    .replace(
+      /\b[A-Z]{5}[0-9]{4}[A-Z]\b/gi,
+      "[REDACTED_ID]"
+    )
+
+    .trim()
+    .slice(0,280);
+
+}
+
+
+/* =========================================
+   PREPARE PAYMENT
+========================================= */
+
+function preparePayment(){
+
+  let text =
+    confession.value.trim();
+
+  if(!text){
+
+    showStatus(
+      "ENTRY EMPTY. SAY SOMETHING.",
+      true
+    );
+
+    confession.focus();
+
+    return;
+  }
+
+  if(text.length < 10){
+
+    showStatus(
+      "CONFESSION TOO SHORT.",
+      true
+    );
+
+    return;
+  }
+
+  text = sanitize(text);
+
+  confession.value = text;
+
+  counter.textContent =
+    text.length + " / 280";
+
+  payment.classList.add("show");
+
+  sealButton.style.display = "none";
+
+  showStatus(
+    "ENTRY READY. COMPLETE ₹13 UPI PAYMENT."
+  );
+
+  payment.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
+
+}
+
+
+/* =========================================
+   OPEN UPI
+========================================= */
+
+function openUPI(){
+
+  const url =
+    "upi://pay" +
+    "?pa=" + encodeURIComponent(UPI_ID) +
+    "&pn=" + encodeURIComponent("Black Ledger") +
+    "&am=" + encodeURIComponent(PAYMENT_AMOUNT) +
+    "&cu=INR" +
+    "&tn=" + encodeURIComponent("Black Ledger Entry");
+
+  window.location.href = url;
+
+  showToast("UPI APP OPENING...");
+
+}
+
+
+/* =========================================
+   UTR INPUT
+========================================= */
+
+utr.addEventListener("input", () => {
+
+  utr.value =
+    utr.value
+      .replace(/\D/g,"")
+      .slice(0,12);
+
+});
+
+
+/* =========================================
+   ARCHETYPE DATA
+========================================= */
+
+const archetypes = [
+
+  {
+    name:"THE SILENT MARTYR",
+    description:
+      "You tend to carry things quietly."
+  },
+
+  {
+    name:"THE SHADOW OBSERVER",
+    description:
+      "You notice more than you reveal."
+  },
+
+  {
+    name:"THE PRAGMATIC SINNER",
+    description:
+      "You rationalize uncomfortable choices."
+  },
+
+  {
+    name:"THE CALCULATED TRAITOR",
+    description:
+      "You understand consequences before acting."
+  },
+
+  {
+    name:"THE INVISIBLE ESCAPE",
+    description:
+      "You disappear when things become too real."
+  },
+
+  {
+    name:"THE DOUBLE LIFE",
+    description:
+      "There is a gap between perception and reality."
+  }
+
+];
+
+
+/* =========================================
+   VERIFY / SEAL
+========================================= */
+
+function verifyEntry(){
+
+  const transactionId =
+    utr.value.trim();
+
+  if(!/^\d{12}$/.test(transactionId)){
+
+    showStatus(
+      "ENTER A VALID 12-DIGIT UTR.",
+      true
+    );
+
+    return;
+  }
+
+  /*
+    IMPORTANT:
+
+    This checks only UTR FORMAT.
+
+    It does NOT contact the bank
+    and does NOT prove that ₹13
+    was actually received.
+
+    Real verification requires a
+    payment-provider/bank backend.
+  */
+
+  showStatus(
+    "SEALING NODE..."
+  );
+
+  setTimeout(() => {
+
+    createNode();
+
+  },700);
+
+}
+
+
+/* =========================================
+   CREATE NODE
+========================================= */
+
+function createNode(){
+
+  const id =
+    generateNodeId();
+
+  const selected =
+    archetypes[
+      Math.floor(
+        Math.random() * archetypes.length
+      )
     ];
 
-    function verifyAndSeal() {
-      const utr = document.getElementById('utrInput').value.trim();
-      if(utr.length !== 12 || isNaN(utr)) {
-        alert("Please enter a valid 12-digit UPI Reference / UTR Number from your payment confirmation.");
-        return;
-      }
+  nodeId.textContent = id;
 
-      const chosen = archetypes[Math.floor(Math.random() * archetypes.length)];
-      const nodeNum = Math.floor(100000 + Math.random() * 900000);
+  archetype.textContent =
+    selected.name;
 
-      document.getElementById('vaultStage').classList.add('hidden');
-      document.getElementById('personaBlock').classList.remove('hidden');
-      document.getElementById('personaArchetype').innerText = chosen.name;
-      document.getElementById('personaRarity').innerText = `Rarity: ${chosen.rarity}`;
+  rarity.textContent =
+    selected.description;
 
-      document.querySelectorAll('.vault-blur').forEach(el => el.classList.remove('blurred'));
-      const badge = document.getElementById('lockBadge');
-      badge.classList.remove('bg-red-950', 'text-red-400', 'border-red-900');
-      badge.classList.add('bg-green-950', 'text-green-400', 'border-green-900');
-      badge.innerText = "ACCESS GRANTED";
+  node.classList.add("show");
 
-      document.getElementById('counterDisplay').innerText = `#000,143`;
+  vault.classList.add("unlocked");
 
-      generateStoryCard(chosen.name, nodeNum, chosen.rarity);
+  payment.classList.remove("show");
+
+  showStatus(
+    "ENTRY SEALED. WELCOME TO THE LEDGER."
+  );
+
+  showToast(
+    "NODE SEALED: " + id
+  );
+
+  node.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
+
+}
+
+
+/* =========================================
+   NODE ID
+========================================= */
+
+function generateNodeId(){
+
+  const chars =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+  let result = "BL-";
+
+  for(let i=0;i<6;i++){
+
+    result +=
+      chars[
+        Math.floor(
+          Math.random() * chars.length
+        )
+      ];
+
+  }
+
+  return result;
+
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+function showStatus(
+  message,
+  error=false
+){
+
+  statusBox.textContent =
+    message;
+
+  statusBox.style.color =
+    error ? "#ff5555" : "#777";
+
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+let toastTimer;
+
+function showToast(message){
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent =
+    message;
+
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(() => {
+
+      toast.classList.remove("show");
+
+    },2500);
+
+}
+  /* =========================================
+   STORY CARD GENERATOR
+========================================= */
+
+function generateStoryCard(){
+
+  const canvas =
+    document.createElement("canvas");
+
+  canvas.width = 1080;
+  canvas.height = 1920;
+
+  const ctx =
+    canvas.getContext("2d");
+
+
+  /* BACKGROUND */
+
+  ctx.fillStyle = "#030303";
+
+  ctx.fillRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+
+  /* SCANLINES */
+
+  ctx.strokeStyle =
+    "rgba(255,255,255,.025)";
+
+  ctx.lineWidth = 2;
+
+  for(
+    let y=0;
+    y<canvas.height;
+    y+=8
+  ){
+
+    ctx.beginPath();
+
+    ctx.moveTo(0,y);
+
+    ctx.lineTo(canvas.width,y);
+
+    ctx.stroke();
+
+  }
+
+
+  /* HEADER */
+
+  ctx.fillStyle = "#666";
+
+  ctx.font =
+    "24px monospace";
+
+  ctx.fillText(
+    "THE BLACK LEDGER",
+    80,
+    130
+  );
+
+  ctx.fillStyle = "#333";
+
+  ctx.fillText(
+    "30-DAY CONFESSION PROTOCOL",
+    80,
+    175
+  );
+
+
+  /* NODE */
+
+  ctx.fillStyle = "#fff";
+
+  ctx.font =
+    "bold 76px monospace";
+
+  ctx.fillText(
+    nodeId.textContent,
+    80,
+    540
+  );
+
+
+  /* LINE */
+
+  ctx.fillStyle = "#222";
+
+  ctx.fillRect(
+    80,
+    580,
+    920,
+    2
+  );
+
+
+  /* LABEL */
+
+  ctx.fillStyle = "#666";
+
+  ctx.font =
+    "22px monospace";
+
+  ctx.fillText(
+    "LEDGER ARCHETYPE",
+    80,
+    680
+  );
+
+
+  /* ARCHETYPE */
+
+  ctx.fillStyle = "#fff";
+
+  ctx.font =
+    "bold 40px monospace";
+
+  wrapText(
+    ctx,
+    archetype.textContent,
+    80,
+    750,
+    850,
+    60
+  );
+
+
+  /* DESCRIPTION */
+
+  ctx.fillStyle = "#666";
+
+  ctx.font =
+    "21px monospace";
+
+  wrapText(
+    ctx,
+    rarity.textContent,
+    80,
+    900,
+    850,
+    35
+  );
+
+
+  /* FOOTER */
+
+  ctx.fillStyle = "#333";
+
+  ctx.font =
+    "20px monospace";
+
+  ctx.fillText(
+    "NODE SEALED.",
+    80,
+    1680
+  );
+
+  ctx.fillText(
+    "YOUR CONFESSION IS YOURS.",
+    80,
+    1720
+  );
+
+  ctx.fillStyle = "#ff3030";
+
+  ctx.fillText(
+    "PURGE // DAY 30",
+    80,
+    1800
+  );
+
+
+  /* DOWNLOAD */
+
+  const link =
+    document.createElement("a");
+
+  link.download =
+    nodeId.textContent +
+    "-black-ledger.png";
+
+  link.href =
+    canvas.toDataURL("image/png");
+
+  link.click();
+
+  showToast(
+    "STORY CARD GENERATED"
+  );
+
+}
+
+
+/* =========================================
+   CANVAS TEXT WRAPPER
+========================================= */
+
+function wrapText(
+  ctx,
+  text,
+  x,
+  y,
+  maxWidth,
+  lineHeight
+){
+
+  const words =
+    text.split(" ");
+
+  let line = "";
+
+  for(
+    let i=0;
+    i<words.length;
+    i++
+  ){
+
+    const test =
+      line + words[i] + " ";
+
+    const width =
+      ctx.measureText(test).width;
+
+    if(
+      width > maxWidth &&
+      i > 0
+    ){
+
+      ctx.fillText(
+        line,
+        x,
+        y
+      );
+
+      line =
+        words[i] + " ";
+
+      y += lineHeight;
+
+    }else{
+
+      line = test;
+
     }
 
-    function generateStoryCard(archetype, nodeNum, rarity) {
-      const canvas = document.getElementById('storyCanvas');
-      const ctx = canvas.getContext('2d');
+  }
 
-      // Base Canvas Background
-      ctx.fillStyle = '#050505';
-      ctx.fillRect(0, 0, 1080, 1920);
+  ctx.fillText(
+    line,
+    x,
+    y
+  );
 
-      // Frame Border
-      ctx.strokeStyle = '#222222';
-      ctx.lineWidth = 8;
-      ctx.strokeRect(60, 60, 960, 1800);
+}
 
-      // Top Title
-      ctx.fillStyle = '#DC2626';
-      ctx.font = 'bold 36px monospace';
-      ctx.fillText('THE BLACK LEDGER // ARCHIVE PROTOCOL', 120, 200);
 
-      // Node Token Header
-      ctx.fillStyle = '#737373';
-      ctx.font = '30px monospace';
-      ctx.fillText(`TOKEN ID: #${nodeNum} | VERIFIED`, 120, 255);
+/* =========================================
+   STARTUP
+========================================= */
 
-      // Divider Line
-      ctx.strokeStyle = '#333333';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(120, 290);
-      ctx.lineTo(960, 290);
-      ctx.stroke();
+console.log(
+  "BLACK LEDGER // PROTOCOL INITIALIZED"
+);
 
-      // Center Archetype
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 64px sans-serif';
-      ctx.fillText(archetype, 120, 920);
+console.log(
+  "UPI:",
+  UPI_ID
+);
 
-      // Rarity
-      ctx.fillStyle = '#DC2626';
-      ctx.font = '34px monospace';
-      ctx.fillText(rarity.toUpperCase(), 120, 985);
+</script>
 
-      // Micro note
-      ctx.fillStyle = '#525252';
-      ctx.font = '30px monospace';
-      ctx.fillText('CONFESSION PERMANENTLY SEALED IN VAULT', 120, 1055);
-
-      // Footer
-      ctx.fillStyle = '#A3A3A3';
-      ctx.font = '32px monospace';
-      ctx.fillText('PURGE IMMINENT // projectblackledger', 120, 1720);
-
-      const dataUrl = canvas.toDataURL('image/png');
-      document.getElementById('cardPreview').src = dataUrl;
-      document.getElementById('downloadBtn').href = dataUrl;
-    }
-  </script>
 </body>
 </html>
-
