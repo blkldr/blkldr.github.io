@@ -197,6 +197,9 @@
       const data = snapshot.val();
       
       let count = 142;
+      const blurClass = isUnlocked ? "" : "blurred";
+
+      // Naye submitted confessions sabse pehle dikhenge
       if (data) {
         const items = Object.values(data).reverse();
         count += items.length;
@@ -205,32 +208,61 @@
         items.forEach(item => {
           const div = document.createElement('div');
           div.className = "border-l-2 border-neutral-800 pl-3 py-1";
-          const blurClass = isUnlocked ? "" : "blurred";
           div.innerHTML = `
             <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
               <span>NODE #${item.nodeId}</span>
               <span>${item.archetype}</span>
             </div>
             <p class="text-neutral-300">
-              <span class="vault-blur ${blurClass} text-neutral-300">${item.content}</span>
+              <span class="vault-blur ${blurClass}">${item.content}</span>
             </p>
           `;
           feedList.appendChild(div);
         });
       }
 
-      // Default backup items agar DB abhi khali ho
-      if (!data) {
-        feedList.innerHTML = `
-          <div class="border-l-2 border-neutral-800 pl-3 py-1">
-            <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
-              <span>NODE #000139</span>
-              <span>THE SILENT MARTYR</span>
-            </div>
-            <p class="text-neutral-300">Maine pichle 2 saal se ghar par jhooth bola hai... <span class="vault-blur blurred text-neutral-400">delivery ka kaam karke rent nikalta hoon.</span></p>
+      // Ultra-Hook Seed Entries: Jo payment trigger karne ke liye heavy curiosity paida karengi
+      const viralSeeds = [
+        {
+          node: "000142",
+          archetype: "THE CALCULATED TRAITOR",
+          preview: "Mere best friend ki agle mahine shaadi hai, par uski hone wali biwi...",
+          blurred: "pichle 3 hafte se mere hotel room mein aa rahi hai aur sab cancel karne ko bol rahi hai."
+        },
+        {
+          node: "000141",
+          archetype: "THE PRAGMATIC SINNER",
+          preview: "Maine apne company ke founder ka laptop kholkar private investor list aur financials...",
+          blurred: "unke sabse bade rival ko ₹8 lakh cash mein leak kar di aur resign daal diya."
+        },
+        {
+          node: "000140",
+          archetype: "THE SHADOW OBSERVER",
+          preview: "Ghar walo ko lagta hai main Bangalore mein MNC mein kaam kar raha hoon, sach yeh hai ki...",
+          blurred: "naukri 9 mahine pehle chhoot gayi thi, ab bike taxi chala kar ghar paise bhejta hoon."
+        },
+        {
+          node: "000139",
+          archetype: "THE SILENT MARTYR",
+          preview: "Meri step-sister ko lagta hai uska admission merit par hua, par uski fees ke liye...",
+          blurred: "maine apna bike aur maa ke bache hue saare kangan secretly bech diye the."
+        }
+      ];
+
+      viralSeeds.forEach(seed => {
+        const div = document.createElement('div');
+        div.className = "border-l-2 border-neutral-800 pl-3 py-1";
+        div.innerHTML = `
+          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
+            <span>NODE #${seed.node}</span>
+            <span>${seed.archetype}</span>
           </div>
+          <p class="text-neutral-300">
+            ${seed.preview} <span class="vault-blur ${blurClass} text-neutral-400">${seed.blurred}</span>
+          </p>
         `;
-      }
+        feedList.appendChild(div);
+      });
     });
 
     async function verifyRealPayment() {
@@ -360,7 +392,7 @@
 
       ctx.fillStyle = '#A3A3A3';
       ctx.font = '32px monospace';
-      ctx.fillText('PURGE IMMINENT // projectblackledger', 120, 1720);
+      ctx.fillText('PURGE IMMINENT // blkldr.github.io', 120, 1720);
 
       const dataUrl = canvas.toDataURL('image/png');
       document.getElementById('cardPreview').src = dataUrl;
