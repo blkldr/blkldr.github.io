@@ -13,7 +13,6 @@
   <style>
     body { background-color: #050505; color: #E5E5E5; font-family: 'Space Grotesk', sans-serif; }
     .mono { font-family: 'Space Mono', monospace; }
-    .blurred { filter: blur(7px); user-select: none; pointer-events: none; }
     .scanline {
       background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
       background-size: 100% 3px, 6px 100%;
@@ -56,22 +55,10 @@
       </div>
 
       <div id="stepInitiate">
-        <button onclick="openPaymentModal()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2">
-            <span>SEAL ENTRY & UNLOCK — ₹13</span>
+        <button onclick="submitDirectConfession()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2">
+            <span>SEAL & PUBLISH ENTRY</span>
         </button>
-        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)</p>
-      </div>
-      
-      <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
-        <p class="text-xs text-neutral-200 mono font-semibold">Payment Completed?</p>
-        <p class="text-[11px] text-neutral-400">Enter the 12-digit UPI Reference / UTR Number from your transaction screen:</p>
-        <input type="text" id="utrInput" maxlength="12" placeholder="12-digit UTR (e.g. 428190384721)" 
-          class="w-full bg-neutral-900 border border-neutral-800 rounded p-2.5 text-xs text-white mono focus:border-red-500 focus:outline-none">
-        <button id="verifyBtn" onclick="verifyRealPayment()" 
-          class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95">
-          VERIFY SETTLEMENT & ISSUE BADGE
-        </button>
-        <p id="verifyMsg" class="text-[10px] text-center text-neutral-400 mt-1 mono hidden"></p>
+        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">100% Anonymous • Instant Archive Deployment</p>
       </div>
     </div>
 
@@ -93,7 +80,7 @@
     <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
       <div class="flex justify-between items-center mb-3">
         <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">Live Vault Stream</span>
-        <span id="lockBadge" class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono">LOCKED</span>
+        <span id="lockBadge" class="text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded mono">LIVE FEED</span>
       </div>
 
       <div class="flex flex-col gap-3 text-xs" id="feedList">
@@ -102,27 +89,6 @@
     </div>
 
   </main>
-
-  <div id="payModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
-      <div class="text-[10px] text-red-500 font-bold mb-1">PROTOCOL PAYMENT GATEWAY</div>
-      <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 to Seal Node</h3>
-      
-      <div class="bg-white p-2 rounded mb-3 shadow-inner">
-        <img id="modalQrImg" class="w-44 h-44" alt="UPI QR">
-      </div>
-      <p class="text-[10px] text-neutral-400 mb-3">Scan with GPay / PhonePe / Paytm OR tap below:</p>
-
-      <a id="modalUpiLink" href="#" 
-        class="w-full bg-neutral-100 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block">
-        OPEN UPI APP DIRECTLY
-      </a>
-      <button onclick="closeModalAndVerify()" 
-        class="w-full border border-neutral-700 hover:border-neutral-500 text-neutral-300 py-2 rounded text-[11px] uppercase">
-        I HAVE PAID (ENTER UTR)
-      </button>
-    </div>
-  </div>
 
   <script>
     const firebaseConfig = {
@@ -139,10 +105,6 @@
     const db = firebase.database();
     const confessionsRef = db.ref('confessions');
 
-    const UROPAY_KEY = "ed1dbe4e855edcbee464b6af623f18bf57921d2b8000cbbe153919ce6fb6b6ec";
-    const upiUri = "upi://pay?pa=9756943940@ptyes&pn=TheBlackLedger&am=13.00&cu=INR&tn=BlackLedgerVault";
-    let isUnlocked = false;
-
     function sanitizeInput(text) {
       return text
         .replace(/\b\d{10,12}\b/g, '[REDACTED_NUM]')
@@ -155,25 +117,6 @@
     input.addEventListener('input', () => {
       document.getElementById('charCount').innerText = `${input.value.length} / 280`;
     });
-
-    function openPaymentModal() {
-      const text = input.value.trim();
-      if(text.length < 10) {
-        alert("Enter at least 10 characters of your confession.");
-        return;
-      }
-
-      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
-      document.getElementById('modalQrImg').src = qrApi;
-      document.getElementById('modalUpiLink').href = upiUri;
-      document.getElementById('payModal').classList.remove('hidden');
-    }
-
-    function closeModalAndVerify() {
-      document.getElementById('payModal').classList.add('hidden');
-      document.getElementById('stepInitiate').classList.add('hidden');
-      document.getElementById('stepVerify').classList.remove('hidden');
-    }
 
     const archetypes = [
       { name: "THE SILENT MARTYR", rarity: "4.1% of participants" },
@@ -188,7 +131,6 @@
       const data = snapshot.val();
       
       let count = 142;
-      const blurClass = isUnlocked ? "" : "blurred";
 
       if (data) {
         const items = Object.values(data).reverse();
@@ -204,7 +146,7 @@
               <span>${item.archetype}</span>
             </div>
             <p class="text-neutral-300">
-              <span class="vault-blur ${blurClass}">${item.content}</span>
+              <span>${item.content}</span>
             </p>
           `;
           feedList.appendChild(div);
@@ -212,60 +154,10 @@
       }
 
       const viralSeeds = [
-        {
-          node: "009142",
-          archetype: "THE JOB SEEKER",
-          preview: "Noida ya Gurugram mein koi bhi choti-moti delivery ya back-office job dila do koi...",
-          blurred: "rent dene ke paise nahi bache, landlord ne 2 din ka time diya hai warna samaan bahar phek dega."
-        },
-        {
-          node: "009141",
-          archetype: "THE EMPTY STOMACH",
-          preview: "Ghar pe call karke bol diya 'mummy aaj doston ke sath paneer khaya'...",
-          blurred: "par sach yeh hai pichle do din se sirf paani aur 5 rupaye wale biscuit pe din nikaal raha hoon."
-        },
-        {
-          node: "009140",
-          archetype: "THE TIRED STRANGER",
-          preview: "Delhi mein 3 saal ho gaye, lakho logon ki bheed hai har jagah...",
-          blurred: "par aadhi raat ko tabiyat kharab ho jaye toh ek cup paani dene wala koi apna nahi hai yahan."
-        },
-        {
-          node: "009139",
-          archetype: "THE SILENT GUILT",
-          preview: "Maa ke aakhiri call ko busy bolke kaat diya tha, 20 minute baad hospital se phone aaya...",
-          blurred: "aaj 3 saal ho gaye, har raat wahi 12 second ka call kaano mein goonjta rehta hai."
-        },
-        {
-          node: "009138",
-          archetype: "THE EXHAUSTED SON",
-          preview: "Papa sochte hain unka beta bohot strong hai aur sab sambhal lega...",
-          blurred: "har raat car parking mein akele baith kar 10 minute rota hoon taaki kamre mein normal ban saku."
-        },
-        {
-          node: "009137",
-          archetype: "THE REJECTED DREAMER",
-          preview: "Gurugram mein 22 interview de chuka hoon pichle 2 mahine mein, har jagah se 'we will get back to you'...",
-          blurred: "ab metro ticket lene ke paise bhi doston se mangne mein sharam aane lagi hai."
-        },
-        {
-          node: "009136",
-          archetype: "THE BROKEN HEART",
-          preview: "Initials P.K. (Noida Sec 62): Tumne toh bol diya move on kar lo...",
-          blurred: "main roz tumhare office ke bahar se bas ek jhalak dekhne ke liye 5 km extra paidal chalke aata hoon."
-        },
-        {
-          node: "009135",
-          archetype: "THE BURDENED SIBLING",
-          preview: "Chhoti behen ki college fees bharne ke liye apna laptop bech diya...",
-          blurred: "use lagta hai main room-mate ke laptop pe office ka kaam karta hoon."
-        },
-        {
-          node: "009134",
-          archetype: "THE SILENT SCREAM",
-          preview: "Subah se shaam sabke samne hasta rehta hoon, jokes marta hoon...",
-          blurred: "andar se pichle 6 mahine se aisi aag jal rahi hai jiska dard main kisi ko shabdon mein samjha nahi sakta."
-        }
+        { node: "009142", archetype: "THE JOB SEEKER", text: "Noida ya Gurugram mein koi bhi choti-moti delivery ya back-office job dila do koi... rent dene ke paise nahi bache, landlord ne 2 din ka time diya hai." },
+        { node: "009141", archetype: "THE EMPTY STOMACH", text: "Ghar pe call karke bol diya 'mummy aaj doston ke sath paneer khaya' par sach yeh hai pichle do din se sirf paani aur biscuit pe din nikaal raha hoon." },
+        { node: "009140", archetype: "THE TIRED STRANGER", text: "Delhi mein 3 saal ho gaye, lakho logon ki bheed hai har jagah par aadhi raat ko tabiyat kharab ho jaye toh ek cup paani dene wala koi apna nahi hai." },
+        { node: "009139", archetype: "THE SILENT GUILT", text: "Maa ke aakhiri call ko busy bolke kaat diya tha, 20 minute baad hospital se phone aaya... aaj 3 saal ho gaye, har raat wahi 12 second ka call goonjta hai." }
       ];
       
       viralSeeds.forEach(seed => {
@@ -276,78 +168,22 @@
             <span>NODE #${seed.node}</span>
             <span>${seed.archetype}</span>
           </div>
-          <p class="text-neutral-300 leading-relaxed">
-            ${seed.preview} <span class="vault-blur ${blurClass} text-neutral-400">${seed.blurred}</span>
-          </p>
+          <p class="text-neutral-300 leading-relaxed">${seed.text}</p>
         `;
         feedList.appendChild(div);
       });
     });
 
-    async function verifyRealPayment() {
-      const utr = document.getElementById('utrInput').value.trim();
-      
-      if(utr.length !== 12 || isNaN(utr)) {
-        alert("Please enter a valid 12-digit UPI Reference / UTR Number from your payment confirmation.");
+    function submitDirectConfession() {
+      const text = input.value.trim();
+      if(text.length < 10) {
+        alert("Enter at least 10 characters of your confession.");
         return;
       }
-
-      if (/^(\d)\1{11}$/.test(utr) || utr === "123456789012" || utr === "012345678901") {
-        alert("Invalid transaction reference. Please enter the authentic UTR provided by your bank.");
-        return;
-      }
-
-      const usedUtrs = JSON.parse(localStorage.getItem('used_utrs') || '[]');
-      if (usedUtrs.includes(utr)) {
-        alert("This UTR has already been claimed.");
-        return;
-      }
-
-      const verifyBtn = document.getElementById('verifyBtn');
-      const verifyMsg = document.getElementById('verifyMsg');
-      verifyBtn.disabled = true;
-      verifyBtn.innerText = "QUERYING SETTLEMENT GATEWAY...";
-      verifyMsg.classList.remove('hidden');
-      verifyMsg.innerText = "Validating transaction with UroPay gateway...";
-
-      try {
-        const response = await fetch(`https://api.uropay.me/v1/check-utr?utr=${encodeURIComponent(utr)}&amount=13`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${UROPAY_KEY}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(errData.message || "UTR not found or payment not yet received in bank.");
-        }
-
-        const data = await response.json();
-        if (data.status !== "SUCCESS" && data.status !== "COMPLETED") {
-          throw new Error("Payment status pending or unverified.");
-        }
-
-        completeUnlock(utr, usedUtrs);
-
-      } catch (err) {
-        verifyBtn.disabled = false;
-        verifyBtn.innerText = "VERIFY SETTLEMENT & ISSUE BADGE";
-        verifyMsg.classList.remove('hidden');
-        verifyMsg.innerText = "Verification failed: Real transaction record not found.";
-        alert("Verification Failed: " + err.message + "\nEnsure ₹13 was paid and enter the exact 12-digit UTR.");
-      }
-    }
-
-    function completeUnlock(utr, usedUtrs) {
-      usedUtrs.push(utr);
-      localStorage.setItem('used_utrs', JSON.stringify(usedUtrs));
-      isUnlocked = true;
 
       const chosen = archetypes[Math.floor(Math.random() * archetypes.length)];
       const nodeNum = Math.floor(100000 + Math.random() * 900000);
-      const cleanConfession = sanitizeInput(input.value.trim());
+      const cleanConfession = sanitizeInput(text);
 
       confessionsRef.push({
         nodeId: nodeNum,
@@ -360,11 +196,6 @@
       document.getElementById('personaBlock').classList.remove('hidden');
       document.getElementById('personaArchetype').innerText = chosen.name;
       document.getElementById('personaRarity').innerText = `Rarity: ${chosen.rarity}`;
-
-      document.querySelectorAll('.vault-blur').forEach(el => el.classList.remove('blurred'));
-      const badge = document.getElementById('lockBadge');
-      badge.classList.add('bg-green-950', 'text-green-400', 'border-green-900');
-      badge.innerText = "ACCESS GRANTED";
 
       generateStoryCard(chosen.name, nodeNum, chosen.rarity);
     }
