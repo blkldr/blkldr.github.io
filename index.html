@@ -182,11 +182,11 @@ const upiUri = isAndroid
         return;
       }
 
-      // Generate QR code and set direct UPI link dynamically
-      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
-      document.getElementById('modalQrImg').src = qrApi;
-      document.getElementById('modalUpiLink').href = upiUri;
-      document.getElementById('payModal').classList.remove('hidden');
+          const paymentUrl = `https://api.uropay.me/pay?key=${UROPAY_KEY}&amount=13.00&note=BlackLedgerVault`;
+    document.getElementById('modalQrdImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(paymentUrl)}`;
+    document.getElementById('modalUpiLink').href = paymentUrl;
+    document.getElementById('payModal').classList.remove('hidden');
+      
     }
 
     function closeModalAndVerify() {
