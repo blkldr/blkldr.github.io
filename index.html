@@ -182,12 +182,11 @@ const upiUri = isAndroid
         return;
       }
 
-          const paymentUrl = `https://api.uropay.me/pay?key=${UROPAY_KEY}&amount=13.00&note=BlackLedgerVault`;
+              const paymentUrl = `https://api.uropay.me/pay?key=${UROPAY_KEY}&amount=13.00&note=BlackLedgerVault`;
     document.getElementById('modalQrdImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(paymentUrl)}`;
     document.getElementById('modalUpiLink').href = paymentUrl;
     document.getElementById('payModal').classList.remove('hidden');
       
-    }
 
     function closeModalAndVerify() {
       document.getElementById('payModal').classList.add('hidden');
