@@ -112,7 +112,7 @@
 
   </main>
 
-    <!-- DYNAMIC PAYMENT MODAL -->
+  <!-- DYNAMIC PAYMENT MODAL -->
   <div id="payModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
       <div class="text-[10px] text-red-500 font-bold mb-1">PHONEPE SECURE GATEWAY</div>
@@ -154,12 +154,6 @@
     const confessionsRef = db.ref('confessions');
 
     const UROPAY_KEY = "ed1dbe4e855edcbee464b6af623f18bf57921d2b8000cbbe153919ce6fb6b6ec";
-    // Your updated UPI ID
-    const isAndroid = /Android/i.test(navigator.userAgent);
-const upiUri = isAndroid 
-    ? `intent://pay?pa=9756943940-4@axl&pn=VISHAL&am=13.00&cu=INR&tn=BlackLedgerVault#Intent;scheme=upi;package=net.one97.paytm;end;`
-    : `upi://pay?pa=9756943940-4@axl&pn=VISHAL&am=13.00&cu=INR&tn=BlackLedgerVault`;
-    
     let isUnlocked = false;
 
     function sanitizeInput(text) {
@@ -176,27 +170,28 @@ const upiUri = isAndroid
     });
 
     function openPaymentModal() {
-    const confessionInput = document.getElementById('confessionInput');
-    if (!confessionInput) return;
-    
-    const text = confessionInput.value.trim();
-    if (text.length < 10) {
-        alert("Enter at least 10 characters of your confession.");
-        return;
+      const confessionInput = document.getElementById('confessionInput');
+      if (!confessionInput) return;
+      
+      const text = confessionInput.value.trim();
+      if (text.length < 10) {
+          alert("Enter at least 10 characters of your confession.");
+          return;
+      }
+
+      const amount = "13.00";
+      const paymentUrl = `https://api.uropay.me/pay?key=${UROPAY_KEY}&amount=${amount}&note=BlackLedgerVault`;
+
+      const qrImg = document.getElementById('modalQrImg');
+      const upiLink = document.getElementById('modalUpiLink');
+      const payModal = document.getElementById('payModal');
+
+      if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(paymentUrl)}`;
+      if (upiLink) upiLink.href = paymentUrl;
+      if (payModal) payModal.classList.remove('hidden');
     }
 
-    const amount = "13.00";
-    const paymentUrl = `https://api.uropay.me/pay?key=${UROPAY_KEY}&amount=${amount}&note=BlackLedgerVault`;
-
-    const qrImg = document.getElementById('modalQrdImg');
-    const upiLink = document.getElementById('modalUpiLink');
-    const payModal = document.getElementById('payModal');
-
-    if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(paymentUrl)}`;
-    if (upiLink) upiLink.href = paymentUrl;
-    if (payModal) payModal.classList.remove('hidden');
-    }
-    
+    function closeModalAndVerify() {
       document.getElementById('payModal').classList.add('hidden');
       document.getElementById('stepInitiate').classList.add('hidden');
       document.getElementById('stepVerify').classList.remove('hidden');
@@ -261,7 +256,7 @@ const upiUri = isAndroid
           node: "009139",
           archetype: "THE SILENT GUILT",
           preview: "Maa ke aakhiri call ko busy bolke kaat diya tha, 20 minute baad hospital se phone aaya...",
-          blurred: "aaj 3 saal ho gaye, har raat wahi 12 second ka call kaano mein goonjta rehta hai."
+          blurred: "aaj 3 saal ho gaya, har raat wahi 12 second ka call kaano mein goonjta rehta hai."
         }
       ];
       
