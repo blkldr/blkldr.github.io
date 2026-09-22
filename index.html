@@ -63,16 +63,23 @@
       </div>
 
       <!-- INITIATE PAYMENT -->
-      <div id="stepInitiate">
-        <div id="stepInitiate">
-    <button onclick="openPaymentModal()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2">
-        <span>SEAL ENTRY & UNLOCK — ₹13</span>
-    </button>
-    <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)</p>
-        </div>
-        
-        
+      <div id="stepInitiate" style="text-align: center; padding: 10px;">
+    <p class="text-[11px] text-neutral-300 mono mb-3">SCAN OR PAY ₹13 TO UNLOCK & SEAL</p>
 
+    <div style="background: #fff; padding: 10px; display: inline-block; border-radius: 6px; margin-bottom: 12px;">
+        <img src="YOUR_QR_IMAGE_LINK_HERE" alt="UPI QR Code" style="width: 150px; height: 150px; display: block; margin: 0 auto;">
+    </div>
+
+    <div style="background: #171717; border: 1px solid #333; padding: 8px 12px; border-radius: 5px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+        <span class="text-xs text-neutral-300 mono" id="upiIdText">9756943940-1@nyes</span>
+        <button onclick="navigator.clipboard.writeText('9756943940-1@nyes'); alert('UPI ID Copied!');" class="bg-neutral-800 hover:bg-neutral-700 text-white text-[10px] py-1 px-3 rounded mono">
+            COPY
+        </button>
+    </div>
+
+    <p class="text-[10px] text-neutral-500 mono">Send ₹13 via PhonePe / GPay / Paytm / Navi</p>
+      </div>
+      
       <!-- VERIFY STEP -->
       <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
         <p class="text-xs text-neutral-200 mono font-semibold">Payment Completed?</p>
