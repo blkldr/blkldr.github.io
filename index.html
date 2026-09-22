@@ -169,7 +169,7 @@
       document.getElementById('charCount').innerText = `${input.value.length} / 280`;
     });
 
-       function openPaymentModal() {
+           function openPaymentModal() {
       try {
         const confessionInput = document.getElementById('confessionInput');
         if (!confessionInput) {
@@ -182,6 +182,8 @@
             alert("Kam se kam 10 characters likhiye apne confession mein.");
             return;
         }
+
+        const upiUri = "upi://pay?pa=9756943940-4@axl&pn=VISHAL&am=13.00&cu=INR&tn=BlackLedgerVault";
 
         const qrImg = document.getElementById('modalQrImg');
         const upiLink = document.getElementById('modalUpiLink');
@@ -199,8 +201,8 @@
       } catch (err) {
         alert("Error aa gayi: " + err.message);
       }
-       }
-
+           }
+    
     function closeModalAndVerify() {
       document.getElementById('payModal').classList.add('hidden');
       document.getElementById('stepInitiate').classList.add('hidden');
