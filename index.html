@@ -155,7 +155,11 @@
 
     const UROPAY_KEY = "ed1dbe4e855edcbee464b6af623f18bf57921d2b8000cbbe153919ce6fb6b6ec";
     // Your updated UPI ID
-    const upiUri = "upi://pay?pa=9756943940-4@axl&pn=VISHAL&am=13.00&cu=INR&tn=BlackLedgerVault";
+    const isAndroid = /Android/i.test(navigator.userAgent);
+const upiUri = isAndroid 
+    ? `intent://pay?pa=9756943940-4@axl&pn=VISHAL&am=13.00&cu=INR&tn=BlackLedgerVault#Intent;scheme=upi;package=net.one97.paytm;end;`
+    : `upi://pay?pa=9756943940-4@axl&pn=VISHAL&am=13.00&cu=INR&tn=BlackLedgerVault`;
+    
     let isUnlocked = false;
 
     function sanitizeInput(text) {
