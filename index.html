@@ -169,7 +169,7 @@
       document.getElementById('charCount').innerText = `${input.value.length} / 280`;
     });
 
-    function openPaymentModal() {
+        function openPaymentModal() {
       const confessionInput = document.getElementById('confessionInput');
       if (!confessionInput) return;
       
@@ -179,16 +179,15 @@
           return;
       }
 
-      const amount = "13.00";
-      const paymentUrl = `https://api.uropay.me/pay?key=${UROPAY_KEY}&amount=${amount}&note=BlackLedgerVault`;
-
       const qrImg = document.getElementById('modalQrImg');
       const upiLink = document.getElementById('modalUpiLink');
       const payModal = document.getElementById('payModal');
 
-      if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(paymentUrl)}`;
-      if (upiLink) upiLink.href = paymentUrl;
+      if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
+      if (upiLink) upiLink.href = upiUri;
       if (payModal) payModal.classList.remove('hidden');
+        }
+    
     }
 
     function closeModalAndVerify() {
