@@ -64,12 +64,22 @@
 
       <!-- INITIATE PAYMENT -->
       <div id="stepInitiate">
-        <button onclick="openPaymentModal()" 
-          class="w-full bg-neutral-100 hover:bg-white text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono flex items-center justify-center gap-2 transition active:scale-95">
-          <span>SEAL ENTRY & UNLOCK — ₹13</span>
-        </button>
-        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)</p>
-      </div>
+        <div id="stepInitiate" style="display: flex; flex-direction: column; gap: 8px;">
+    <p class="text-[10px] text-center text-neutral-400 mono">SELECT UPI APP FOR INSTANT ₹13 SEAL</p>
+    
+    <a href="upi://pay?pa=9756943940@ptyes&pn=Vishal&am=13&cu=INR&tn=BlackLedgerVault" class="w-full bg-[#5f259f] text-white font-bold py-3 px-4 rounded text-xs tracking-wider uppercase mono text-center" style="display: block; text-decoration: none;">
+        Pay with PhonePe (₹13)
+    </a>
+
+    <a href="upi://pay?pa=9756943940@ptyes&pn=Vishal&am=13&cu=INR&tn=BlackLedgerVault" class="w-full bg-[#1a73e8] text-white font-bold py-3 px-4 rounded text-xs tracking-wider uppercase mono text-center" style="display: block; text-decoration: none;">
+        Pay with Google Pay (₹13)
+    </a>
+
+    <a href="upi://pay?pa=9756943940@ptyes&pn=Vishal&am=13&cu=INR&tn=BlackLedgerVault" class="w-full bg-[#00baf2] text-white font-bold py-3 px-4 rounded text-xs tracking-wider uppercase mono text-center" style="display: block; text-decoration: none;">
+        Pay with Paytm / Other UPI
+    </a>
+        </div>
+        
 
       <!-- VERIFY STEP -->
       <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
