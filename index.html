@@ -176,19 +176,27 @@ const upiUri = isAndroid
     });
 
     function openPaymentModal() {
-      const text = input.value.trim();
-      if(text.length < 10) {
+    const confessionInput = document.getElementById('confessionInput');
+    if (!confessionInput) return;
+    
+    const text = confessionInput.value.trim();
+    if (text.length < 10) {
         alert("Enter at least 10 characters of your confession.");
         return;
-      }
+    }
 
-              const paymentUrl = `https://api.uropay.me/pay?key=${UROPAY_KEY}&amount=13.00&note=BlackLedgerVault`;
-    document.getElementById('modalQrdImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(paymentUrl)}`;
-    document.getElementById('modalUpiLink').href = paymentUrl;
-    document.getElementById('payModal').classList.remove('hidden');
-      
+    const amount = "13.00";
+    const paymentUrl = `https://api.uropay.me/pay?key=${UROPAY_KEY}&amount=${amount}&note=BlackLedgerVault`;
 
-    function closeModalAndVerify() {
+    const qrImg = document.getElementById('modalQrdImg');
+    const upiLink = document.getElementById('modalUpiLink');
+    const payModal = document.getElementById('payModal');
+
+    if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(paymentUrl)}`;
+    if (upiLink) upiLink.href = paymentUrl;
+    if (payModal) payModal.classList.remove('hidden');
+    }
+    
       document.getElementById('payModal').classList.add('hidden');
       document.getElementById('stepInitiate').classList.add('hidden');
       document.getElementById('stepVerify').classList.remove('hidden');
