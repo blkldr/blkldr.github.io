@@ -169,26 +169,37 @@
       document.getElementById('charCount').innerText = `${input.value.length} / 280`;
     });
 
-        function openPaymentModal() {
-      const confessionInput = document.getElementById('confessionInput');
-      if (!confessionInput) return;
-      
-      const text = confessionInput.value.trim();
-      if (text.length < 10) {
-          alert("Enter at least 10 characters of your confession.");
+       function openPaymentModal() {
+      try {
+        const confessionInput = document.getElementById('confessionInput');
+        if (!confessionInput) {
+          alert("Confession input box nahi mila!");
           return;
-      }
-
-      const qrImg = document.getElementById('modalQrImg');
-      const upiLink = document.getElementById('modalUpiLink');
-      const payModal = document.getElementById('payModal');
-
-      if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
-      if (upiLink) upiLink.href = upiUri;
-      if (payModal) payModal.classList.remove('hidden');
         }
-    
-    }
+        
+        const text = confessionInput.value.trim();
+        if (text.length < 10) {
+            alert("Kam se kam 10 characters likhiye apne confession mein.");
+            return;
+        }
+
+        const qrImg = document.getElementById('modalQrImg');
+        const upiLink = document.getElementById('modalUpiLink');
+        const payModal = document.getElementById('payModal');
+
+        if (qrImg) {
+          qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
+        }
+        if (upiLink) {
+          upiLink.href = upiUri;
+        }
+        if (payModal) {
+          payModal.classList.remove('hidden');
+        }
+      } catch (err) {
+        alert("Error aa gayi: " + err.message);
+      }
+       }
 
     function closeModalAndVerify() {
       document.getElementById('payModal').classList.add('hidden');
