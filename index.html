@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Black Ledger // Monolith Protocol</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,6 +23,7 @@
 </head>
 <body class="min-h-screen p-4 flex flex-col items-center justify-start scanline">
 
+  <!-- HUD STATUS HEADER -->
   <header class="w-full max-w-md border border-neutral-800 p-3 mb-4 bg-neutral-950/90 rounded flex justify-between items-center text-[11px] mono">
     <div class="flex items-center gap-2">
       <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
@@ -32,8 +34,10 @@
     </div>
   </header>
 
+  <!-- MAIN CONTAINER -->
   <main class="w-full max-w-md flex flex-col gap-4">
 
+    <!-- SUBMISSION TERMINAL -->
     <div id="vaultStage" class="border border-neutral-800 bg-neutral-950/80 p-5 rounded-lg">
       <div class="flex justify-between items-center mb-1">
         <h1 class="text-base font-bold tracking-tight text-white uppercase mono">The Black Ledger</h1>
@@ -45,6 +49,7 @@
         <div class="text-[10px] text-green-400 mt-1 font-mono">● 2,481 Encrypted Confessions Active • 100% Anonymous</div>
       </div>
 
+      <!-- TEXTAREA -->
       <div class="relative mb-3">
         <textarea id="confessionInput" rows="4" maxlength="280"
           placeholder="Apna unsaid sach, galti ya raaz yahan likho... (Identity & IP auto-destroyed)"
@@ -55,13 +60,15 @@
         </div>
       </div>
 
+      <!-- INITIATE PAYMENT -->
       <div id="stepInitiate">
         <button onclick="openPaymentModal()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2">
             <span>SEAL ENTRY & UNLOCK — ₹13</span>
         </button>
-        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant PhonePe QR & UTR Verification</p>
+        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)</p>
       </div>
       
+      <!-- VERIFY STEP -->
       <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
         <p class="text-xs text-neutral-200 mono font-semibold">Payment Completed?</p>
         <p class="text-[11px] text-neutral-400">Enter the 12-digit UPI Reference / UTR Number from your transaction screen:</p>
@@ -75,6 +82,7 @@
       </div>
     </div>
 
+    <!-- POST-PAYMENT UNLOCKED: PERSONA CARD ARTIFACT -->
     <div id="personaBlock" class="hidden border border-red-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center">
       <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">● VERIFIED NODE ARCHIVED</div>
       <h2 id="personaArchetype" class="text-lg font-bold text-white uppercase tracking-wider mb-1">THE PRAGMATIC SINNER</h2>
@@ -90,6 +98,7 @@
       <p class="text-[10px] text-neutral-500 mt-2">Post on Story to signal your encrypted presence.</p>
     </div>
 
+    <!-- LIVE VAULT STREAM -->
     <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
       <div class="flex justify-between items-center mb-3">
         <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">Live Vault Stream</span>
@@ -103,23 +112,28 @@
 
   </main>
 
+  <!-- DYNAMIC PAYMENT MODAL WITH BOTH OPTIONS -->
   <div id="payModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
       <div class="text-[10px] text-red-500 font-bold mb-1">PHONEPE SECURE GATEWAY</div>
       <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 to Seal Node</h3>
       
+      <!-- Auto Generated Clean QR Image -->
       <div class="bg-white p-2 rounded mb-3 shadow-inner">
-        <img src="1000188835.png" class="w-44 h-44 object-contain" alt="PhonePe QR">
+        <img id="modalQrImg" class="w-44 h-44 object-contain" alt="PhonePe QR">
       </div>
-      <p class="text-[10px] text-neutral-400 mb-3">Scan via PhonePe, GPay, Paytm or any UPI app</p>
+      <p class="text-[10px] text-neutral-400 mb-3">Scan with GPay / PhonePe / Paytm OR tap below:</p>
 
+      <!-- Direct UPI App Button -->
+      <a id="modalUpiLink" href="#" 
+        class="w-full bg-neutral-100 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block">
+        OPEN UPI APP DIRECTLY
+      </a>
+      
+      <!-- I Have Paid Button -->
       <button onclick="closeModalAndVerify()" 
-        class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-2.5 px-3 rounded text-xs uppercase mb-2">
+        class="w-full border border-neutral-700 hover:border-neutral-500 text-neutral-300 py-2 rounded text-[11px] uppercase">
         I HAVE PAID (ENTER UTR)
-      </button>
-      <button onclick="document.getElementById('payModal').classList.add('hidden')" 
-        class="text-[10px] text-neutral-500 hover:text-neutral-300 uppercase">
-        Cancel / Close
       </button>
     </div>
   </div>
@@ -140,6 +154,8 @@
     const confessionsRef = db.ref('confessions');
 
     const UROPAY_KEY = "ed1dbe4e855edcbee464b6af623f18bf57921d2b8000cbbe153919ce6fb6b6ec";
+    // Your updated UPI ID
+    const upiUri = "upi://pay?pa=9756943940-4@axl&pn=VISHAL&am=13.00&cu=INR&tn=BlackLedgerVault";
     let isUnlocked = false;
 
     function sanitizeInput(text) {
@@ -161,6 +177,11 @@
         alert("Enter at least 10 characters of your confession.");
         return;
       }
+
+      // Generate QR code and set direct UPI link dynamically
+      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
+      document.getElementById('modalQrImg').src = qrApi;
+      document.getElementById('modalUpiLink').href = upiUri;
       document.getElementById('payModal').classList.remove('hidden');
     }
 
