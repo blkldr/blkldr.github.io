@@ -63,21 +63,12 @@
       </div>
 
       <!-- INITIATE PAYMENT -->
-      <div id="stepInitiate" style="text-align: center; padding: 10px;">
-    <p class="text-[11px] text-neutral-300 mono mb-3">SECURE GATEWAY — ₹13</p>
-    
-    <a href="upi://pay?pa=9756943940-1@nyes&pn=VISHAL&am=13&cu=INR&tn=BlackLedgerVault" 
-       class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2"
-       style="display: block; text-decoration: none;">
-        <span>PAY ₹13 NOW</span>
-    </a>
-
-    <p class="text-[10px] text-neutral-500 mt-3 mono">Instant UPI App Redirect</p>
+      <div id="stepInitiate">
+    <button onclick="openPaymentModal()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2">
+        <span>SEAL ENTRY & UNLOCK — ₹13</span>
+    </button>
+    <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)</p>
       </div>
-      
-    <p class="text-[10px] text-neutral-500 mt-2 mono">Click button to open UPI app directly, or copy ID to pay.</p>
-      </div>
-      
       
       <!-- VERIFY STEP -->
       <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
