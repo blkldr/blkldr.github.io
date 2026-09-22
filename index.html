@@ -113,24 +113,18 @@
     </div>
 
   </main>
-
-  <!-- DYNAMIC PAYMENT MODAL -->
   <div id="payModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
-      <div class="text-[10px] text-red-500 font-bold mb-1">PROTOCOL PAYMENT GATEWAY</div>
+      <div class="text-[10px] text-red-500 font-bold mb-1">PHONEPE SECURE GATEWAY</div>
       <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 to Seal Node</h3>
       
       <div class="bg-white p-2 rounded mb-3 shadow-inner">
-        <img id="modalQrImg" class="w-44 h-44" alt="UPI QR">
+        <img id="modalQrImg" src="1000188820.png" class="w-44 h-44 object-contain" alt="PhonePe QR">
       </div>
-      <p class="text-[10px] text-neutral-400 mb-3">Scan with GPay / PhonePe / Paytm OR tap below:</p>
+      <p class="text-[10px] text-neutral-400 mb-3">Scan via PhonePe, GPay, Paytm or any UPI app</p>
 
-      <a id="modalUpiLink" href="#" 
-        class="w-full bg-neutral-100 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block">
-        OPEN UPI APP DIRECTLY
-      </a>
       <button onclick="closeModalAndVerify()" 
-        class="w-full border border-neutral-700 hover:border-neutral-500 text-neutral-300 py-2 rounded text-[11px] uppercase">
+        class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-2.5 px-3 rounded text-xs uppercase">
         I HAVE PAID (ENTER UTR)
       </button>
     </div>
