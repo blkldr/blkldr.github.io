@@ -60,12 +60,12 @@
         </div>
       </div>
 
-      <!-- INITIATE PAYMENT (Direct Cashfree Test Link Redirection) -->
+      <!-- INITIATE PAYMENT MODAL TRIGGER -->
       <div id="stepInitiate">
         <button onclick="openPaymentModal()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2">
             <span>SEAL ENTRY & UNLOCK — ₹13</span>
         </button>
-        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant Secure Gateway (Test Mode)</p>
+        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)</p>
       </div>
       
       <!-- VERIFY STEP -->
@@ -112,6 +112,32 @@
 
   </main>
 
+  <!-- DYNAMIC PAYMENT MODAL (Opens 1-Tap UPI / QR List) -->
+  <div id="payModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
+      <div class="text-[10px] text-red-500 font-bold mb-1">SECURE UPI GATEWAY</div>
+      <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 to Seal Node</h3>
+      
+      <!-- Auto Generated Clean QR Image -->
+      <div class="bg-white p-2 rounded mb-3 shadow-inner">
+        <img id="modalQrImg" class="w-44 h-44 object-contain" alt="UPI QR">
+      </div>
+      <p class="text-[10px] text-neutral-400 mb-3">Scan with GPay / PhonePe / Paytm OR tap below:</p>
+
+      <!-- Direct UPI App Button -->
+      <a id="modalUpiLink" href="#" 
+        class="w-full bg-neutral-100 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block">
+        OPEN UPI APP DIRECTLY
+      </a>
+      
+      <!-- I Have Paid Button -->
+      <button onclick="closeModalAndVerify()" 
+        class="w-full border border-neutral-700 hover:border-neutral-500 text-neutral-300 py-2 rounded text-[11px] uppercase">
+        I HAVE PAID (ENTER UTR)
+      </button>
+    </div>
+  </div>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAlmnaSjmU5FRTcgbtmDaOM00hdUwieLOZc",
@@ -143,7 +169,6 @@
       document.getElementById('charCount').innerText = `${input.value.length} / 280`;
     });
 
-    // Updated to redirect directly to Cashfree Test Payment Link
     function openPaymentModal() {
       try {
         const confessionInput = document.getElementById('confessionInput');
@@ -158,11 +183,24 @@
             return;
         }
 
-        // Save text temporarily in localStorage if needed later
         localStorage.setItem('pending_confession', text);
 
-        // Direct Redirection to Cashfree Test Link
-        window.location.href = "https://payments-test.cashfree.com/links?code=Yb243oi0h00g_AAAAAACrzrc";
+        // Direct UPI Intent / URI for mobile 1-tap apps and QR generation
+        const upiUri = "upi://pay?pa=9756943940-4@axl&pn=VISHAL&am=13.00&cu=INR&tn=BlackLedgerVault";
+
+        const qrImg = document.getElementById('modalQrImg');
+        const upiLink = document.getElementById('modalUpiLink');
+        const payModal = document.getElementById('payModal');
+
+        if (qrImg) {
+          qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
+        }
+        if (upiLink) {
+          upiLink.href = upiUri;
+        }
+        if (payModal) {
+          payModal.classList.remove('hidden');
+        }
       } catch (err) {
         alert("Error aa gayi: " + err.message);
       }
@@ -222,18 +260,6 @@
           archetype: "THE EMPTY STOMACH",
           preview: "Ghar pe call karke bol diya 'mummy aaj doston ke sath paneer khaya'...",
           blurred: "par sach yeh hai pichle do din se sirf paani aur 5 rupaye wale biscuit pe din nikaal raha hoon."
-        },
-        {
-          node: "009140",
-          archetype: "THE TIRED STRANGER",
-          preview: "Delhi mein 3 saal ho gaye, lakho logon ki bheed hai har jagah...",
-          blurred: "par aadhi raat ko tabiyat kharab ho jaye toh ek cup paani dene wala koi apna nahi hai yahan."
-        },
-        {
-          node: "009139",
-          archetype: "THE SILENT GUILT",
-          preview: "Maa ke aakhiri call ko busy bolke kaat diya tha, 20 minute baad hospital se phone aaya...",
-          blurred: "aaj 3 saal ho gaya, har raat wahi 12 second ka call kaano mein goonjta rehta hai."
         }
       ];
       
