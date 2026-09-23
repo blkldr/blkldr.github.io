@@ -42,11 +42,11 @@
       <div class="text-center mb-4">
         <h2 class="text-white text-sm font-bold tracking-wider uppercase mb-1">Jo Sach Kahin Nahi Bola Gaya, Wo Yahan Hai.</h2>
         <p class="text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto">Har insaan ke paas ek aisi baat hoti hai jo wo duniya se chhupata hai. Yahan apna unsaid truth submit karo aur ledger experience unlock karo.</p>
-        <div class="text-[10px] text-neutral-500 mt-1 font-mono">● ₹13 ENTRY • BHARATPE MERCHANT UPI</div>
+        <div class="text-[10px] text-neutral-500 mt-1 font-mono">● ₹13 Encrypted Confessions Active • 100% Anonymous</div>
       </div>
       
       <div class="relative mb-3">
-        <textarea id="confessionInput" rows="4" maxlength="280" placeholder="Apna unsaid sach, galti ya raaz yahan likho..." class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"></textarea>
+        <textarea id="confessionInput" rows="4" maxlength="280" placeholder="Apna unsaid sach, galti ya raaz yahan likho...(Identity & IP auto-destroyed)" class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"></textarea>
         <div class="flex justify-between text-[10px] mono text-neutral-500 mt-1">
           <span>PII SANITIZER: READY</span>
           <span id="charCount">0 / 280</span>
@@ -57,14 +57,14 @@
         <button type="button" id="triggerBtn" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2 cursor-pointer">
           <span>SEAL ENTRY & UNLOCK — ₹13</span>
         </button>
-        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">BharatPe QR • PhonePe • GPay • Paytm</p>
+        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)</p>
       </div>
 
       <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
         <p class="text-xs text-neutral-200 mono font-semibold">Payment Completed?</p>
-        <p class="text-[11px] text-neutral-400">UPI app me successful ₹13 payment ke baad transaction screen se UTR/reference number enter karo.</p>
+        <p class="text-[11px] text-neutral-400">UPI app me successful ₹13 payment ke baad transaction screen se 12-digit UTR/reference number enter karo.</p>
         <input type="text" id="utrInput" inputmode="numeric" maxlength="12" placeholder="12-digit UTR / transaction reference" class="w-full bg-neutral-900 border border-neutral-800 rounded p-2.5 text-xs text-white mono focus:border-red-500 focus:outline-none">
-        <button type="button" id="verifyBtn" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95 cursor-pointer">CONTINUE AFTER PAYMENT</button>
+        <button type="button" id="verifyBtn" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95 cursor-pointer">I HAVE PAID (ENTER UTR)</button>
         <p id="verifyMsg" class="text-[10px] text-center text-neutral-400 mt-1 mono hidden"></p>
       </div>
     </div>
@@ -90,17 +90,17 @@
     </div>
   </main>
 
-  <!-- Payment Modal -->
-  <div id="payModal" style="display: none;" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <!-- Payment Modal Matching Exact Video UI -->
+  <div id="payModal" style="display: none;" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
-      <div class="text-[10px] text-red-500 font-bold mb-1">BHARATPE MERCHANT GATEWAY</div>
+      <div class="text-[11px] text-red-500 font-bold mb-1 tracking-wider">BHARATPE SECURE GATEWAY</div>
       <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 to Seal Node</h3>
-      <div class="bg-white p-2 rounded mb-3 shadow-inner">
+      <div class="bg-white p-2.5 rounded mb-3 shadow-inner">
         <img id="modalQrImg" class="w-44 h-44 object-contain" alt="BharatPe UPI QR">
       </div>
-      <p class="text-[10px] text-neutral-400 mb-3">Scan the QR or tap below to open an installed UPI app.</p>
-      <a id="modalUpiLink" href="#" class="w-full bg-neutral-100 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block text-center font-bold">OPEN UPI APP DIRECTLY</a>
-      <button type="button" id="closeModalBtn" class="w-full border border-neutral-700 hover:border-neutral-500 text-neutral-300 py-2 rounded text-[11px] uppercase cursor-pointer">I HAVE PAID</button>
+      <p class="text-[10px] text-neutral-400 mb-3">Scan with GPay / PhonePe / Paytm OR tap below:</p>
+      <a id="modalUpiLink" href="#" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block text-center">OPEN UPI APP DIRECTLY</a>
+      <button type="button" id="closeModalBtn" class="w-full bg-transparent border border-neutral-700 hover:border-neutral-500 text-neutral-300 py-2.5 rounded text-[11px] uppercase cursor-pointer tracking-wider">I HAVE PAID (ENTER UTR)</button>
     </div>
   </div>
 
@@ -119,8 +119,8 @@
     const db = firebase.database();
     const confessionsRef = db.ref("confessions");
 
-    const DIRECT_UPI_ID = "BHARATPE2YOMOB8NOT09199@unitype";
-    const DIRECT_UPI_NAME = "VISHAL";
+    const DIRECT_UPI_ID = "BHARATPE2YOMOB8NOT09199@unitype";[span_2](start_span)[span_2](end_span)
+    const DIRECT_UPI_NAME = "VISHAL";[span_3](start_span)[span_3](end_span)
     const DIRECT_UPI_AMOUNT = "13.00";
     const DIRECT_UPI_NOTE = "BlackLedgerVault";
 
@@ -131,7 +131,6 @@
       document.getElementById("charCount").innerText = `${input.value.length} / 280`;
     });
 
-    // Event listener setup safely after DOM load
     document.getElementById("triggerBtn").addEventListener("click", () => {
       const text = input.value.trim();
       if (!text) {
