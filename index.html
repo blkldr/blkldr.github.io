@@ -1,295 +1,960 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Black Ledger // Monolith Protocol</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body { background-color: #050505; color: #E5E5E5; font-family: 'Space Grotesk', sans-serif; }
-    .mono { font-family: 'Space Mono', monospace; }
-    .blurred { filter: blur(7px); user-select: none; pointer-events: none; }
-    .scanline {
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
-      background-size: 100% 3px, 6px 100%;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Black Ledger // Monolith Protocol</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+background:#050505;
+color:#E5E5E5;
+font-family:'Space Grotesk',sans-serif
+}
+.mono{font-family:'Space Mono',monospace}
+.blurred{
+filter:blur(7px);
+user-select:none;
+pointer-events:none
+}
+.scanline{
+background:
+linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.4) 50%),
+linear-gradient(90deg,rgba(255,0,0,.02),rgba(0,255,0,.01),rgba(0,255,0,.02));
+background-size:100% 3px,6px 100%
+}
+</style>
 </head>
+
 <body class="min-h-screen p-4 flex flex-col items-center justify-start scanline">
 
-  <header class="w-full max-w-md border border-neutral-800 p-3 mb-4 bg-neutral-950/90 rounded flex justify-between items-center text-[11px] mono">
-    <div class="flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
-      <span class="text-neutral-400">LEDGER PROTOCOL // 30-DAY</span>
-    </div>
-    <div class="text-neutral-300">ARCHIVE: <span id="counterDisplay" class="text-white font-bold">LIVE</span></div>
-  </header>
+<header class="w-full max-w-md border border-neutral-800 p-3 mb-4 bg-neutral-950/90 rounded flex justify-between items-center text-[11px] mono">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+<span class="text-neutral-400">LEDGER PROTOCOL // 30-DAY</span>
+</div>
+<div class="text-neutral-300">
+ARCHIVE:
+<span id="counterDisplay" class="text-white font-bold">LIVE</span>
+</div>
+</header>
 
-  <main class="w-full max-w-md flex flex-col gap-4">
-    <div id="vaultStage" class="border border-neutral-800 bg-neutral-950/80 p-5 rounded-lg">
-      <div class="flex justify-between items-center mb-1">
-        <h1 class="text-base font-bold tracking-tight text-white uppercase mono">The Black Ledger</h1>
-        <span class="text-[10px] mono text-neutral-400 border border-neutral-800 px-2 py-0.5 rounded">PRIVATE ENTRY</span>
-      </div>
-      <div class="text-center mb-4">
-        <h2 class="text-white text-sm font-bold tracking-wider uppercase mb-1">Jo Sach Kahin Nahi Bola Gaya, Wo Yahan Hai.</h2>
-        <p class="text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto">Har insaan ke paas ek aisi baat hoti hai jo wo duniya se chhupata hai. Yahan apna unsaid truth submit karo aur ledger experience unlock karo.</p>
-        <div class="text-[10px] text-neutral-500 mt-1 font-mono">● ₹13 ENTRY • DIRECT UPI</div>
-      </div>
-      <div class="relative mb-3">
-        <textarea id="confessionInput" rows="4" maxlength="280" placeholder="Apna unsaid sach, galti ya raaz yahan likho..." class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"></textarea>
-        <div class="flex justify-between text-[10px] mono text-neutral-500 mt-1">
-          <span>PII SANITIZER: READY</span>
-          <span id="charCount">0 / 280</span>
-        </div>
-      </div>
-      <div id="stepInitiate">
-        <button onclick="openPaymentModal()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2">
-          <span>SEAL ENTRY & UNLOCK — ₹13</span>
-        </button>
-        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Direct UPI • QR • PhonePe • GPay • Paytm</p>
-      </div>
-      <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
-        <p class="text-xs text-neutral-200 mono font-semibold">Payment Completed?</p>
-        <p class="text-[11px] text-neutral-400">UPI app me successful ₹13 payment ke baad transaction screen se UTR/reference number enter karo.</p>
-        <input type="text" id="utrInput" inputmode="numeric" maxlength="12" placeholder="12-digit UTR / transaction reference" class="w-full bg-neutral-900 border border-neutral-800 rounded p-2.5 text-xs text-white mono focus:border-red-500 focus:outline-none">
-        <button id="verifyBtn" onclick="verifyPaymentReference()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95">CONTINUE AFTER PAYMENT</button>
-        <p id="verifyMsg" class="text-[10px] text-center text-neutral-400 mt-1 mono hidden"></p>
-      </div>
-    </div>
+<main class="w-full max-w-md flex flex-col gap-4">
 
-    <div id="personaBlock" class="hidden border border-red-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center">
-      <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">● NODE UNLOCKED</div>
-      <h2 id="personaArchetype" class="text-lg font-bold text-white uppercase tracking-wider mb-1">THE SILENT MARTYR</h2>
-      <p id="personaRarity" class="text-xs text-neutral-400 mb-3">ARCHETYPE ASSIGNED</p>
-      <canvas id="storyCanvas" width="1080" height="1920" class="hidden"></canvas>
-      <img id="cardPreview" class="w-52 h-auto border border-neutral-800 rounded shadow-2xl mb-4" alt="Black Ledger Persona Card">
-      <a id="downloadBtn" download="BlackLedger_Node.png" class="w-full bg-neutral-100 text-black py-2.5 px-4 rounded text-xs font-bold uppercase tracking-wider block text-center">DOWNLOAD INSTAGRAM STORY BADGE</a>
-      <p class="text-[10px] text-neutral-500 mt-2">Your Black Ledger node artifact.</p>
-    </div>
+<div id="vaultStage" class="border border-neutral-800 bg-neutral-950/80 p-5 rounded-lg">
 
-    <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
-      <div class="flex justify-between items-center mb-3">
-        <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">Live Vault Stream</span>
-        <span id="lockBadge" class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono">LOCKED</span>
-      </div>
-      <div class="flex flex-col gap-3 text-xs" id="feedList">
-        <p class="text-neutral-500 text-[11px] mono">Connecting to ledger feed...</p>
-      </div>
-    </div>
-  </main>
+<div class="flex justify-between items-center mb-1">
+<h1 class="text-base font-bold tracking-tight text-white uppercase mono">
+The Black Ledger
+</h1>
+<span class="text-[10px] mono text-neutral-400 border border-neutral-800 px-2 py-0.5 rounded">
+PRIVATE ENTRY
+</span>
+</div>
 
-  <div id="payModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
-      <div class="text-[10px] text-red-500 font-bold mb-1">DIRECT UPI PAYMENT</div>
-      <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 to Seal Node</h3>
-      <div class="bg-white p-2 rounded mb-3 shadow-inner">
-        <img id="modalQrImg" class="w-44 h-44 object-contain" alt="Direct UPI QR">
-      </div>
-      <p class="text-[10px] text-neutral-400 mb-3">Scan the QR or tap below to open an installed UPI app.</p>
-      <a id="modalUpiLink" href="#" class="w-full bg-neutral-100 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block">OPEN UPI APP DIRECTLY</a>
-      <button onclick="closeModalAndVerify()" class="w-full border border-neutral-700 hover:border-neutral-500 text-neutral-300 py-2 rounded text-[11px] uppercase">I HAVE PAID</button>
-    </div>
-  </div>
-    <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAlmnaSjmU5FRTcgbtmdaOM00hdUwieLOZc",
-      authDomain: "blackledger-759c1.firebaseapp.com",
-      databaseURL: "https://blackledger-759c1-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "blackledger-759c1",
-      storageBucket: "blackledger-759c1.firebasestorage.app",
-      messagingSenderId: "1064101172402",
-      appId: "1:1064101172402:web:951950dd4e136c44e965eb"
-    };
+<div class="text-center mb-4">
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const confessionsRef = db.ref("confessions");
+<h2 class="text-white text-sm font-bold tracking-wider uppercase mb-1">
+Jo Sach Kahin Nahi Bola Gaya, Wo Yahan Hai.
+</h2>
 
-    // Updated with BharatPe Merchant UPI[span_0](start_span)[span_0](end_span)
-    const DIRECT_UPI_ID = "BHARATPE2YOMOB8NOT09199@unitype";[span_1](start_span)[span_1](end_span)
-    const DIRECT_UPI_NAME = "VISHAL";[span_2](start_span)[span_2](end_span)
-    const DIRECT_UPI_AMOUNT = "13.00";
-    const DIRECT_UPI_NOTE = "BlackLedgerVault";
+<p class="text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto">
+Har insaan ke paas ek aisi baat hoti hai
+jo wo duniya se chhupata hai.
+Yahan apna unsaid truth submit karo
+aur ledger experience unlock karo.
+</p>
 
-    let isUnlocked = false;
-    const input = document.getElementById("confessionInput");
+<div class="text-[10px] text-neutral-500 mt-1 font-mono">
+● ₹13 ENTRY • BHARATPE UPI
+</div>
 
-    input.addEventListener("input", () => {
-      document.getElementById("charCount").innerText = `${input.value.length} / 280`;
-    });
+</div>
 
-    function sanitizeInput(text) {
-      return text
-        .replace(/\b\d{10,12}\b/g, "[REDACTED_NUM]")
-        .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[REDACTED_MAIL]")
-        .replace(/@([A-Za-z0-9_]+)/g, "[REDACTED_HANDLE]")
-        .replace(/[A-Z]{5}[0-9]{4}[A-Z]{1}/g, "[REDACTED_PAN]");
-    }
+<div class="relative mb-3">
 
-    function buildDirectUpiUri() {
-      return "upi://pay?pa=" + encodeURIComponent(DIRECT_UPI_ID) + "&pn=" + encodeURIComponent(DIRECT_UPI_NAME) + "&am=" + DIRECT_UPI_AMOUNT + "&cu=INR&tn=" + encodeURIComponent(DIRECT_UPI_NOTE);
-    }
+<textarea
+id="confessionInput"
+rows="4"
+maxlength="280"
+placeholder="Apna unsaid sach, galti ya raaz yahan likho..."
+class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"
+></textarea>
 
-    function openPaymentModal() {
-      const text = input.value.trim();
-      if (text.length < 10) {
-        alert("Kam se kam 10 characters likhiye.");
-        return;
-      }
-      const upiUri = buildDirectUpiUri();
-      const modal = document.getElementById("payModal");
-      const qr = document.getElementById("modalQrImg");
-      const upiLink = document.getElementById("modalUpiLink");
+<div class="flex justify-between text-[10px] mono text-neutral-500 mt-1">
+<span>PII SANITIZER: READY</span>
+<span id="charCount">0 / 280</span>
+</div>
 
-      qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(upiUri);
-      upiLink.href = upiUri;
-      modal.classList.remove("hidden");
-    }
+</div>
 
-    function closeModalAndVerify() {
-      document.getElementById("payModal").classList.add("hidden");
-      document.getElementById("stepInitiate").classList.add("hidden");
-      document.getElementById("stepVerify").classList.remove("hidden");
-      document.getElementById("verifyMsg").classList.remove("hidden");
-      document.getElementById("verifyMsg").innerText = "Payment successful hone ke baad UTR enter karein.";
-    }
+<div id="stepInitiate">
 
-    const archetypes = [
-      { name: "THE SILENT MARTYR" },
-      { name: "THE PRAGMATIC SINNER" },
-      { name: "THE SHADOW OBSERVER" },
-      { name: "THE CALCULATED TRAITOR" }
-    ];
+<button
+onclick="openPaymentModal()"
+class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2"
+>
+<span>SEAL ENTRY & UNLOCK — ₹13</span>
+</button>
 
-    confessionsRef.on("value", (snapshot) => {
-      const feed = document.getElementById("feedList");
-      feed.innerHTML = "";
-      const data = snapshot.val();
-      if (!data) {
-        feed.innerHTML = `<p class="text-neutral-600 text-[11px] mono">No ledger nodes yet.</p>`;
-        document.getElementById("counterDisplay").innerText = "LIVE";
-        return;
-      }
-      const items = Object.values(data).reverse();
-      document.getElementById("counterDisplay").innerText = `${items.length} NODES`;
-      const blurClass = isUnlocked ? "" : "blurred";
+<p class="text-[10px] text-center text-neutral-500 mt-2 mono">
+BharatPe QR • PhonePe • GPay • Paytm
+</p>
 
-      items.forEach((item) => {
-        const div = document.createElement("div");
-        div.className = "border-l-2 border-neutral-800 pl-3 py-1";
-        div.innerHTML = `
-          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
-            <span>NODE #${item.nodeId}</span>
-            <span>${item.archetype}</span>
-          </div>
-          <p class="text-neutral-300 leading-relaxed">
-            <span class="vault-blur ${blurClass}">${escapeHtml(item.content)}</span>
-          </p>`;
-        feed.appendChild(div);
-      });
-    });
+</div>
 
-    function escapeHtml(value) {
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
+<div
+id="stepVerify"
+class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800"
+>
 
-    function verifyPaymentReference() {
-      const utr = document.getElementById("utrInput").value.trim();
-      if (!/^\d{12}$/.test(utr)) {
-        alert("Please enter the 12-digit UTR / transaction reference.");
-        return;
-      }
-      const confirmed = confirm("Confirm that your UPI app shows a successful ₹13 payment to:\n\n" + DIRECT_UPI_ID + "\n\nUTR: " + utr + "\n\nContinue only if the payment was actually successful.");
-      if (!confirmed) return;
-      completeUnlock(utr);
-    }
+<p class="text-xs text-neutral-200 mono font-semibold">
+Payment Completed?
+</p>
 
-    function completeUnlock(utr) {
-      if (isUnlocked) return;
-      isUnlocked = true;
-      const chosen = archetypes[Math.floor(Math.random() * archetypes.length)];
-      const nodeNum = Math.floor(100000 + Math.random() * 900000);
-      const cleanConfession = sanitizeInput(input.value.trim());
+<p class="text-[11px] text-neutral-400">
+UPI app me successful ₹13 payment ke baad
+transaction screen se UTR/reference number enter karo.
+</p>
 
-      confessionsRef.push({
-        nodeId: nodeNum,
-        archetype: chosen.name,
-        content: cleanConfession,
-        transactionReference: utr,
-        timestamp: Date.now()
-      });
+<input
+type="text"
+id="utrInput"
+inputmode="numeric"
+maxlength="12"
+placeholder="12-digit UTR / transaction reference"
+class="w-full bg-neutral-900 border border-neutral-800 rounded p-2.5 text-xs text-white mono focus:border-red-500 focus:outline-none"
+>
 
-      document.getElementById("vaultStage").classList.add("hidden");
-      document.getElementById("personaBlock").classList.remove("hidden");
-      document.getElementById("personaArchetype").innerText = chosen.name;
-      document.getElementById("personaRarity").innerText = "ARCHETYPE ASSIGNED // NODE #" + nodeNum;
+<button
+id="verifyBtn"
+onclick="verifyPaymentReference()"
+class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95"
+>
+CONTINUE AFTER PAYMENT
+</button>
 
-      document.querySelectorAll(".vault-blur").forEach((element) => {
-        element.classList.remove("blurred");
-      });
+<p
+id="verifyMsg"
+class="text-[10px] text-center text-neutral-400 mt-1 mono hidden"
+></p>
 
-      const badge = document.getElementById("lockBadge");
-      badge.className = "text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded mono";
-      badge.innerText = "NODE UNLOCKED";
+</div>
+</div>
 
-      generateStoryCard(chosen.name, nodeNum);
-    }
+<div
+id="personaBlock"
+class="hidden border border-red-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center"
+>
 
-    function generateStoryCard(archetype, nodeNum) {
-      const canvas = document.getElementById("storyCanvas");
-      const ctx = canvas.getContext("2d");
-      ctx.fillStyle = "#050505";
-      ctx.fillRect(0, 0, 1080, 1920);
-      ctx.strokeStyle = "#222222";
-      ctx.lineWidth = 8;
-      ctx.strokeRect(60, 60, 960, 1800);
+<div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">
+● NODE UNLOCKED
+</div>
 
-      ctx.fillStyle = "#DC2626";
-      ctx.font = "bold 36px monospace";
-      ctx.fillText("THE BLACK LEDGER // ARCHIVE PROTOCOL", 120, 200);
+<h2
+id="personaArchetype"
+class="text-lg font-bold text-white uppercase tracking-wider mb-1"
+>
+THE SILENT MARTYR
+</h2>
 
-      ctx.fillStyle = "#737373";
-      ctx.font = "30px monospace";
-      ctx.fillText(`NODE ID: #${nodeNum}`, 120, 255);
+<p
+id="personaRarity"
+class="text-xs text-neutral-400 mb-3"
+>
+ARCHETYPE ASSIGNED
+</p>
 
-      ctx.strokeStyle = "#333333";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(120, 290);
-      ctx.lineTo(960, 290);
-      ctx.stroke();
+<canvas
+id="storyCanvas"
+width="1080"
+height="1920"
+class="hidden"
+></canvas>
 
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = "bold 64px sans-serif";
-      ctx.fillText(archetype, 120, 920);
+<img
+id="cardPreview"
+class="w-52 h-auto border border-neutral-800 rounded shadow-2xl mb-4"
+alt="Black Ledger Persona Card"
+>
 
-      ctx.fillStyle = "#DC2626";
-      ctx.font = "34px monospace";
-      ctx.fillText("ARCHETYPE ASSIGNED", 120, 985);
+<a
+id="downloadBtn"
+download="BlackLedger_Node.png"
+class="w-full bg-neutral-100 text-black py-2.5 px-4 rounded text-xs font-bold uppercase tracking-wider block text-center"
+>
+DOWNLOAD INSTAGRAM STORY BADGE
+</a>
 
-      ctx.fillStyle = "#A3A3A3";
-      ctx.font = "32px monospace";
-      ctx.fillText("CONFESSION SUBMITTED TO LEDGER", 120, 1055);
+<p class="text-[10px] text-neutral-500 mt-2">
+Your Black Ledger node artifact.
+</p>
 
-      ctx.fillStyle = "#525252";
-      ctx.font = "30px monospace";
-      ctx.fillText("THE BLACK LEDGER // blkldr.github.io", 120, 1720);
+</div>
+<div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
 
-      const dataUrl = canvas.toDataURL("image/png");
-      document.getElementById("cardPreview").src = dataUrl;
-      document.getElementById("downloadBtn").href = dataUrl;
-    }
-  </script>
+<div class="flex justify-between items-center mb-3">
+
+<span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">
+Live Vault Stream
+</span>
+
+<span
+id="lockBadge"
+class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono"
+>
+LOCKED
+</span>
+
+</div>
+
+<div
+class="flex flex-col gap-3 text-xs"
+id="feedList"
+>
+
+<p class="text-neutral-500 text-[11px] mono">
+Connecting to ledger feed...
+</p>
+
+</div>
+</div>
+
+</main>
+
+<div
+id="payModal"
+class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+>
+
+<div
+class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center"
+>
+
+<div class="text-[10px] text-red-500 font-bold mb-1">
+BHARATPE UPI PAYMENT
+</div>
+
+<h3 class="text-sm font-bold text-white mb-3">
+Pay ₹13 to Seal Node
+</h3>
+
+<div class="bg-white p-2 rounded mb-3 shadow-inner">
+
+<img
+id="modalQrImg"
+class="w-44 h-44 object-contain"
+alt="BharatPe UPI QR"
+>
+
+</div>
+
+<p class="text-[10px] text-neutral-400 mb-3">
+Scan the QR or tap below
+to open an installed UPI app.
+</p>
+
+<a
+id="modalUpiLink"
+href="#"
+class="w-full bg-neutral-100 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block"
+>
+OPEN UPI APP DIRECTLY
+</a>
+
+<button
+onclick="closeModalAndVerify()"
+class="w-full border border-neutral-700 hover:border-neutral-500 text-neutral-300 py-2 rounded text-[11px] uppercase"
+>
+I HAVE PAID
+</button>
+
+</div>
+</div>
+
+<script>
+
+const firebaseConfig={
+
+apiKey:
+"AIzaSyAlmnaSjmU5FRTcgbtmdaOM00hdUwieLOZc",
+
+authDomain:
+"blackledger-759c1.firebaseapp.com",
+
+databaseURL:
+"https://blackledger-759c1-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+projectId:
+"blackledger-759c1",
+
+storageBucket:
+"blackledger-759c1.firebasestorage.app",
+
+messagingSenderId:
+"1064101172402",
+
+appId:
+"1:1064101172402:web:951950dd4e136c44e965eb"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db=firebase.database();
+
+const confessionsRef=db.ref("confessions");
+
+
+/* BHARATPE DETAILS - CORRECTED */
+
+const DIRECT_UPI_ID=
+"BHARATPE2YOMOB8NOT09199@unitype";[span_1](start_span)[span_1](end_span)
+
+const DIRECT_UPI_NAME=
+"VISHAL";[span_2](start_span)[span_2](end_span)
+
+const DIRECT_UPI_AMOUNT=
+"13.00";
+
+const DIRECT_UPI_NOTE=
+"BlackLedgerVault";
+
+
+let isUnlocked=false;
+
+const input=
+document.getElementById("confessionInput");
+
+
+input.addEventListener(
+"input",
+()=>{
+
+document.getElementById(
+"charCount"
+).innerText=
+`${input.value.length} / 280`;
+
+}
+);
+
+
+function sanitizeInput(text){
+
+return text
+
+.replace(
+/\b\d{10,12}\b/g,
+"[REDACTED_NUM]"
+)
+
+.replace(
+/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+"[REDACTED_MAIL]"
+)
+
+.replace(
+/@([A-Za-z0-9_]+)/g,
+"[REDACTED_HANDLE]"
+)
+
+.replace(
+/[A-Z]{5}[0-9]{4}[A-Z]{1}/g,
+"[REDACTED_PAN]"
+);
+
+}
+
+
+function buildDirectUpiUri(){
+
+return(
+"upi://pay"+
+"?pa="+
+encodeURIComponent(
+DIRECT_UPI_ID
+)+
+"&pn="+
+encodeURIComponent(
+DIRECT_UPI_NAME
+)+
+"&am="+
+DIRECT_UPI_AMOUNT+
+"&cu=INR"+
+"&tn="+
+encodeURIComponent(
+DIRECT_UPI_NOTE
+)
+);
+
+}
+
+
+function openPaymentModal(){
+
+const text=
+input.value.trim();
+
+if(text.length<10){
+
+alert(
+"Kam se kam 10 characters likhiye."
+);
+
+return;
+}
+
+const upiUri=
+buildDirectUpiUri();
+
+const modal=
+document.getElementById(
+"payModal"
+);
+
+const qr=
+document.getElementById(
+"modalQrImg"
+);
+
+const upiLink=
+document.getElementById(
+"modalUpiLink"
+);
+
+
+/* BHARATPE QR */
+
+qr.src=
+"https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="+
+encodeURIComponent(upiUri);
+
+upiLink.href=
+upiUri;
+
+modal.classList.remove(
+"hidden"
+);
+
+}
+
+
+function closeModalAndVerify(){
+
+document.getElementById(
+"payModal"
+).classList.add(
+"hidden"
+);
+
+document.getElementById(
+"stepInitiate"
+).classList.add(
+"hidden"
+);
+
+document.getElementById(
+"stepVerify"
+).classList.remove(
+"hidden"
+);
+
+document.getElementById(
+"verifyMsg"
+).classList.remove(
+"hidden"
+);
+
+document.getElementById(
+"verifyMsg"
+).innerText=
+"Payment successful hone ke baad UTR enter karein.";
+
+}
+
+
+const archetypes=[
+
+{
+name:
+"THE SILENT MARTYR"
+},
+
+{
+name:
+"THE PRAGMATIC SINNER"
+},
+
+{
+name:
+"THE SHADOW OBSERVER"
+},
+
+{
+name:
+"THE CALCULATED TRAITOR"
+}
+
+];
+
+
+confessionsRef.on(
+"value",
+(snapshot)=>{
+
+const feed=
+document.getElementById(
+"feedList"
+);
+
+feed.innerHTML="";
+
+const data=
+snapshot.val();
+
+if(!data){
+
+feed.innerHTML=`
+<p class="text-neutral-600 text-[11px] mono">
+No ledger nodes yet.
+</p>
+`;
+
+document.getElementById(
+"counterDisplay"
+).innerText=
+"LIVE";
+
+return;
+}
+
+const items=
+Object.values(data)
+.reverse();
+
+document.getElementById(
+"counterDisplay"
+).innerText=
+`${items.length} NODES`;
+
+const blurClass=
+isUnlocked
+?""
+:"blurred";
+
+items.forEach(
+(item)=>{
+
+const div=
+document.createElement(
+"div"
+);
+
+div.className=
+"border-l-2 border-neutral-800 pl-3 py-1";
+
+div.innerHTML=`
+
+<div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
+
+<span>
+NODE #${item.nodeId}
+</span>
+
+<span>
+${item.archetype}
+</span>
+
+</div>
+
+<p class="text-neutral-300 leading-relaxed">
+
+<span class="vault-blur ${blurClass}">
+${escapeHtml(item.content)}
+</span>
+
+</p>
+`;
+
+feed.appendChild(div);
+
+}
+);
+
+}
+);
+function escapeHtml(value){
+
+return String(value)
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
+
+}
+
+
+function verifyPaymentReference(){
+
+const utr=
+document
+.getElementById(
+"utrInput"
+)
+.value
+.trim();
+
+if(
+!/^\d{12}$/.test(
+utr
+)
+){
+
+alert(
+"Please enter the 12-digit UTR / transaction reference."
+);
+
+return;
+}
+
+
+const confirmed=
+confirm(
+
+"Confirm that your UPI app shows a successful ₹13 payment to:\n\n"+
+DIRECT_UPI_ID+
+"\n\nUTR: "+
+utr+
+"\n\nContinue only if the payment was actually successful."
+
+);
+
+
+if(!confirmed){
+
+return;
+}
+
+
+completeUnlock(
+utr
+);
+
+}
+
+
+function completeUnlock(
+utr
+){
+
+if(isUnlocked){
+
+return;
+}
+
+isUnlocked=true;
+
+
+const chosen=
+archetypes[
+Math.floor(
+Math.random()*
+archetypes.length
+)
+];
+
+
+const nodeNum=
+Math.floor(
+100000+
+Math.random()*
+900000
+);
+
+
+const cleanConfession=
+sanitizeInput(
+input.value.trim()
+);
+
+
+confessionsRef.push({
+
+nodeId:
+nodeNum,
+
+archetype:
+chosen.name,
+
+content:
+cleanConfession,
+
+transactionReference:
+utr,
+
+timestamp:
+Date.now()
+
+});
+
+
+document.getElementById(
+"vaultStage"
+).classList.add(
+"hidden"
+);
+
+
+document.getElementById(
+"personaBlock"
+).classList.remove(
+"hidden"
+);
+
+
+document.getElementById(
+"personaArchetype"
+).innerText=
+chosen.name;
+
+
+document.getElementById(
+"personaRarity"
+).innerText=
+"ARCHETYPE ASSIGNED // NODE #"+
+nodeNum;
+
+
+document
+.querySelectorAll(
+".vault-blur"
+)
+.forEach(
+(element)=>{
+
+element.classList.remove(
+"blurred"
+);
+
+}
+);
+
+
+const badge=
+document.getElementById(
+"lockBadge"
+);
+
+
+badge.className=
+"text-[10px] bg-green-950 "+
+"text-green-400 border "+
+"border-green-900 px-2 "+
+"py-0.5 rounded mono";
+
+
+badge.innerText=
+"NODE UNLOCKED";
+
+
+generateStoryCard(
+chosen.name,
+nodeNum
+);
+
+}
+
+
+function generateStoryCard(
+archetype,
+nodeNum
+){
+
+const canvas=
+document.getElementById(
+"storyCanvas"
+);
+
+const ctx=
+canvas.getContext(
+"2d"
+);
+
+
+ctx.fillStyle=
+"#050505";
+
+ctx.fillRect(
+0,
+0,
+1080,
+1920
+);
+
+
+ctx.strokeStyle=
+"#222222";
+
+ctx.lineWidth=
+8;
+
+ctx.strokeRect(
+60,
+60,
+960,
+1800
+);
+
+
+ctx.fillStyle=
+"#DC2626";
+
+ctx.font=
+"bold 36px monospace";
+
+ctx.fillText(
+"THE BLACK LEDGER // ARCHIVE PROTOCOL",
+120,
+200
+);
+
+
+ctx.fillStyle=
+"#737373";
+
+ctx.font=
+"30px monospace";
+
+ctx.fillText(
+`NODE ID: #${nodeNum}`,
+120,
+255
+);
+
+
+ctx.strokeStyle=
+"#333333";
+
+ctx.lineWidth=
+2;
+
+ctx.beginPath();
+
+ctx.moveTo(
+120,
+290
+);
+
+ctx.lineTo(
+960,
+290
+);
+
+ctx.stroke();
+
+
+ctx.fillStyle=
+"#FFFFFF";
+
+ctx.font=
+"bold 64px sans-serif";
+
+ctx.fillText(
+archetype,
+120,
+920
+);
+
+
+ctx.fillStyle=
+"#DC2626";
+
+ctx.font=
+"34px monospace";
+
+ctx.fillText(
+"ARCHETYPE ASSIGNED",
+120,
+985
+);
+
+
+ctx.fillStyle=
+"#A3A3A3";
+
+ctx.font=
+"32px monospace";
+
+ctx.fillText(
+"CONFESSION SUBMITTED TO LEDGER",
+120,
+1055
+);
+
+
+ctx.fillStyle=
+"#525252";
+
+ctx.font=
+"30px monospace";
+
+ctx.fillText(
+"THE BLACK LEDGER // blkldr.github.io",
+120,
+1720
+);
+
+
+const dataUrl=
+canvas.toDataURL(
+"image/png"
+);
+
+
+document.getElementById(
+"cardPreview"
+).src=
+dataUrl;
+
+
+document.getElementById(
+"downloadBtn"
+).href=
+dataUrl;
+
+}
+
+</script>
+
 </body>
 </html>
