@@ -74,7 +74,7 @@
           Yeh secure archive un raazo ka ghar hai jo duniya kabhi nahi dekhna chahti thi. Apni pehchan mitao aur entry seal karo.
         </p>
         <div class="text-[10px] text-red-500/80 mt-2 font-mono tracking-widest">
-          🔒 ACCESS FEE: ₹13 • DIRECT MERCHANT UPI
+          🔒 ACCESS FEE: ₹13 • SECURE UROPAY GATEWAY
         </div>
       </div>
 
@@ -93,40 +93,18 @@
         </div>
       </div>
 
-      <!-- Step 1: Open Payment Modal Button -->
+      <!-- Step 1: Seal Entry Button (Redirects to UroPay) -->
       <div id="stepInitiate">
         <button
           type="button"
-          id="openModalBtn"
+          id="payWithUropayBtn"
           class="w-full bg-red-950 hover:bg-red-900 text-red-200 border border-red-800 font-bold py-3 px-4 rounded text-xs tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-red-950/50"
         >
           <span>SEAL ENTRY & UNLOCK — ₹13</span>
         </button>
         <p class="text-[9px] text-center text-neutral-600 mt-2 tracking-wider">
-          INSTANT QR & 1-TAP UPI (GPay / PhonePe / Paytm)
+          SECURE UROPAY GATEWAY • 100% WORKING PAYMENT
         </p>
-      </div>
-
-      <!-- Step 2: UTR Verification Block -->
-      <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-900">
-        <p class="text-xs text-red-400 font-semibold">Payment Completed?</p>
-        <p class="text-[11px] text-neutral-400">Successful payment ke baad transaction screen se 12-digit UTR enter karein:</p>
-        <input
-          type="text"
-          id="utrInput"
-          inputmode="numeric"
-          maxlength="12"
-          placeholder="12-digit UTR reference number"
-          class="w-full bg-black border border-neutral-800 rounded p-2.5 text-xs text-white focus:border-red-600 focus:outline-none"
-        >
-        <button
-          type="button"
-          id="verifyUtrBtn"
-          class="w-full bg-red-700 hover:bg-red-600 text-white font-bold py-2.5 px-4 rounded text-xs tracking-widest uppercase transition cursor-pointer"
-        >
-          SUBMIT UTR & DECRYPT NODE
-        </button>
-        <p id="verifyMsg" class="text-[10px] text-center text-neutral-500 mt-1 hidden"></p>
       </div>
 
     </div>
@@ -156,28 +134,6 @@
 
   </main>
 
-  <!-- Payment Modal Gateway (Instant QR & 1-Tap) -->
-  <div id="payModal" style="display: none;" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="border border-red-900/60 bg-black p-5 rounded-lg max-w-xs w-full text-center flex flex-col items-center danger-glow">
-      <div class="text-[11px] text-red-500 font-bold mb-1 tracking-widest">BHARATPE SECURE GATEWAY</div>
-      <h3 class="text-xs font-bold text-white mb-3">Pay ₹13 to Seal Node</h3>
-      
-      <div class="bg-white p-2 rounded mb-3 shadow-inner">
-        <img id="modalQrImg" class="w-40 h-40 object-contain" alt="BharatPe QR">
-      </div>
-
-      <p class="text-[10px] text-neutral-500 mb-3">Scan QR or tap below to pay directly:</p>
-      
-      <a id="modalUpiLink" href="#" class="w-full bg-neutral-900 hover:bg-neutral-800 text-red-400 border border-red-950 py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block text-center tracking-wider">
-        OPEN UPI APP DIRECTLY
-      </a>
-      
-      <button type="button" id="proceedToUtrBtn" class="w-full bg-transparent border border-neutral-800 hover:border-neutral-600 text-neutral-400 py-2 rounded text-[10px] uppercase cursor-pointer tracking-widest">
-        I HAVE PAID (ENTER UTR)
-      </button>
-    </div>
-  </div>
-
   <!-- JavaScript Logic -->
   <script>
     const firebaseConfig = {
@@ -194,10 +150,7 @@
     const db = firebase.database();
     const confessionsRef = db.ref("confessions");
 
-    const MERCHANT_UPI_ID = "BHARATPE2YOMOB8NOT09199@unitype";
-    const MERCHANT_NAME = "VISHAL";
-    const PAYMENT_AMOUNT = "13.00";
-    const TRANSACTION_NOTE = "BlackLedgerVault";
+    const UROPAY_CHECKOUT_URL = "https://p.urpy.link/efQL";[span_3](start_span)[span_3](end_span)
 
     let isUnlocked = false;
     const confessionInput = document.getElementById("confessionInput");
@@ -206,85 +159,60 @@
       document.getElementById("charCount").innerText = `${confessionInput.value.length} / 280`;
     });
 
-    document.getElementById("openModalBtn").addEventListener("click", () => {
+    document.getElementById("payWithUropayBtn").addEventListener("click", () => {
       const text = confessionInput.value.trim();
       if (!text) {
         alert("Pehle apna raaz toh likho!");
         return;
       }
 
-      const upiUri = `upi://pay?pa=${encodeURIComponent(MERCHANT_UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${PAYMENT_AMOUNT}&cu=INR&tn=${encodeURIComponent(TRANSACTION_NOTE)}`;
-      
-      document.getElementById("modalQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUri)}`;
-      document.getElementById("modalUpiLink").href = upiUri;
-      
-      document.getElementById("payModal").style.display = "flex";
+      // Save confession temporarily before redirecting to UroPay gateway[span_4](start_span)[span_4](end_span)
+      localStorage.setItem("pending_confession", text);
+      window.location.href = UROPAY_CHECKOUT_URL;[span_5](start_span)[span_5](end_span)
     });
 
-    document.getElementById("proceedToUtrBtn").addEventListener("click", () => {
-      document.getElementById("payModal").style.display = "none";
-      document.getElementById("stepInitiate").style.display = "none";
-      
-      const verifyStep = document.getElementById("stepVerify");
-      verifyStep.style.display = "flex";
-      
-      const verifyMsg = document.getElementById("verifyMsg");
-      verifyMsg.style.display = "block";
-      verifyMsg.innerText = "Payment ke baad 12-digit UTR enter karein.";
-    });
+    // Check payment success return state
+    window.addEventListener("load", () => {
+      const savedText = localStorage.getItem("pending_confession");
+      if (savedText && (window.location.search.includes("success") || window.location.href.includes("success") || localStorage.getItem("paid") === "true")) {
+        localStorage.removeItem("pending_confession");
+        localStorage.removeItem("paid");
+        
+        isUnlocked = true;
+        const archetypes = [
+          { name: "THE SILENT MARTYR" },
+          { name: "THE PRAGMATIC SINNER" },
+          { name: "THE SHADOW OBSERVER" },
+          { name: "THE CALCULATED TRAITOR" }
+        ];
 
-    document.getElementById("verifyUtrBtn").addEventListener("click", () => {
-      const utr = document.getElementById("utrInput").value.trim();
-      if (!/^\d{12}$/.test(utr)) {
-        alert("Valid 12-digit UTR enter karein.");
-        return;
+        const chosen = archetypes[Math.floor(Math.random() * archetypes.length)];
+        const nodeNum = Math.floor(100000 + Math.random() * 900000);
+        
+        const cleanText = savedText
+          .replace(/\b\d{10,12}\b/g, "[REDACTED]")
+          .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[REDACTED]");
+
+        confessionsRef.push({
+          nodeId: nodeNum,
+          archetype: chosen.name,
+          content: cleanText,
+          timestamp: Date.now()
+        });
+
+        document.getElementById("vaultStage").style.display = "none";
+        const personaBlock = document.getElementById("personaBlock");
+        personaBlock.style.display = "flex";
+        
+        document.getElementById("personaArchetype").innerText = chosen.name;
+        document.getElementById("personaRarity").innerText = "ARCHETYPE ASSIGNED // NODE #" + nodeNum;
+
+        const badge = document.getElementById("lockBadge");
+        badge.className = "text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded";
+        badge.innerText = "UNLOCKED";
+
+        generateStoryCard(chosen.name, nodeNum);
       }
-
-      const confirmed = confirm(`Verify payment to merchant:\nUPI: ${MERCHANT_UPI_ID}\nUTR: ${utr}`);
-      if (!confirmed) return;
-
-      if (isUnlocked) return;
-      isUnlocked = true;
-
-      const archetypes = [
-        { name: "THE SILENT MARTYR" },
-        { name: "THE PRAGMATIC SINNER" },
-        { name: "THE SHADOW OBSERVER" },
-        { name: "THE CALCULATED TRAITOR" }
-      ];
-
-      const chosen = archetypes[Math.floor(Math.random() * archetypes.length)];
-      const nodeNum = Math.floor(100000 + Math.random() * 900000);
-      
-      const cleanText = confessionInput.value
-        .replace(/\b\d{10,12}\b/g, "[REDACTED]")
-        .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[REDACTED]");
-
-      confessionsRef.push({
-        nodeId: nodeNum,
-        archetype: chosen.name,
-        content: cleanText,
-        transactionReference: utr,
-        timestamp: Date.now()
-      });
-
-      document.getElementById("vaultStage").style.display = "none";
-      
-      const personaBlock = document.getElementById("personaBlock");
-      personaBlock.style.display = "flex";
-      
-      document.getElementById("personaArchetype").innerText = chosen.name;
-      document.getElementById("personaRarity").innerText = "ARCHETYPE ASSIGNED // NODE #" + nodeNum;
-
-      document.querySelectorAll(".vault-blur").forEach((el) => {
-        el.classList.remove("blurred");
-      });
-
-      const badge = document.getElementById("lockBadge");
-      badge.className = "text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded";
-      badge.innerText = "UNLOCKED";
-
-      generateStoryCard(chosen.name, nodeNum);
     });
 
     confessionsRef.on("value", (snapshot) => {
@@ -362,3 +290,4 @@
   </script>
 </body>
 </html>
+
