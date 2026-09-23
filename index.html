@@ -4,309 +4,104 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Black Ledger // Monolith Protocol</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
-
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
+  <!-- Cashfree JS SDK -->
+  <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
   <style>
-    body {
-      background-color: #050505;
-      color: #E5E5E5;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    .mono {
-      font-family: 'Space Mono', monospace;
-    }
-
-    .blurred {
-      filter: blur(7px);
-      user-select: none;
-      pointer-events: none;
-    }
-
+    body { background-color: #050505; color: #E5E5E5; font-family: 'Space Grotesk', sans-serif; }
+    .mono { font-family: 'Space Mono', monospace; }
+    .blurred { filter: blur(7px); user-select: none; pointer-events: none; }
     .scanline {
-      background:
-        linear-gradient(
-          rgba(18, 16, 16, 0) 50%,
-          rgba(0, 0, 0, 0.4) 50%
-        ),
-        linear-gradient(
-          90deg,
-          rgba(255, 0, 0, 0.02),
-          rgba(0, 255, 0, 0.01),
-          rgba(0, 255, 0, 0.02)
-        );
-
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
       background-size: 100% 3px, 6px 100%;
     }
   </style>
 </head>
-
 <body class="min-h-screen p-4 flex flex-col items-center justify-start scanline">
 
-  <!-- HEADER -->
+  <!-- HUD STATUS HEADER -->
   <header class="w-full max-w-md border border-neutral-800 p-3 mb-4 bg-neutral-950/90 rounded flex justify-between items-center text-[11px] mono">
-
     <div class="flex items-center gap-2">
       <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
-      <span class="text-neutral-400">
-        LEDGER PROTOCOL // 30-DAY
-      </span>
+      <span class="text-neutral-400">LEDGER PROTOCOL // 30-DAY</span>
     </div>
-
     <div class="text-neutral-300">
-      ARCHIVE:
-      <span id="counterDisplay" class="text-white font-bold">
-        #000,142
-      </span>
+      ARCHIVE: <span id="counterDisplay" class="text-white font-bold">#000,142</span>
     </div>
-
   </header>
 
-
-  <!-- MAIN -->
+  <!-- MAIN CONTAINER -->
   <main class="w-full max-w-md flex flex-col gap-4">
 
-
     <!-- SUBMISSION TERMINAL -->
-    <div
-      id="vaultStage"
-      class="border border-neutral-800 bg-neutral-950/80 p-5 rounded-lg"
-    >
-
+    <div id="vaultStage" class="border border-neutral-800 bg-neutral-950/80 p-5 rounded-lg">
       <div class="flex justify-between items-center mb-1">
-
-        <h1 class="text-base font-bold tracking-tight text-white uppercase mono">
-          The Black Ledger
-        </h1>
-
-        <span class="text-[10px] mono text-neutral-400 border border-neutral-800 px-2 py-0.5 rounded">
-          PROTOCOL ACTIVE
-        </span>
-
+        <h1 class="text-base font-bold tracking-tight text-white uppercase mono">The Black Ledger</h1>
+        <span class="text-[10px] mono text-neutral-400 border border-neutral-800 px-2 py-0.5 rounded">ZERO LOGS</span>
       </div>
-
-
       <div class="text-center mb-4">
-
-        <h2 class="text-white text-sm font-bold tracking-wider uppercase mb-1">
-          Jo Sach Kahin Nahi Bola Gaya, Wo Yahan Hai.
-        </h2>
-
-        <p class="text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto">
-          Har insaan ke paas ek aisi baat hoti hai jo wo duniya se chhupata hai.
-          Yahan apna unsaid truth likho aur ledger experience ka hissa bano.
-        </p>
-
-        <div class="text-[10px] text-green-400 mt-1 font-mono">
-          ● LEDGER OPERATIONAL
-        </div>
-
+        <h2 class="text-white text-sm font-bold tracking-wider uppercase mb-1">Jo Sach Kahin Nahi Bola Gaya, Wo Yahan Hai.</h2>
+        <p class="text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto">Har insaan ke paas ek aisi baat hoti hai jo wo duniya se chhupata hai. Yahan aakar apna sach safe lock karo aur dusron ke unsaid raaz padho.</p>
+        <div class="text-[10px] text-green-400 mt-1 font-mono">● 2,481 Encrypted Confessions Active • 100% Anonymous</div>
       </div>
 
-
-      <!-- CONFESSION -->
+      <!-- TEXTAREA -->
       <div class="relative mb-3">
-
-        <textarea
-          id="confessionInput"
-          rows="4"
-          maxlength="280"
-          placeholder="Apna unsaid sach, galti ya raaz yahan likho..."
-          class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"
-        ></textarea>
-
+        <textarea id="confessionInput" rows="4" maxlength="280"
+          placeholder="Apna unsaid sach, galti ya raaz yahan likho... (Identity & IP auto-destroyed)"
+          class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"></textarea>
         <div class="flex justify-between text-[10px] mono text-neutral-500 mt-1">
-
-          <span>
-            PII SANITIZER: READY
-          </span>
-
-          <span id="charCount">
-            0 / 280
-          </span>
-
+          <span>PII SANITIZER: READY</span>
+          <span id="charCount">0 / 280</span>
         </div>
-
       </div>
 
-
-      <!-- CASHFREE PAYMENT -->
+      <!-- INITIATE PAYMENT VIA CASHFREE VERCEL BACKEND -->
       <div id="stepInitiate">
-
-        <button
-          onclick="openCashfreePayment()"
-          class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2"
-        >
-          <span>
-            SEAL ENTRY & UNLOCK — ₹13
-          </span>
+        <button id="pay-btn" onclick="startPayment()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2">
+            <span>SEAL ENTRY & UNLOCK — ₹13</span>
         </button>
-
-        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">
-          Secure payment via Cashfree
-        </p>
-
+        <div id="status" class="text-[10px] text-center text-neutral-400 mt-2 mono"></div>
       </div>
-
-
-      <!-- AFTER PAYMENT INFORMATION -->
-      <div
-        id="paymentNotice"
-        class="hidden mt-3 pt-3 border-t border-neutral-800"
-      >
-
-        <div class="border border-neutral-800 bg-neutral-900/60 rounded p-3">
-
-          <p class="text-xs text-white mono font-bold mb-2">
-            PAYMENT PAGE OPENED
-          </p>
-
-          <p class="text-[11px] text-neutral-400 leading-relaxed">
-            Cashfree payment complete karne ke baad isi website par wapas aao.
-            Payment verification ke bina vault ko automatically unlocked nahi
-            dikhaya jayega.
-          </p>
-
-        </div>
-
-      </div>
-
     </div>
 
+    <!-- POST-PAYMENT UNLOCKED: PERSONA CARD ARTIFACT -->
+    <div id="personaBlock" class="hidden border border-red-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center">
+      <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">● VERIFIED NODE ARCHIVED</div>
+      <h2 id="personaArchetype" class="text-lg font-bold text-white uppercase tracking-wider mb-1">THE PRAGMATIC SINNER</h2>
+      <p id="personaRarity" class="text-xs text-neutral-400 mb-3">Rarity: 3.4% of participants carry this profile</p>
 
-    <!-- PERSONA -->
-    <div
-      id="personaBlock"
-      class="hidden border border-red-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center"
-    >
+      <canvas id="storyCanvas" width="1080" height="1920" class="hidden"></canvas>
+      <img id="cardPreview" class="w-52 h-auto border border-neutral-800 rounded shadow-2xl mb-4" alt="Persona Card">
 
-      <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">
-        ● VERIFIED NODE ARCHIVED
-      </div>
-
-      <h2
-        id="personaArchetype"
-        class="text-lg font-bold text-white uppercase tracking-wider mb-1"
-      >
-        THE SHADOW OBSERVER
-      </h2>
-
-      <p
-        id="personaRarity"
-        class="text-xs text-neutral-400 mb-3"
-      >
-        Profile assigned
-      </p>
-
-      <canvas
-        id="storyCanvas"
-        width="1080"
-        height="1920"
-        class="hidden"
-      ></canvas>
-
-      <img
-        id="cardPreview"
-        class="w-52 h-auto border border-neutral-800 rounded shadow-2xl mb-4"
-        alt="Persona Card"
-      >
-
-      <a
-        id="downloadBtn"
-        download="BlackLedger_Node.png"
-        class="w-full bg-neutral-100 text-black py-2.5 px-4 rounded text-xs font-bold uppercase tracking-wider block text-center"
-      >
+      <a id="downloadBtn" download="BlackLedger_Node.png" 
+        class="w-full bg-neutral-100 text-black py-2.5 px-4 rounded text-xs font-bold uppercase tracking-wider block text-center">
         DOWNLOAD INSTAGRAM STORY BADGE
       </a>
-
-      <p class="text-[10px] text-neutral-500 mt-2">
-        Share your ledger presence.
-      </p>
-
+      <p class="text-[10px] text-neutral-500 mt-2">Post on Story to signal your encrypted presence.</p>
     </div>
 
-
-    <!-- LIVE VAULT -->
-    <div
-      class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg"
-    >
-
+    <!-- LIVE VAULT STREAM -->
+    <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
       <div class="flex justify-between items-center mb-3">
-
-        <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">
-          Live Vault Stream
-        </span>
-
-        <span
-          id="lockBadge"
-          class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono"
-        >
-          LOCKED
-        </span>
-
+        <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">Live Vault Stream</span>
+        <span id="lockBadge" class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono">LOCKED</span>
       </div>
 
-      <div
-        class="flex flex-col gap-3 text-xs"
-        id="feedList"
-      >
-        <p class="text-neutral-500 text-[11px] mono">
-          Connecting to archive feed...
-        </p>
+      <div class="flex flex-col gap-3 text-xs" id="feedList">
+        <p class="text-neutral-500 text-[11px] mono">Connecting to encrypted archive feed...</p>
       </div>
-
     </div>
 
   </main>
-    <!-- CASHFREE PAYMENT RETURN NOTICE -->
-  <div
-    id="returnNotice"
-    class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
-  >
-
-    <div
-      class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center"
-    >
-
-      <div class="text-[10px] text-green-500 font-bold mb-2">
-        CASHFREE PAYMENT
-      </div>
-
-      <h3 class="text-sm font-bold text-white mb-3">
-        Payment page completed
-      </h3>
-
-      <p class="text-[11px] text-neutral-400 leading-relaxed mb-4">
-        Payment verification server-side confirmation ke bina
-        automatically ACCESS GRANTED nahi kiya jayega.
-      </p>
-
-      <button
-        onclick="closeReturnNotice()"
-        class="w-full bg-neutral-100 text-black py-2.5 rounded text-xs font-bold uppercase"
-      >
-        CLOSE
-      </button>
-
-    </div>
-
-  </div>
-
 
   <script>
-
-    /* =========================================
-       FIREBASE
-       ========================================= */
-
     const firebaseConfig = {
       apiKey: "AIzaSyAlmnaSjmU5FRTcgbtmDaOM00hdUwieLOZc",
       authDomain: "blackledger-759c1.firebaseapp.com",
@@ -318,468 +113,253 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-
     const db = firebase.database();
+    const confessionsRef = db.ref('confessions');
 
-    const confessionsRef = db.ref("confessions");
-
-
-    /* =========================================
-       CASHFREE PAYMENT LINK
-       ========================================= */
-
-    const CASHFREE_PAYMENT_LINK =
-      "https://payments-test.cashfree.com/links?code=Yb243oi0h00g_AAAAAACrzrc";
-
-
-    /* =========================================
-       BASIC STATE
-       ========================================= */
-
+    const BACKEND_URL = "https://blackledger-payment.vercel.app";
     let isUnlocked = false;
 
-
-    /* =========================================
-       INPUT
-       ========================================= */
-
-    const input =
-      document.getElementById("confessionInput");
-
-    input.addEventListener("input", () => {
-
-      document.getElementById("charCount").innerText =
-        `${input.value.length} / 280`;
-
-    });
-
-
-    /* =========================================
-       SANITIZE USER TEXT
-       ========================================= */
-
     function sanitizeInput(text) {
-
       return text
-        .replace(/\b\d{10,12}\b/g, "[REDACTED_NUM]")
-        .replace(
-          /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
-          "[REDACTED_MAIL]"
-        )
-        .replace(
-          /@([A-Za-z0-9_]+)/g,
-          "[REDACTED_HANDLE]"
-        )
-        .replace(
-          /[A-Z]{5}[0-9]{4}[A-Z]{1}/g,
-          "[REDACTED_PAN]"
-        );
-
+        .replace(/\b\d{10,12}\b/g, '[REDACTED_NUM]')
+        .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[REDACTED_MAIL]')
+        .replace(/@([A-Za-z0-9_]+)/g, '[REDACTED_HANDLE]')
+        .replace(/[A-Z]{5}[0-9]{4}[A-Z]{1}/g, '[REDACTED_PAN]');
     }
 
+    const input = document.getElementById('confessionInput');
+    input.addEventListener('input', () => {
+      document.getElementById('charCount').innerText = `${input.value.length} / 280`;
+    });
 
-    /* =========================================
-       OPEN CASHFREE PAYMENT LINK
-       ========================================= */
+    async function startPayment() {
+      const confessionText = input.value.trim();
+      if (confessionText.length < 10) {
+        alert("Kam se kam 10 characters likhiye apne confession mein.");
+        return;
+      }
 
-    function openCashfreePayment() {
+      // Save confession temporarily to sessionStorage so we can push it after successful payment return
+      sessionStorage.setItem('pending_confession', confessionText);
+
+      const btn = document.getElementById("pay-btn");
+      const statusDiv = document.getElementById("status");
+      
+      btn.disabled = true;
+      btn.innerText = "INITIALIZING GATEWAY...";
+      statusDiv.innerText = "Creating secure order with Cashfree...";
 
       try {
-
-        const confession =
-          document.getElementById("confessionInput").value.trim();
-
-
-        if (confession.length < 10) {
-
-          alert(
-            "Kam se kam 10 characters likhiye apne confession mein."
-          );
-
-          return;
-
-        }
-
-
-        /*
-         * Save the text locally so it remains available
-         * when the user returns from the payment page.
-         */
-
-        localStorage.setItem(
-          "pending_black_ledger_confession",
-          sanitizeInput(confession)
-        );
-
-
-        /*
-         * Show notice.
-         */
-
-        document
-          .getElementById("paymentNotice")
-          .classList.remove("hidden");
-
-
-        /*
-         * Open Cashfree Payment Link.
-         */
-
-        window.location.href =
-          CASHFREE_PAYMENT_LINK;
-
-      }
-
-      catch (err) {
-
-        alert(
-          "Payment page open nahi ho paya: " +
-          err.message
-        );
-
-      }
-
-    }
-
-
-    /* =========================================
-       CLOSE RETURN NOTICE
-       ========================================= */
-
-    function closeReturnNotice() {
-
-      document
-        .getElementById("returnNotice")
-        .classList.add("hidden");
-
-    }
-
-
-    /* =========================================
-       PERSONA TYPES
-       ========================================= */
-
-    const archetypes = [
-
-      {
-        name: "THE SILENT MARTYR",
-        description: "A quiet profile shaped by things left unsaid."
-      },
-
-      {
-        name: "THE PRAGMATIC SINNER",
-        description: "A profile shaped by difficult choices."
-      },
-
-      {
-        name: "THE SHADOW OBSERVER",
-        description: "A profile shaped by watching more than speaking."
-      },
-
-      {
-        name: "THE CALCULATED TRAITOR",
-        description: "A profile shaped by complicated loyalties."
-      }
-
-    ];
-
-
-    /* =========================================
-       FIREBASE FEED
-       ========================================= */
-
-    confessionsRef.on("value", (snapshot) => {
-
-      const feedList =
-        document.getElementById("feedList");
-
-      feedList.innerHTML = "";
-
-      const data = snapshot.val();
-
-      let count = 142;
-
-      const blurClass =
-        isUnlocked ? "" : "blurred";
-
-
-      if (data) {
-
-        const items =
-          Object.values(data).reverse();
-
-        count += items.length;
-
-
-        document.getElementById(
-          "counterDisplay"
-        ).innerText =
-          `#${String(count).padStart(6, "0")}`;
-
-
-        items.forEach(item => {
-
-          const div =
-            document.createElement("div");
-
-          div.className =
-            "border-l-2 border-neutral-800 pl-3 py-1";
-
-
-          div.innerHTML = `
-
-            <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
-
-              <span>
-                NODE #${item.nodeId}
-              </span>
-
-              <span>
-                ${item.archetype}
-              </span>
-
-            </div>
-
-            <p class="text-neutral-300">
-
-              <span class="vault-blur ${blurClass}">
-                ${item.content}
-              </span>
-
-            </p>
-
-          `;
-
-
-          feedList.appendChild(div);
-
+        const res = await fetch(`${BACKEND_URL}/api/create-order`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
         });
 
-      }
-
-
-      /* =========================================
-         EXAMPLE / DEMO ENTRIES
-         Clearly presented as examples
-         ========================================= */
-
-      const exampleSeeds = [
-
-        {
-          node: "009142",
-          archetype: "EXAMPLE ENTRY",
-          preview: "Kabhi kabhi jo baat hum kehna chahte hain..."
-        },
-
-        {
-          node: "009141",
-          archetype: "EXAMPLE ENTRY",
-          preview: "Kuch messages send hone se pehle hi..."
-        },
-
-        {
-          node: "009140",
-          archetype: "EXAMPLE ENTRY",
-          preview: "Bheed ke beech bhi kabhi kabhi..."
-        },
-
-        {
-          node: "009139",
-          archetype: "EXAMPLE ENTRY",
-          preview: "Ek purani baat jo abhi tak..."
+        const data = await res.json();
+        
+        if (data.payment_session_id) {
+          statusDiv.innerText = "Redirecting to payment gateway...";
+          
+          const cashfree = Cashfree({ mode: "sandbox" });
+          let checkoutOptions = {
+            paymentSessionId: data.payment_session_id,
+            redirectTarget: "_self"
+          };
+          
+          cashfree.checkout(checkoutOptions);
+        } else {
+          throw new Error(data.error || "Order creation failed");
         }
+      } catch (err) {
+        statusDiv.innerText = "Error: " + err.message;
+        btn.disabled = false;
+        btn.innerText = "SEAL ENTRY & UNLOCK — ₹13";
+      }
+    }
 
-      ];
+    const archetypes = [
+      { name: "THE SILENT MARTYR", rarity: "4.1% of participants" },
+      { name: "THE PRAGMATIC SINNER", rarity: "2.8% of participants" },
+      { name: "THE SHADOW OBSERVER", rarity: "6.3% of participants" },
+      { name: "THE CALCULATED TRAITOR", rarity: "1.9% of participants" }
+    ];
 
+    // Check automatic return and verification on page load
+    window.addEventListener("load", async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get("order_id");
 
-      exampleSeeds.forEach(seed => {
+      if (orderId) {
+        const statusDiv = document.getElementById("status");
+        document.getElementById("stepInitiate").classList.remove("hidden");
+        statusDiv.innerText = "Verifying payment settlement...";
 
-        const div =
-          document.createElement("div");
+        try {
+          const res = await fetch(`${BACKEND_URL}/api/verify-payment?order_id=${orderId}`);
+          const data = await res.json();
 
-        div.className =
-          "border-l-2 border-neutral-800 pl-3 py-1";
+          if (data.order_status === "PAID") {
+            isUnlocked = true;
+            statusDiv.style.color = "#27ae60";
+            statusDiv.innerText = "Payment Verified Successfully! Unlocking Vault...";
 
+            // Push the pending confession to Firebase
+            const pendingText = sessionStorage.getItem('pending_confession') || "Anonymous entry sealed.";
+            const chosen = archetypes[Math.floor(Math.random() * archetypes.length)];
+            const nodeNum = Math.floor(100000 + Math.random() * 900000);
+            const cleanConfession = sanitizeInput(pendingText);
 
-        div.innerHTML = `
+            await confessionsRef.push({
+              nodeId: nodeNum,
+              archetype: chosen.name,
+              content: cleanConfession,
+              timestamp: Date.now()
+            });
 
-          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
+            sessionStorage.removeItem('pending_confession');
 
-            <span>
-              NODE #${seed.node}
-            </span>
+            document.getElementById('vaultStage').classList.add('hidden');
+            document.getElementById('personaBlock').classList.remove('hidden');
+            document.getElementById('personaArchetype').innerText = chosen.name;
+            document.getElementById('personaRarity').innerText = `Rarity: ${chosen.rarity}`;
 
-            <span>
-              ${seed.archetype}
-            </span>
-
-          </div>
-
-          <p class="text-neutral-300 leading-relaxed">
-
-            <span class="vault-blur ${blurClass}">
-              ${seed.preview}
-            </span>
-
-          </p>
-
-        `;
-
-
-        feedList.appendChild(div);
-
-      });
-
+            generateStoryCard(chosen.name, nodeNum, chosen.rarity);
+          } else {
+            statusDiv.style.color = "#e74c3c";
+            statusDiv.innerText = "Payment status: " + (data.order_status || "PENDING");
+          }
+        } catch (err) {
+          statusDiv.innerText = "Verification failed: " + err.message;
+        }
+      }
     });
 
+    confessionsRef.on('value', (snapshot) => {
+      const feedList = document.getElementById('feedList');
+      feedList.innerHTML = '';
+      const data = snapshot.val();
+      
+      let count = 142;
+      const blurClass = isUnlocked ? "" : "blurred";
 
-    /* =========================================
-       LOCAL DEMO UNLOCK FUNCTION
-       NOT PAYMENT VERIFICATION
-       ========================================= */
+      if (data) {
+        const items = Object.values(data).reverse();
+        count += items.length;
+        document.getElementById('counterDisplay').innerText = `#${String(count).padStart(6, '0')}`;
 
-    function demoUnlockOnly() {
+        items.forEach(item => {
+          const div = document.createElement('div');
+          div.className = "border-l-2 border-neutral-800 pl-3 py-1";
+          div.innerHTML = `
+            <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
+              <span>NODE #${item.nodeId}</span>
+              <span>${item.archetype}</span>
+            </div>
+            <p class="text-neutral-300">
+              <span class="vault-blur ${blurClass}">${item.content}</span>
+            </p>
+          `;
+          feedList.appendChild(div);
+        });
+      }
 
-      alert(
-        "Automatic payment verification abhi enabled nahi hai. " +
-        "Cashfree payment ko server-side verify karne ke baad hi " +
-        "ACCESS GRANTED enable karna chahiye."
-      );
+      const viralSeeds = [
+        {
+          node: "009142",
+          archetype: "THE JOB SEEKER",
+          preview: "Noida ya Gurugram mein koi bhi choti-moti delivery ya back-office job dila do koi...",
+          blurred: "rent dene ke paise nahi bache, landlord ne 2 din ka time diya hai warna samaan bahar phek dega."
+        },
+        {
+          node: "009141",
+          archetype: "THE EMPTY STOMACH",
+          preview: "Ghar pe call karke bol diya 'mummy aaj doston ke sath paneer khaya'...",
+          blurred: "par sach yeh hai pichle do din se sirf paani aur 5 rupaye wale biscuit pe din nikaal raha hoon."
+        },
+        {
+          node: "009140",
+          archetype: "THE TIRED STRANGER",
+          preview: "Delhi mein 3 saal ho gaye, lakho logon ki bheed hai har jagah...",
+          blurred: "par aadhi raat ko tabiyat kharab ho jaye toh ek cup paani dene wala koi apna nahi hai yahan."
+        },
+        {
+          node: "009139",
+          archetype: "THE SILENT GUILT",
+          preview: "Maa ke aakhiri call ko busy bolke kaat diya tha, 20 minute baad hospital se phone aaya...",
+          blurred: "aaj 3 saal ho gaya, har raat wahi 12 second ka call kaano mein goonjta rehta hai."
+        }
+      ];
+      
+      viralSeeds.forEach(seed => {
+        const div = document.createElement('div');
+        div.className = "border-l-2 border-neutral-800 pl-3 py-1";
+        div.innerHTML = `
+          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
+            <span>NODE #${seed.node}</span>
+            <span>${seed.archetype}</span>
+          </div>
+          <p class="text-neutral-300 leading-relaxed">
+            ${seed.preview} <span class="vault-blur ${blurClass} text-neutral-400">${seed.blurred}</span>
+          </p>
+        `;
+        feedList.appendChild(div);
+      });
 
-    }
+      if (isUnlocked) {
+        document.querySelectorAll('.vault-blur').forEach(el => el.classList.remove('blurred'));
+        const badge = document.getElementById('lockBadge');
+        badge.classList.remove('bg-red-950', 'text-red-400', 'border-red-900');
+        badge.classList.add('bg-green-950', 'text-green-400', 'border-green-900');
+        badge.innerText = "ACCESS GRANTED";
+      }
+    });
 
+    function generateStoryCard(archetype, nodeNum, rarity) {
+      const canvas = document.getElementById('storyCanvas');
+      const ctx = canvas.getContext('2d');
 
-    /* =========================================
-       STORY CARD
-       ========================================= */
+      ctx.fillStyle = '#050505';
+      ctx.fillRect(0, 0, 1080, 1920);
 
-    function generateStoryCard(
-      archetype,
-      nodeNum,
-      description
-    ) {
-
-      const canvas =
-        document.getElementById("storyCanvas");
-
-      const ctx =
-        canvas.getContext("2d");
-
-
-      ctx.fillStyle = "#050505";
-      ctx.fillRect(
-        0,
-        0,
-        1080,
-        1920
-      );
-
-
-      ctx.strokeStyle = "#222222";
+      ctx.strokeStyle = '#222222';
       ctx.lineWidth = 8;
+      ctx.strokeRect(60, 60, 960, 1800);
 
-      ctx.strokeRect(
-        60,
-        60,
-        960,
-        1800
-      );
+      ctx.fillStyle = '#DC2626';
+      ctx.font = 'bold 36px monospace';
+      ctx.fillText('THE BLACK LEDGER // ARCHIVE PROTOCOL', 120, 200);
 
+      ctx.fillStyle = '#737373';
+      ctx.font = '30px monospace';
+      ctx.fillText(`TOKEN ID: #${nodeNum} | VERIFIED`, 120, 255);
 
-      ctx.fillStyle = "#DC2626";
-
-      ctx.font =
-        "bold 36px monospace";
-
-      ctx.fillText(
-        "THE BLACK LEDGER // ARCHIVE PROTOCOL",
-        120,
-        200
-      );
-
-
-      ctx.fillStyle = "#737373";
-
-      ctx.font =
-        "30px monospace";
-
-      ctx.fillText(
-        `TOKEN ID: #${nodeNum}`,
-        120,
-        255
-      );
-
-
-      ctx.strokeStyle = "#333333";
+      ctx.strokeStyle = '#333333';
       ctx.lineWidth = 2;
-
       ctx.beginPath();
-
-      ctx.moveTo(
-        120,
-        290
-      );
-
-      ctx.lineTo(
-        960,
-        290
-      );
-
+      ctx.moveTo(120, 290);
+      ctx.lineTo(960, 290);
       ctx.stroke();
 
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 64px sans-serif';
+      ctx.fillText(archetype, 120, 920);
 
-      ctx.fillStyle = "#FFFFFF";
+      ctx.fillStyle = '#DC2626';
+      ctx.font = '34px monospace';
+      ctx.fillText(rarity.toUpperCase(), 120, 985);
 
-      ctx.font =
-        "bold 64px sans-serif";
+      ctx.fillStyle = '#525252';
+      ctx.font = '30px monospace';
+      ctx.fillText('CONFESSION PERMANENTLY SEALED IN VAULT', 120, 1055);
 
-      ctx.fillText(
-        archetype,
-        120,
-        920
-      );
+      ctx.fillStyle = '#A3A3A3';
+      ctx.font = '32px monospace';
+      ctx.fillText('PURGE IMMINENT // blkldr.github.io', 120, 1720);
 
-
-      ctx.fillStyle = "#A3A3A3";
-
-      ctx.font =
-        "30px monospace";
-
-      ctx.fillText(
-        "CONFESSION ARCHIVE // THE BLACK LEDGER",
-        120,
-        1055
-      );
-
-
-      ctx.fillStyle = "#525252";
-
-      ctx.font =
-        "30px monospace";
-
-      ctx.fillText(
-        "blkldr.github.io",
-        120,
-        1720
-      );
-
-
-      const dataUrl =
-        canvas.toDataURL("image/png");
-
-
-      document.getElementById(
-        "cardPreview"
-      ).src = dataUrl;
-
-
-      document.getElementById(
-        "downloadBtn"
-      ).href = dataUrl;
-
+      const dataUrl = canvas.toDataURL('image/png');
+      document.getElementById('cardPreview').src = dataUrl;
+      document.getElementById('downloadBtn').href = dataUrl;
     }
-
   </script>
-
 </body>
 </html>
