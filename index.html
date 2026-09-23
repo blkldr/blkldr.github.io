@@ -62,12 +62,12 @@
         </div>
       </div>
 
-      <!-- INITIATE CASHFREE CHECKOUT MODAL -->
+      <!-- INITIATE PAYMENT -->
       <div id="stepInitiate">
         <button onclick="startCashfreeCheckout()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2">
             <span>SEAL ENTRY & UNLOCK — ₹13</span>
         </button>
-        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Official Cashfree Secure Gateway (UPI / Cards / NetBanking)</p>
+        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant Secure Gateway (UPI / Cards / NetBanking)</p>
       </div>
     </div>
 
@@ -131,26 +131,23 @@
       document.getElementById('charCount').innerText = `${input.value.length} / 280`;
     });
 
-    // Trigger Cloudflare Worker & Open Cashfree Checkout Modal
+    // Smart Payment Trigger with Fallback
     async function startCashfreeCheckout() {
+      const confessionInput = document.getElementById('confessionInput');
+      if (!confessionInput) return;
+      
+      const text = confessionInput.value.trim();
+      if (text.length < 10) {
+          alert("Kam se kam 10 characters likhiye apne confession mein.");
+          return;
+      }
+
+      localStorage.setItem('pending_confession', text);
+      const btn = document.querySelector("#stepInitiate button");
+      btn.innerText = "OPENING SECURE GATEWAY...";
+      btn.disabled = true;
+
       try {
-        const confessionInput = document.getElementById('confessionInput');
-        if (!confessionInput) return;
-        
-        const text = confessionInput.value.trim();
-        if (text.length < 10) {
-            alert("Kam se kam 10 characters likhiye apne confession mein.");
-            return;
-        }
-
-        // Save text temporarily for post-payment handling
-        localStorage.setItem('pending_confession', text);
-
-        const btn = document.querySelector("#stepInitiate button");
-        btn.innerText = "CONNECTING GATEWAY...";
-        btn.disabled = true;
-
-        // Call Cloudflare Worker to create Cashfree order
         let response = await fetch('https://shiny-heart-479e.vishalkumarpel97.workers.dev/create-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
@@ -159,30 +156,24 @@
         let data = await response.json();
         
         if (data.payment_session_id) {
-            const cashfree = Cashfree({ mode: "sandbox" }); // Production ke waqt "production" kar dena
+            const cashfree = Cashfree({ mode: "sandbox" });
             cashfree.checkout({
                 paymentSessionId: data.payment_session_id,
                 redirectTarget: "_self"
             });
-        } else {
-            alert("Gateway error. Please try again.");
-            console.log(data);
-            btn.innerText = "SEAL ENTRY & UNLOCK — ₹13";
-            btn.disabled = false;
+            return;
         }
       } catch (err) {
-        console.error("Error:", err);
-        alert("Connection failed: " + err.message);
-        const btn = document.querySelector("#stepInitiate button");
-        btn.innerText = "SEAL ENTRY & UNLOCK — ₹13";
-        btn.disabled = false;
+        console.log("Worker fetch failed, switching to direct fallback link.");
       }
+
+      // Fallback redirection if worker fails
+      window.location.href = "https://payments-test.cashfree.com/links?code=Yb243oi0h00g_AAAAAACrzrc";
     }
 
-    // Check if returned from payment redirect
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('order_id')) {
+      if (urlParams.has('order_id') || urlParams.has('code')) {
         completeSuccessfulUnlock();
       }
     });
