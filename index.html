@@ -3,307 +3,128 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THE BLACK LEDGER // MONOLITH PROTOCOL</title>
-
-  <!-- Tailwind CSS -->
+  <title>Secure Payment Portal</title>
+  <!-- Tailwind CSS CDN for modern UI -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
-  <style>
-    body {
-      background-color: #0d0d0d;
-      color: #d1d5db;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-    .mono {
-      font-family: 'Space Mono', monospace;
-    }
-    .blurred {
-      filter: blur(8px);
-      user-select: none;
-      pointer-events: none;
-      background-color: #1a1a1a;
-      color: #4b5563;
-    }
-    .scanline {
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
-                  linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
-      background-size: 100% 3px, 6px 100%;
-    }
-  </style>
 </head>
-<body class="min-h-screen p-4 flex flex-col items-center justify-start scanline">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
 
-  <!-- Top Protocol Bar -->
-  <header class="w-full max-w-md border border-neutral-700 p-3 mb-4 bg-neutral-900 rounded flex justify-between items-center text-[11px] mono">
-    <div class="flex items-center gap-2">
-      <span class="text-neutral-400">LEDGER PROTOCOL // 30-DAY</span>
+  <div class="w-full max-w-md bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden p-6 sm:p-8">
+    
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold tracking-tight text-white">Complete Your Payment</h1>
+      <p class="text-sm text-slate-400 mt-1">Scan the QR code and submit details below</p>
     </div>
-    <div class="text-neutral-200 font-bold">
-      ARCHIVE: <span id="counterDisplay" class="text-white">#000,142</span>
+
+    <!-- Amount Display Box -->
+    <div class="bg-slate-900/60 border border-slate-700/60 rounded-xl p-4 text-center mb-6">
+      <span class="text-xs uppercase tracking-wider text-slate-400 font-medium">Amount to Pay</span>
+      <div class="text-3xl font-extrabold text-emerald-400 mt-1">₹13</div>
     </div>
-  </header>
 
-  <main class="w-full max-w-md flex flex-col gap-4">
+    <!-- QR Code Section -->
+    <div class="bg-white p-4 rounded-xl flex flex-col items-center justify-center mb-6 shadow-inner">
+      <!-- Replace 'your-qr-code.png' with your actual QR image file/path -->
+      <img src="your-qr-code.png" alt="UPI QR Code" class="w-48 h-48 object-contain rounded-lg">
+      <span class="text-xs text-slate-500 font-medium mt-2">Scan with GPay, PhonePe, Paytm or any UPI App</span>
+    </div>
 
-    <!-- Vault Box Interface -->
-    <div id="vaultStage" class="border border-neutral-700 bg-neutral-900 p-5 rounded-lg shadow-2xl">
-      <div class="flex justify-between items-center mb-1">
-        <h1 class="text-base font-bold tracking-tight text-white uppercase mono">
-          THE BLACK LEDGER
-        </h1>
-        <span class="text-[10px] mono text-neutral-400">
-          ZERO LOGS
-        </span>
-      </div>
-
-      <div class="text-center mb-4">
-        <h2 class="text-white text-xs font-bold tracking-wider uppercase mb-1.5 leading-relaxed">
-          Deposit the unsaid truth you carry. Payment identity is strictly separated.
-        </h2>
-
-        <!-- Textarea Box matching exact video style -->
-        <div class="my-4 border border-neutral-600 bg-neutral-950 rounded p-3 text-left">
-          <textarea
-            id="confessionInput"
-            rows="4"
-            maxlength="280"
-            placeholder="Type your unsaid truth here... (Phone numbers & emails auto-scrubbed)"
-            class="w-full bg-transparent text-neutral-200 text-xs focus:outline-none resize-none placeholder-neutral-500 mono"
-          ></textarea>
-        </div>
-
-        <div class="flex justify-between text-[10px] mono text-neutral-400 mb-4 px-1">
-          <span>PII SANITIZER: READY</span>
-          <span id="charCount">0 / 280</span>
-        </div>
-      </div>
-
-      <!-- Seal Entry Button -->
-      <div id="stepInitiate">
-        <button
-          type="button"
-          id="payWithUropayBtn"
-          class="w-full bg-neutral-100 hover:bg-white text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+    <!-- Payment Form -->
+    <form id="paymentForm" class="space-y-4">
+      
+      <!-- UTR Input -->
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5" for="utr">
+          12-Digit UTR / Ref Number <span class="text-red-400">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="utr" 
+          maxlength="12" 
+          placeholder="e.g. 4352xxxxxxxx" 
+          class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm tracking-wider font-mono"
+          required
         >
-          <span>SEAL ENTRY & UNLOCK — ₹13</span>
-        </button>
-        <p class="text-[10px] text-center text-neutral-500 mt-2.5 mono">
-          Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)
-        </p>
       </div>
 
-    </div>
-
-    <!-- Unlocked Success Persona Card Block -->
-    <div id="personaBlock" class="hidden border border-green-800 bg-neutral-900 p-5 rounded-lg mono text-center flex-col items-center">
-      <div class="text-[10px] text-green-400 tracking-widest uppercase mb-1">● NODE UNLOCKED SUCCESSFULLY</div>
-      <h2 id="personaArchetype" class="text-base font-bold text-white uppercase tracking-wider mb-1">THE SILENT MARTYR</h2>
-      <p id="personaRarity" class="text-xs text-neutral-400 mb-3">ARCHETYPE ASSIGNED</p>
-      <canvas id="storyCanvas" width="1080" height="1920" class="hidden"></canvas>
-      <img id="cardPreview" class="w-52 h-auto border border-neutral-700 rounded shadow-2xl mb-4" alt="Persona Card">
-      <a id="downloadBtn" download="BlackLedger_Node.png" class="w-full bg-neutral-100 text-black py-2.5 px-4 rounded text-xs font-bold uppercase tracking-wider block text-center font-bold">
-        DOWNLOAD INSTAGRAM STORY BADGE
-      </a>
-    </div>
-
-    <!-- Live Vault Stream Feed -->
-    <div class="border border-neutral-700 bg-neutral-900 p-4 rounded-lg">
-      <div class="flex justify-between items-center mb-3">
-        <span class="text-xs font-bold tracking-wider text-neutral-200 uppercase mono">
-          LIVE VAULT STREAM
-        </span>
-        <span id="lockBadge" class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono font-bold">
-          LOCKED
-        </span>
-      </div>
-
-      <div class="flex flex-col gap-4 text-xs" id="feedList">
-        <!-- Mock item matching video aesthetic -->
-        <div class="border-l-2 border-neutral-700 pl-3 py-1">
-          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
-            <span>NODE #000142</span>
-            <span>THE CALCULATED TRAITOR</span>
-          </div>
-          <p class="text-neutral-300 leading-relaxed font-sans">
-            <span class="vault-blur blurred">मेरे बेस्ट फ्रेंड को लगता है कि उसकी मंगेतर बहुत सीधी-सादी है, पर सच यह है कि...</span>
-          </p>
-        </div>
-
-        <div class="border-l-2 border-neutral-700 pl-3 py-1">
-          <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
-            <span>NODE #000141</span>
-            <span>THE PRAGMATIC SINNER</span>
-          </div>
-          <p class="text-neutral-300 leading-relaxed font-sans">
-            <span class="vault-blur blurred">मैंने अपने जीजाजी की अलमारी में एक दूसरा फोन और वो पेपर्स देख लिए हैं जो...</span>
-          </p>
+      <!-- Screenshot Upload -->
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5" for="screenshot">
+          Upload Payment Screenshot <span class="text-red-400">*</span>
+        </label>
+        <div class="flex items-center justify-center w-full">
+          <label class="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-700 border-dashed rounded-lg cursor-pointer bg-slate-950/40 hover:bg-slate-900/60 transition">
+            <div class="flex flex-col items-center justify-center pt-3 pb-3 px-4 text-center">
+              <p class="text-xs text-slate-300 font-medium" id="fileNameText">Click to upload screenshot</p>
+              <p class="text-[10px] text-slate-500 mt-1">PNG, JPG up to 5MB</p>
+            </div>
+            <input type="file" id="screenshot" accept="image/*" class="hidden" required />
+          </label>
         </div>
       </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        class="w-full mt-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-emerald-900/20 text-sm tracking-wide"
+      >
+        Verify & Submit Payment
+      </button>
+    </form>
+
+    <!-- Footer Security Note -->
+    <div class="text-center mt-6">
+      <p class="text-[11px] text-slate-500">🔒 Secure Verification Process • Instant Activation</p>
     </div>
 
-  </main>
+  </div>
 
-  <!-- JavaScript Logic -->
+  <!-- JavaScript for UX Interactions & Validation -->
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAlmnaSjmU5FRTcgbtmdaOM00hdUwieLOZc",
-      authDomain: "blackledger-759c1.firebaseapp.com",
-      databaseURL: "https://blackledger-759c1-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "blackledger-759c1",
-      storageBucket: "blackledger-759c1.firebasestorage.app",
-      messagingSenderId: "1064101172402",
-      appId: "1:1064101172402:web:951950dd4e136c44e965eb"
-    };
+    // Show selected file name on the upload box
+    const fileInput = document.getElementById('screenshot');
+    const fileNameText = document.getElementById('fileNameText');
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const confessionsRef = db.ref("confessions");
-
-    const UROPAY_CHECKOUT_URL = "https://p.urpy.link/efQL";
-
-    let isUnlocked = false;
-    const confessionInput = document.getElementById("confessionInput");
-
-    confessionInput.addEventListener("input", () => {
-      document.getElementById("charCount").innerText = `${confessionInput.value.length} / 280`;
+    fileInput.addEventListener('change', function(e) {
+      if (e.target.files.length > 0) {
+        fileNameText.textContent = "Selected: " + e.target.files[0].name;
+        fileNameText.classList.add('text-emerald-400', 'font-semibold');
+      }
     });
 
-    document.getElementById("payWithUropayBtn").addEventListener("click", () => {
-      const text = confessionInput.value.trim();
-      if (!text) {
-        alert("Pehle apna raaz toh likho!");
+    // Handle Form Submit
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const utr = document.getElementById('utr').value.trim();
+      const file = fileInput.files[0];
+
+      // Strict 12-digit check
+      if (utr.length !== 12 || isNaN(utr)) {
+        alert('Please enter a valid 12-digit UTR/Reference number.');
         return;
       }
 
-      localStorage.setItem("pending_confession", text);
-      window.location.href = UROPAY_CHECKOUT_URL;
-    });
-
-    window.addEventListener("load", () => {
-      const savedText = localStorage.getItem("pending_confession");
-      if (savedText && (window.location.search.includes("success") || window.location.href.includes("success") || localStorage.getItem("paid") === "true")) {
-        localStorage.removeItem("pending_confession");
-        localStorage.removeItem("paid");
-        
-        isUnlocked = true;
-        const archetypes = [
-          { name: "THE SILENT MARTYR" },
-          { name: "THE PRAGMATIC SINNER" },
-          { name: "THE SHADOW OBSERVER" },
-          { name: "THE CALCULATED TRAITOR" }
-        ];
-
-        const chosen = archetypes[Math.floor(Math.random() * archetypes.length)];
-        const nodeNum = Math.floor(100000 + Math.random() * 900000);
-        
-        const cleanText = savedText
-          .replace(/\b\d{10,12}\b/g, "[REDACTED]")
-          .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[REDACTED]");
-
-        confessionsRef.push({
-          nodeId: nodeNum,
-          archetype: chosen.name,
-          content: cleanText,
-          timestamp: Date.now()
-        });
-
-        document.getElementById("vaultStage").style.display = "none";
-        const personaBlock = document.getElementById("personaBlock");
-        personaBlock.style.display = "flex";
-        
-        document.getElementById("personaArchetype").innerText = chosen.name;
-        document.getElementById("personaRarity").innerText = "ARCHETYPE ASSIGNED // NODE #" + nodeNum;
-
-        const badge = document.getElementById("lockBadge");
-        badge.className = "text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded mono font-bold";
-        badge.innerText = "UNLOCKED";
-
-        generateStoryCard(chosen.name, nodeNum);
+      if (!file) {
+        alert('Please upload the payment screenshot.');
+        return;
       }
-    });
 
-    confessionsRef.on("value", (snapshot) => {
-      const feed = document.getElementById("feedList");
-      const data = snapshot.val();
+      // Package data for backend handling
+      const formData = new FormData();
+      formData.append('utr', utr);
+      formData.append('screenshot', file);
+
+      // Temporary simulation of successful submission
+      alert('Payment details submitted successfully! We are verifying your transaction.');
       
-      if (!data) return;
-
-      const items = Object.values(data).reverse();
-      document.getElementById("counterDisplay").innerText = `#000,${142 + items.length}`;
-      const blurClass = isUnlocked ? "" : "blurred";
-
-      let htmlContent = "";
-      items.forEach((item) => {
-        htmlContent += `
-          <div class="border-l-2 border-neutral-700 pl-3 py-1">
-            <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
-              <span>NODE #${item.nodeId}</span>
-              <span>${item.archetype}</span>
-            </div>
-            <p class="text-neutral-300 leading-relaxed font-sans">
-              <span class="vault-blur ${blurClass}">${item.content}</span>
-            </p>
-          </div>`;
-      });
-      feed.innerHTML = htmlContent;
+      // Clear form after submit
+      document.getElementById('paymentForm').reset();
+      fileNameText.textContent = "Click to upload screenshot";
+      fileNameText.classList.remove('text-emerald-400', 'font-semibold');
     });
-
-    function generateStoryCard(archetype, nodeNum) {
-      const canvas = document.getElementById("storyCanvas");
-      const ctx = canvas.getContext("2d");
-
-      ctx.fillStyle = "#0d0d0d";
-      ctx.fillRect(0, 0, 1080, 1920);
-
-      ctx.strokeStyle = "#333333";
-      ctx.lineWidth = 8;
-      ctx.strokeRect(60, 60, 960, 1800);
-
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = "bold 36px monospace";
-      ctx.fillText("THE BLACK LEDGER // ARCHIVE PROTOCOL", 120, 200);
-
-      ctx.fillStyle = "#888888";
-      ctx.font = "30px monospace";
-      ctx.fillText(`NODE ID: #${nodeNum}`, 120, 255);
-
-      ctx.strokeStyle = "#444444";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(120, 290);
-      ctx.lineTo(960, 290);
-      ctx.stroke();
-
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = "bold 64px sans-serif";
-      ctx.fillText(archetype, 120, 920);
-
-      ctx.fillStyle = "#DC2626";
-      ctx.font = "34px monospace";
-      ctx.fillText("ARCHETYPE ASSIGNED", 120, 985);
-
-      ctx.fillStyle = "#A3A3A3";
-      ctx.font = "32px monospace";
-      ctx.fillText("CONFESSION SUBMITTED TO LEDGER", 120, 1055);
-
-      ctx.fillStyle = "#666666";
-      ctx.font = "30px monospace";
-      ctx.fillText("THE BLACK LEDGER // blkldr.github.io", 120, 1720);
-
-      const dataUrl = canvas.toDataURL("image/png");
-      document.getElementById("cardPreview").src = dataUrl;
-      document.getElementById("downloadBtn").href = dataUrl;
-    }
   </script>
+
 </body>
 </html>
-
