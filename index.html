@@ -99,8 +99,9 @@ class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm fo
 <div id="stepInitiate">
 
 <button
+type="button"
 onclick="openPaymentModal()"
-class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2"
+class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2 cursor-pointer"
 >
 <span>SEAL ENTRY & UNLOCK — ₹13</span>
 </button>
@@ -135,9 +136,10 @@ class="w-full bg-neutral-900 border border-neutral-800 rounded p-2.5 text-xs tex
 >
 
 <button
+type="button"
 id="verifyBtn"
 onclick="verifyPaymentReference()"
-class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95"
+class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95 cursor-pointer"
 >
 CONTINUE AFTER PAYMENT
 </button>
@@ -199,40 +201,33 @@ Your Black Ledger node artifact.
 </p>
 
 </div>
+
 <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
-
 <div class="flex justify-between items-center mb-3">
-
 <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">
 Live Vault Stream
 </span>
-
 <span
 id="lockBadge"
 class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono"
 >
 LOCKED
 </span>
-
 </div>
-
-<div
-class="flex flex-col gap-3 text-xs"
-id="feedList"
->
-
+<div class="flex flex-col gap-3 text-xs" id="feedList">
 <p class="text-neutral-500 text-[11px] mono">
 Connecting to ledger feed...
 </p>
-
 </div>
 </div>
 
 </main>
 
+<!-- Payment Modal (Direct style control to avoid hiding issues) -->
 <div
 id="payModal"
-class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+style="display: none;"
+class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
 >
 
 <div
@@ -248,13 +243,11 @@ Pay ₹13 to Seal Node
 </h3>
 
 <div class="bg-white p-2 rounded mb-3 shadow-inner">
-
 <img
 id="modalQrImg"
 class="w-44 h-44 object-contain"
 alt="BharatPe UPI QR"
 >
-
 </div>
 
 <p class="text-[10px] text-neutral-400 mb-3">
@@ -265,14 +258,15 @@ to open an installed UPI app.
 <a
 id="modalUpiLink"
 href="#"
-class="w-full bg-neutral-100 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block"
+class="w-full bg-neutral-100 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block font-bold text-center"
 >
 OPEN UPI APP DIRECTLY
 </a>
 
 <button
+type="button"
 onclick="closeModalAndVerify()"
-class="w-full border border-neutral-700 hover:border-neutral-500 text-neutral-300 py-2 rounded text-[11px] uppercase"
+class="w-full border border-neutral-700 hover:border-neutral-500 text-neutral-300 py-2 rounded text-[11px] uppercase cursor-pointer"
 >
 I HAVE PAID
 </button>
@@ -281,679 +275,206 @@ I HAVE PAID
 </div>
 
 <script>
-
 const firebaseConfig={
-
-apiKey:
-"AIzaSyAlmnaSjmU5FRTcgbtmdaOM00hdUwieLOZc",
-
-authDomain:
-"blackledger-759c1.firebaseapp.com",
-
-databaseURL:
-"https://blackledger-759c1-default-rtdb.asia-southeast1.firebasedatabase.app",
-
-projectId:
-"blackledger-759c1",
-
-storageBucket:
-"blackledger-759c1.firebasestorage.app",
-
-messagingSenderId:
-"1064101172402",
-
-appId:
-"1:1064101172402:web:951950dd4e136c44e965eb"
-
+  apiKey: "AIzaSyAlmnaSjmU5FRTcgbtmdaOM00hdUwieLOZc",
+  authDomain: "blackledger-759c1.firebaseapp.com",
+  databaseURL: "https://blackledger-759c1-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "blackledger-759c1",
+  storageBucket: "blackledger-759c1.firebasestorage.app",
+  messagingSenderId: "1064101172402",
+  appId: "1:1064101172402:web:951950dd4e136c44e965eb"
 };
 
 firebase.initializeApp(firebaseConfig);
-
-const db=firebase.database();
-
-const confessionsRef=db.ref("confessions");
-
-
-/* BHARATPE DETAILS - CORRECTED */
-
-const DIRECT_UPI_ID=
-"BHARATPE2YOMOB8NOT09199@unitype";[span_1](start_span)[span_1](end_span)
-
-const DIRECT_UPI_NAME=
-"VISHAL";[span_2](start_span)[span_2](end_span)
-
-const DIRECT_UPI_AMOUNT=
-"13.00";
-
-const DIRECT_UPI_NOTE=
-"BlackLedgerVault";
-
-
-let isUnlocked=false;
-
-const input=
-document.getElementById("confessionInput");
-
-
-input.addEventListener(
-"input",
-()=>{
-
-document.getElementById(
-"charCount"
-).innerText=
-`${input.value.length} / 280`;
-
-}
-);
-
-
-function sanitizeInput(text){
-
-return text
-
-.replace(
-/\b\d{10,12}\b/g,
-"[REDACTED_NUM]"
-)
-
-.replace(
-/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
-"[REDACTED_MAIL]"
-)
-
-.replace(
-/@([A-Za-z0-9_]+)/g,
-"[REDACTED_HANDLE]"
-)
-
-.replace(
-/[A-Z]{5}[0-9]{4}[A-Z]{1}/g,
-"[REDACTED_PAN]"
-);
-
-}
-
-
-function buildDirectUpiUri(){
-
-return(
-"upi://pay"+
-"?pa="+
-encodeURIComponent(
-DIRECT_UPI_ID
-)+
-"&pn="+
-encodeURIComponent(
-DIRECT_UPI_NAME
-)+
-"&am="+
-DIRECT_UPI_AMOUNT+
-"&cu=INR"+
-"&tn="+
-encodeURIComponent(
-DIRECT_UPI_NOTE
-)
-);
-
-}
-
-
-function openPaymentModal(){
-
-const text=
-input.value.trim();
-
-if(text.length<10){
-
-alert(
-"Kam se kam 10 characters likhiye."
-);
-
-return;
-}
-
-const upiUri=
-buildDirectUpiUri();
-
-const modal=
-document.getElementById(
-"payModal"
-);
-
-const qr=
-document.getElementById(
-"modalQrImg"
-);
-
-const upiLink=
-document.getElementById(
-"modalUpiLink"
-);
-
-
-/* BHARATPE QR */
-
-qr.src=
-"https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="+
-encodeURIComponent(upiUri);
-
-upiLink.href=
-upiUri;
-
-modal.classList.remove(
-"hidden"
-);
-
-}
-
-
-function closeModalAndVerify(){
-
-document.getElementById(
-"payModal"
-).classList.add(
-"hidden"
-);
-
-document.getElementById(
-"stepInitiate"
-).classList.add(
-"hidden"
-);
-
-document.getElementById(
-"stepVerify"
-).classList.remove(
-"hidden"
-);
-
-document.getElementById(
-"verifyMsg"
-).classList.remove(
-"hidden"
-);
-
-document.getElementById(
-"verifyMsg"
-).innerText=
-"Payment successful hone ke baad UTR enter karein.";
-
-}
-
-
-const archetypes=[
-
-{
-name:
-"THE SILENT MARTYR"
-},
-
-{
-name:
-"THE PRAGMATIC SINNER"
-},
-
-{
-name:
-"THE SHADOW OBSERVER"
-},
-
-{
-name:
-"THE CALCULATED TRAITOR"
-}
-
-];
-
-
-confessionsRef.on(
-"value",
-(snapshot)=>{
-
-const feed=
-document.getElementById(
-"feedList"
-);
-
-feed.innerHTML="";
-
-const data=
-snapshot.val();
-
-if(!data){
-
-feed.innerHTML=`
-<p class="text-neutral-600 text-[11px] mono">
-No ledger nodes yet.
-</p>
-`;
-
-document.getElementById(
-"counterDisplay"
-).innerText=
-"LIVE";
-
-return;
-}
-
-const items=
-Object.values(data)
-.reverse();
-
-document.getElementById(
-"counterDisplay"
-).innerText=
-`${items.length} NODES`;
-
-const blurClass=
-isUnlocked
-?""
-:"blurred";
-
-items.forEach(
-(item)=>{
-
-const div=
-document.createElement(
-"div"
-);
-
-div.className=
-"border-l-2 border-neutral-800 pl-3 py-1";
-
-div.innerHTML=`
-
-<div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
-
-<span>
-NODE #${item.nodeId}
-</span>
-
-<span>
-${item.archetype}
-</span>
-
-</div>
-
-<p class="text-neutral-300 leading-relaxed">
-
-<span class="vault-blur ${blurClass}">
-${escapeHtml(item.content)}
-</span>
-
-</p>
-`;
-
-feed.appendChild(div);
-
-}
-);
-
-}
-);
-function escapeHtml(value){
-
-return String(value)
-
-.replace(
-/&/g,
-"&amp;"
-)
-
-.replace(
-/</g,
-"&lt;"
-)
-
-.replace(
-/>/g,
-"&gt;"
-)
-
-.replace(
-/"/g,
-"&quot;"
-)
-
-.replace(
-/'/g,
-"&#039;"
-);
-
-}
-
-
-function verifyPaymentReference(){
-
-const utr=
-document
-.getElementById(
-"utrInput"
-)
-.value
-.trim();
-
-if(
-!/^\d{12}$/.test(
-utr
-)
-){
-
-alert(
-"Please enter the 12-digit UTR / transaction reference."
-);
-
-return;
-}
-
-
-const confirmed=
-confirm(
-
-"Confirm that your UPI app shows a successful ₹13 payment to:\n\n"+
-DIRECT_UPI_ID+
-"\n\nUTR: "+
-utr+
-"\n\nContinue only if the payment was actually successful."
-
-);
-
-
-if(!confirmed){
-
-return;
-}
-
-
-completeUnlock(
-utr
-);
-
-}
-
-
-function completeUnlock(
-utr
-){
-
-if(isUnlocked){
-
-return;
-}
-
-isUnlocked=true;
-
-
-const chosen=
-archetypes[
-Math.floor(
-Math.random()*
-archetypes.length
-)
-];
-
-
-const nodeNum=
-Math.floor(
-100000+
-Math.random()*
-900000
-);
-
-
-const cleanConfession=
-sanitizeInput(
-input.value.trim()
-);
-
-
-confessionsRef.push({
-
-nodeId:
-nodeNum,
-
-archetype:
-chosen.name,
-
-content:
-cleanConfession,
-
-transactionReference:
-utr,
-
-timestamp:
-Date.now()
-
+const db = firebase.database();
+const confessionsRef = db.ref("confessions");
+
+const DIRECT_UPI_ID = "BHARATPE2YOMOB8NOT09199@unitype";[span_0](start_span)[span_0](end_span)
+const DIRECT_UPI_NAME = "VISHAL";[span_1](start_span)[span_1](end_span)
+const DIRECT_UPI_AMOUNT = "13.00";
+const DIRECT_UPI_NOTE = "BlackLedgerVault";
+
+let isUnlocked = false;
+const input = document.getElementById("confessionInput");
+
+input.addEventListener("input", () => {
+  document.getElementById("charCount").innerText = `${input.value.length} / 280`;
 });
 
-
-document.getElementById(
-"vaultStage"
-).classList.add(
-"hidden"
-);
-
-
-document.getElementById(
-"personaBlock"
-).classList.remove(
-"hidden"
-);
-
-
-document.getElementById(
-"personaArchetype"
-).innerText=
-chosen.name;
-
-
-document.getElementById(
-"personaRarity"
-).innerText=
-"ARCHETYPE ASSIGNED // NODE #"+
-nodeNum;
-
-
-document
-.querySelectorAll(
-".vault-blur"
-)
-.forEach(
-(element)=>{
-
-element.classList.remove(
-"blurred"
-);
-
-}
-);
-
-
-const badge=
-document.getElementById(
-"lockBadge"
-);
-
-
-badge.className=
-"text-[10px] bg-green-950 "+
-"text-green-400 border "+
-"border-green-900 px-2 "+
-"py-0.5 rounded mono";
-
-
-badge.innerText=
-"NODE UNLOCKED";
-
-
-generateStoryCard(
-chosen.name,
-nodeNum
-);
-
+function sanitizeInput(text) {
+  return text
+    .replace(/\b\d{10,12}\b/g, "[REDACTED_NUM]")
+    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[REDACTED_MAIL]")
+    .replace(/@([A-Za-z0-9_]+)/g, "[REDACTED_HANDLE]")
+    .replace(/[A-Z]{5}[0-9]{4}[A-Z]{1}/g, "[REDACTED_PAN]");
 }
 
-
-function generateStoryCard(
-archetype,
-nodeNum
-){
-
-const canvas=
-document.getElementById(
-"storyCanvas"
-);
-
-const ctx=
-canvas.getContext(
-"2d"
-);
-
-
-ctx.fillStyle=
-"#050505";
-
-ctx.fillRect(
-0,
-0,
-1080,
-1920
-);
-
-
-ctx.strokeStyle=
-"#222222";
-
-ctx.lineWidth=
-8;
-
-ctx.strokeRect(
-60,
-60,
-960,
-1800
-);
-
-
-ctx.fillStyle=
-"#DC2626";
-
-ctx.font=
-"bold 36px monospace";
-
-ctx.fillText(
-"THE BLACK LEDGER // ARCHIVE PROTOCOL",
-120,
-200
-);
-
-
-ctx.fillStyle=
-"#737373";
-
-ctx.font=
-"30px monospace";
-
-ctx.fillText(
-`NODE ID: #${nodeNum}`,
-120,
-255
-);
-
-
-ctx.strokeStyle=
-"#333333";
-
-ctx.lineWidth=
-2;
-
-ctx.beginPath();
-
-ctx.moveTo(
-120,
-290
-);
-
-ctx.lineTo(
-960,
-290
-);
-
-ctx.stroke();
-
-
-ctx.fillStyle=
-"#FFFFFF";
-
-ctx.font=
-"bold 64px sans-serif";
-
-ctx.fillText(
-archetype,
-120,
-920
-);
-
-
-ctx.fillStyle=
-"#DC2626";
-
-ctx.font=
-"34px monospace";
-
-ctx.fillText(
-"ARCHETYPE ASSIGNED",
-120,
-985
-);
-
-
-ctx.fillStyle=
-"#A3A3A3";
-
-ctx.font=
-"32px monospace";
-
-ctx.fillText(
-"CONFESSION SUBMITTED TO LEDGER",
-120,
-1055
-);
-
-
-ctx.fillStyle=
-"#525252";
-
-ctx.font=
-"30px monospace";
-
-ctx.fillText(
-"THE BLACK LEDGER // blkldr.github.io",
-120,
-1720
-);
-
-
-const dataUrl=
-canvas.toDataURL(
-"image/png"
-);
-
-
-document.getElementById(
-"cardPreview"
-).src=
-dataUrl;
-
-
-document.getElementById(
-"downloadBtn"
-).href=
-dataUrl;
-
+function buildDirectUpiUri() {
+  return "upi://pay?pa=" + encodeURIComponent(DIRECT_UPI_ID) + "&pn=" + encodeURIComponent(DIRECT_UPI_NAME) + "&am=" + DIRECT_UPI_AMOUNT + "&cu=INR&tn=" + encodeURIComponent(DIRECT_UPI_NOTE);
 }
 
+function openPaymentModal() {
+  const text = input.value.trim();
+  if (!text) {
+    alert("Pehle kuch confession toh likho!");
+    return;
+  }
+
+  const upiUri = buildDirectUpiUri();
+  const modal = document.getElementById("payModal");
+  const qr = document.getElementById("modalQrImg");
+  const upiLink = document.getElementById("modalUpiLink");
+
+  qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upiUri);
+  upiLink.href = upiUri;
+  
+  // Directly set display to flex so it opens instantly
+  modal.style.display = "flex";
+}
+
+function closeModalAndVerify() {
+  document.getElementById("payModal").style.display = "none";
+  document.getElementById("stepInitiate").classList.add("hidden");
+  document.getElementById("stepVerify").classList.remove("hidden");
+  document.getElementById("verifyMsg").classList.remove("hidden");
+  document.getElementById("verifyMsg").innerText = "Payment successful hone ke baad UTR enter karein.";
+}
+
+const archetypes = [
+  { name: "THE SILENT MARTYR" },
+  { name: "THE PRAGMATIC SINNER" },
+  { name: "THE SHADOW OBSERVER" },
+  { name: "THE CALCULATED TRAITOR" }
+];
+
+confessionsRef.on("value", (snapshot) => {
+  const feed = document.getElementById("feedList");
+  feed.innerHTML = "";
+  const data = snapshot.val();
+  if (!data) {
+    feed.innerHTML = `<p class="text-neutral-600 text-[11px] mono">No ledger nodes yet.</p>`;
+    document.getElementById("counterDisplay").innerText = "LIVE";
+    return;
+  }
+  const items = Object.values(data).reverse();
+  document.getElementById("counterDisplay").innerText = `${items.length} NODES`;
+  const blurClass = isUnlocked ? "" : "blurred";
+
+  items.forEach((item) => {
+    const div = document.createElement("div");
+    div.className = "border-l-2 border-neutral-800 pl-3 py-1";
+    div.innerHTML = `
+      <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
+        <span>NODE #${item.nodeId}</span>
+        <span>${item.archetype}</span>
+      </div>
+      <p class="text-neutral-300 leading-relaxed">
+        <span class="vault-blur ${blurClass}">${escapeHtml(item.content)}</span>
+      </p>`;
+    feed.appendChild(div);
+  });
+});
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function verifyPaymentReference() {
+  const utr = document.getElementById("utrInput").value.trim();
+  if (!/^\d{12}$/.test(utr)) {
+    alert("Please enter the 12-digit UTR / transaction reference.");
+    return;
+  }
+
+  const confirmed = confirm("Confirm that your UPI app shows a successful ₹13 payment to:\n\n" + DIRECT_UPI_ID + "\n\nUTR: " + utr + "\n\nContinue only if the payment was actually successful.");
+  if (!confirmed) return;
+
+  completeUnlock(utr);
+}
+
+function completeUnlock(utr) {
+  if (isUnlocked) return;
+  isUnlocked = true;
+
+  const chosen = archetypes[Math.floor(Math.random() * archetypes.length)];
+  const nodeNum = Math.floor(100000 + Math.random() * 900000);
+  const cleanConfession = sanitizeInput(input.value.trim());
+
+  confessionsRef.push({
+    nodeId: nodeNum,
+    archetype: chosen.name,
+    content: cleanConfession,
+    transactionReference: utr,
+    timestamp: Date.now()
+  });
+
+  document.getElementById("vaultStage").classList.add("hidden");
+  document.getElementById("personaBlock").classList.remove("hidden");
+  document.getElementById("personaArchetype").innerText = chosen.name;
+  document.getElementById("personaRarity").innerText = "ARCHETYPE ASSIGNED // NODE #" + nodeNum;
+
+  document.querySelectorAll(".vault-blur").forEach((element) => {
+    element.classList.remove("blurred");
+  });
+
+  const badge = document.getElementById("lockBadge");
+  badge.className = "text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded mono";
+  badge.innerText = "NODE UNLOCKED";
+
+  generateStoryCard(chosen.name, nodeNum);
+}
+
+function generateStoryCard(archetype, nodeNum) {
+  const canvas = document.getElementById("storyCanvas");
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#050505";
+  ctx.fillRect(0, 0, 1080, 1920);
+
+  ctx.strokeStyle = "#222222";
+  ctx.lineWidth = 8;
+  ctx.strokeRect(60, 60, 960, 1800);
+
+  ctx.fillStyle = "#DC2626";
+  ctx.font = "bold 36px monospace";
+  ctx.fillText("THE BLACK LEDGER // ARCHIVE PROTOCOL", 120, 200);
+
+  ctx.fillStyle = "#737373";
+  ctx.font = "30px monospace";
+  ctx.fillText(`NODE ID: #${nodeNum}`, 120, 255);
+
+  ctx.strokeStyle = "#333333";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(120, 290);
+  ctx.lineTo(960, 290);
+  ctx.stroke();
+
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "bold 64px sans-serif";
+  ctx.fillText(archetype, 120, 920);
+
+  ctx.fillStyle = "#DC2626";
+  ctx.font = "34px monospace";
+  ctx.fillText("ARCHETYPE ASSIGNED", 120, 985);
+
+  ctx.fillStyle = "#A3A3A3";
+  ctx.font = "32px monospace";
+  ctx.fillText("CONFESSION SUBMITTED TO LEDGER", 120, 1055);
+
+  ctx.fillStyle = "#525252";
+  ctx.font = "30px monospace";
+  ctx.fillText("THE BLACK LEDGER // blkldr.github.io", 120, 1720);
+
+  const dataUrl = canvas.toDataURL("image/png");
+  document.getElementById("cardPreview").src = dataUrl;
+  document.getElementById("downloadBtn").href = dataUrl;
+}
 </script>
 
 </body>
