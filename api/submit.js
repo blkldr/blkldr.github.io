@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     const submissionId = 'bl_' + Math.random().toString(36).substring(2, 9);
     const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
-    const TELEGRAM_BOT_TOKEN = '8613205485:AAHBEE3qHwVwL5AhCuhh6_SgFCPowIAWqQs';
+    const TELEGRAM_BOT_TOKEN = '8616348252:AAEl1hljJkamKp6E99EjCYz7TMsF_Ozig_Y';
     const TELEGRAM_CHAT_ID = '7499975513';
 
     const message = `🔔 New UTR Submission!\n\nUTR: ${utr}\nConfession: ${confession}\nSubmission ID: ${submissionId}\nStatus: Pending`;
@@ -50,4 +50,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Internal server error: ' + error.message });
   }
 }
-
