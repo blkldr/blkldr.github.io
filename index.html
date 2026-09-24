@@ -3,234 +3,294 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>THE BLACK LEDGER // VIP VAULT PROTOCOL</title>
+<title>THE BLACK LEDGER // 30-DAY PROTOCOL</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:#020202;color:#b3b3b3;font-family:'Share Tech Mono',monospace}
-body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.04;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,#fff 3px)}
-.glow{text-shadow:0 0 20px rgba(220,38,38,.4)}
-.red{color:#dc2626}
-.dim{color:#666}
-.panel{background:linear-gradient(145deg,#070707,#010101);border:1px solid #1f1f1f;box-shadow:0 0 40px rgba(0,0,0,.9)}
-.line{height:1px;background:linear-gradient(90deg,transparent,#262626,transparent)}
-input,textarea{width:100%;background:#040404;border:1px solid #222;color:#eee;outline:0;font-family:inherit;transition:all .3s}
-input:focus,textarea:focus{border-color:#dc2626;box-shadow:0 0 20px rgba(220,38,38,.2)}
-button{font-family:inherit;cursor:pointer;transition:all .3s}
-.scan{position:relative;overflow:hidden}
-.scan:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(220,38,38,.07),transparent);transform:translateX(-100%);animation:sweep 5s infinite}
-@keyframes sweep{60%,100%{transform:translateX(100%)}}
-@keyframes pulse-slow{0%,100%{opacity:1}50%{opacity:.4}}
-.pulse{animation:pulse-slow 2s infinite}
+html,body{margin:0;min-height:100%;background:#080808}
+body{color:#d0d0d0;font-family:'Share Tech Mono',monospace;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:99;pointer-events:none;
+background:repeating-linear-gradient(0deg,rgba(255,255,255,.045) 0,
+rgba(255,255,255,.045) 1px,transparent 1px,transparent 4px)}
+body:after{content:"";position:fixed;inset:0;z-index:98;pointer-events:none;
+background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.45) 100%)}
+.wrap{max-width:680px;margin:auto;padding:18px 14px 40px}
+.panel{background:linear-gradient(135deg,#181818,#101010 55%,#161616);
+border:1px solid #303030;border-radius:13px;box-shadow:0 8px 30px #000}
+.top{height:74px;padding:0 20px;display:flex;align-items:center;
+justify-content:space-between;font-size:14px;color:#999}
+.title{font-size:27px;letter-spacing:1px;color:#eee;text-shadow:1px 1px #555}
+.sub{font-size:17px;color:#999;line-height:1.5}
+.area{background:#151515;border:1px solid #242424;border-radius:6px;
+color:#ddd;font-family:inherit;resize:none;outline:none}
+.area:focus{border-color:#555;box-shadow:0 0 12px #000}
+.btn{background:#f4f4f4;color:#080808;border:0;border-radius:7px;
+font-weight:bold;letter-spacing:1px;box-shadow:0 3px 10px #000}
+.btn:active{transform:translateY(1px)}
+.redbtn{background:#700000;color:#fff;border:1px solid #a00000}
+.badge{background:#850000;border-radius:6px;color:#fff;padding:8px 14px;
+font-size:13px;box-shadow:0 0 12px #300}
+.stream{border-left:3px solid #555;padding:0 0 0 20px}
+.entry{border-bottom:1px solid #333;padding:15px 0}
+.entry:last-child{border-bottom:0}
+.meta{display:flex;justify-content:space-between;color:#666;font-size:11px}
+.locked{filter:blur(3px);opacity:.38;user-select:none}
+.mono{font-family:inherit}
+.line{height:1px;background:#343434}
+.small{font-size:11px;color:#777}
 .hidden{display:none!important}
-.fade{animation:fade .4s ease}
+.fade{animation:fade .35s ease}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.node{border:1px solid #2a0808;background:#050202}
+.spin{animation:blink 1.5s infinite}
+@keyframes blink{50%{opacity:.35}}
 </style>
 </head>
 
 <body>
-<main class="max-w-2xl mx-auto px-4 py-8">
+<div class="wrap">
 
-<!-- HEADER -->
-<header class="panel p-6 mb-6 scan rounded-lg">
-<div class="flex justify-between text-[10px] red tracking-widest font-bold">
-<span>VIP PROTOCOL // LEVEL-5 SECURE</span>
-<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span> ONLINE</span>
-</div>
-<div class="line my-5"></div>
-<h1 class="text-4xl md:text-5xl text-white glow tracking-wider uppercase font-extrabold">THE BLACK LEDGER</h1>
-<p class="text-[11px] dim mt-3 tracking-wider">ELITE ANONYMOUS HUMAN ARCHIVE</p>
-<div class="flex justify-between mt-6 text-[10px] border-t border-neutral-900 pt-4">
-<span class="dim">ENCRYPTION: AES-256-GMC</span>
-<span class="red tracking-widest">ZERO TRACE GUARANTEE</span>
-</div>
+<!-- TOP BAR -->
+<header class="panel top">
+<div>LEDGER PROTOCOL // 30-DAY</div>
+<div>ARCHIVE: ACTIVE</div>
 </header>
 
-<!-- INTRO -->
-<section class="panel p-6 mb-6 rounded-lg">
-<div class="text-[10px] red mb-4 tracking-widest">[ 01 ] // THE CLASSIFIED VAULT</div>
-<h2 class="text-2xl md:text-3xl text-white leading-snug font-bold">
-Some truths are never meant<br>to leave your head.
-</h2>
-<p class="text-xs text-neutral-500 leading-6 mt-4">
-A private, elite underground archive. No names. No profiles. Just raw, unfiltered thoughts locked forever.
+<!-- MAIN VAULT -->
+<section class="panel mt-7 p-8">
+
+<div class="flex justify-between items-start gap-4">
+<div>
+<h1 class="title">THE BLACK LEDGER</h1>
+<p class="sub mt-2">
+Deposit the unsaid truth you carry.<br>
+Payment identity is strictly separated.
 </p>
-
-<div class="node p-5 mt-6 rounded">
-<div class="flex justify-between text-[10px]">
-<span class="red font-bold">VAULT DEPOSIT</span>
-<span class="dim">MAX 280 CHARS</span>
 </div>
-<textarea id="confession" rows="5" maxlength="280"
-class="mt-3 p-4 text-xs rounded"
-placeholder="Deposit your unsaid truth here..."></textarea>
-<div class="flex justify-between text-[10px] mt-3">
-<span class="dim">SERVER SANITIZER: ACTIVE</span>
-<span id="chars" class="dim">0/280</span>
-</div>
-</div>
-</section>
-
-<!-- ENTRY -->
-<section class="panel p-6 mb-6 rounded-lg">
-<div class="text-[10px] red mb-4 tracking-widest">[ 02 ] // ACCESS PROTOCOL</div>
-
-<div class="text-center py-4 bg-black/40 rounded border border-neutral-900">
-<div class="text-[10px] dim tracking-widest">VIP ACCESS FEE</div>
-<div class="text-5xl text-white mt-2 glow font-extrabold">₹13</div>
-<div class="text-[10px] dim mt-2">ONE ENTRY // UNIQUE NODE ASSIGNMENT</div>
+<div class="text-xs text-neutral-500 whitespace-nowrap">ZERO IDENTITY</div>
 </div>
 
-<div class="line my-6"></div>
+<div class="line mt-5 mb-5"></div>
 
-<div class="grid grid-cols-3 gap-3 text-center text-[10px]">
-<div class="border border-neutral-900 bg-black/20 p-3 rounded">
-<div class="text-white font-bold">01</div><div class="dim mt-1">PAY ₹13</div>
-</div>
-<div class="border border-neutral-900 bg-black/20 p-3 rounded">
-<div class="text-white font-bold">02</div><div class="dim mt-1">SUBMIT UTR</div>
-</div>
-<div class="border border-neutral-900 bg-black/20 p-3 rounded">
-<div class="text-white font-bold">03</div><div class="dim mt-1">DECRYPT</div>
-</div>
+<textarea id="confession" maxlength="280" rows="5"
+class="area w-full p-5 text-lg"
+placeholder="Type your unsaid truth here..."></textarea>
+
+<div class="flex justify-between mt-2 small">
+<span>PII SANITIZER: READY</span>
+<span id="chars">0 / 280</span>
 </div>
 
-<button id="beginBtn"
-class="w-full mt-6 bg-gradient-to-r from-red-950 via-red-900 to-red-950 hover:from-red-900 hover:to-red-800 text-white border border-red-800 py-4 font-bold text-xs tracking-widest uppercase rounded shadow-lg">
-INITIATE VIP ENTRY // ₹13
+<button id="startBtn"
+class="btn w-full py-4 mt-7 text-base">
+SEAL ENTRY &amp; UNLOCK — ₹13
 </button>
+
+<div class="text-center small mt-4">
+Direct UPI Intent
+<span class="text-neutral-500">(PhonePe / GPay / Paytm)</span>
+</div>
+
 </section>
 
 <!-- PAYMENT -->
-<section id="paymentBox" class="panel p-6 mb-6 rounded-lg hidden fade">
-<div class="text-[10px] red mb-4 tracking-widest">[ 03 ] // PAYMENT GATEWAY</div>
+<section id="payment" class="panel mt-7 p-7 hidden fade">
 
-<div class="border border-neutral-900 bg-black p-6 text-center rounded">
-<div class="text-[10px] dim tracking-wider">SCAN TO UNLOCK THE VAULT</div>
-<img src="qr.png" alt="Payment QR"
-class="w-56 h-56 mx-auto mt-5 bg-white p-2.5 rounded shadow-2xl">
-
-<div class="text-white text-2xl mt-4 font-bold">₹13.00</div>
-<div class="text-[10px] dim mt-1">INSTANT UPI TRANSFER</div>
+<div class="flex justify-between items-center">
+<div class="text-lg text-white">PAYMENT CHANNEL</div>
+<div class="text-xs text-neutral-500">₹13 ENTRY</div>
 </div>
 
-<div class="border border-red-950 bg-red-950/20 p-4 mt-5 text-[10px] leading-5 rounded text-neutral-400">
-<span class="red font-bold">NOTICE //</span> Complete the UPI payment first, then click below to enter your 12-digit UTR reference number for verification.
+<div class="line my-5"></div>
+
+<div class="text-center">
+<div class="text-xs text-neutral-500 mb-4">
+SCAN / PAY ₹13
+</div>
+
+<img src="qr.png" alt="UPI Payment QR"
+class="w-56 h-56 mx-auto bg-white p-2 rounded">
+
+<div class="text-xs text-neutral-500 mt-5">
+Complete the payment, then submit your UTR.
+</div>
 </div>
 
 <button id="paidBtn"
-class="w-full mt-5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-white py-4 text-xs font-bold tracking-widest uppercase rounded">
-PAYMENT COMPLETED → ENTER UTR
+class="btn w-full py-4 mt-6">
+PAYMENT COMPLETED → CONTINUE
 </button>
+
 </section>
 
 <!-- UTR -->
-<section id="utrBox" class="panel p-6 mb-6 rounded-lg hidden fade">
-<div class="text-[10px] red mb-4 tracking-widest">[ 04 ] // TRANSACTION TRACE</div>
+<section id="utrPanel" class="panel mt-7 p-7 hidden fade">
 
-<div class="text-xs text-neutral-400 leading-6 mb-5">
-The ledger verifies every transaction manually. Enter your 12-digit UTR to establish your cryptographic claim.
-</div>
+<div class="text-lg text-white">PAYMENT TRACE</div>
+<div class="line my-5"></div>
 
-<label class="text-[10px] dim tracking-widest">12-DIGIT UTR NUMBER</label>
-<input id="utr" maxlength="12" inputmode="numeric"
-class="mt-2 p-4 text-sm tracking-widest rounded"
-placeholder="Enter 12-digit reference">
+<p class="small leading-6">
+Your transaction reference is used to verify the ₹13 payment.
+Access is not granted until verification is complete.
+</p>
+
+<input id="utr"
+maxlength="12"
+inputmode="numeric"
+placeholder="12-DIGIT UTR"
+class="area w-full p-4 mt-5 text-lg tracking-widest">
 
 <button id="submitBtn"
-class="w-full mt-5 bg-red-950 hover:bg-red-900 border border-red-700 text-white py-4 font-bold text-xs tracking-widest uppercase rounded">
-SEAL ENTRY FOR VERIFICATION
+class="btn redbtn w-full py-4 mt-5">
+SUBMIT &amp; SEAL
 </button>
+
 </section>
 
 <!-- PENDING -->
-<section id="pending" class="panel p-8 mb-6 rounded-lg hidden fade text-center">
-<div class="text-[10px] red pulse font-bold tracking-widest">● VERIFICATION PROTOCOL ACTIVE</div>
-<div class="text-3xl text-white mt-5 tracking-wide font-extrabold">ENTRY PENDING</div>
-<p class="text-xs dim leading-6 mt-4 max-w-sm mx-auto">
-Your entry has been securely transmitted. Ledger administration is verifying the UTR. Keep this session active.
-</p>
-<div class="node p-4 mt-6 rounded text-[10px]">
-<div class="dim tracking-widest">STATUS CHECKER</div>
-<div id="poll" class="text-yellow-500 mt-2 font-bold">WAITING FOR NETWORK ACKNOWLEDGEMENT...</div>
+<section id="pending" class="panel mt-7 p-7 hidden fade text-center">
+
+<div class="text-red-600 text-xs spin">
+● VERIFICATION CHANNEL ACTIVE
 </div>
+
+<h2 class="text-2xl text-white mt-5">
+ENTRY PENDING
+</h2>
+
+<p class="small leading-6 mt-4">
+Your entry has been received.<br>
+Payment verification is in progress.
+</p>
+
+<div class="mt-6 border border-neutral-700 p-4">
+<div class="small">STATUS</div>
+<div id="statusText" class="text-yellow-600 mt-2">
+WAITING FOR VERIFICATION
+</div>
+</div>
+
 </section>
 
 <!-- ACCESS -->
-<section id="access" class="panel p-6 mb-6 rounded-lg hidden fade">
-<div class="text-[10px] text-green-500 font-bold tracking-widest">● ACCESS GRANTED // NODE UNLOCKED</div>
+<section id="access" class="panel mt-7 p-7 hidden fade">
+
+<div class="text-green-600 text-xs">
+● ACCESS GRANTED
+</div>
+
+<h2 class="text-3xl text-white mt-5">
+NODE UNLOCKED
+</h2>
+
+<div class="mt-6 border border-neutral-700 p-5">
+<div class="small">ARCHIVE NODE</div>
+<div id="node" class="text-4xl text-white mt-2">
+#------
+</div>
+
 <div class="line my-5"></div>
 
-<div class="text-[10px] dim tracking-widest">YOUR ASSIGNED NODE</div>
-<div id="node" class="text-5xl text-white glow mt-2 font-black">#------</div>
+<div class="small">DARK PERSONA</div>
+<div id="persona" class="text-xl text-white mt-2"></div>
+</div>
 
-<div class="node p-5 mt-6 rounded">
-<div class="text-[10px] dim tracking-widest">DARK PERSONA PROFILE</div>
-<div id="persona" class="text-xl text-white mt-3 font-bold tracking-wider"></div>
-<div class="line my-4"></div>
-<p class="text-[10px] dim leading-5">
-Your unsaid truth is now permanently embedded in the clandestine ledger stream.
+<p class="small mt-5">
+Your anonymous entry has been sealed into the ledger.
 </p>
-</div>
 
-<div class="text-center text-[10px] dim mt-6 tracking-widest">
-NODE IMMUTABLE // SECURE ARCHIVE
-</div>
 </section>
 
 <!-- REJECT -->
-<section id="rejected" class="panel p-8 mb-6 rounded-lg hidden fade text-center">
-<div class="red text-[10px] font-bold tracking-widest">● VERIFICATION REJECTED</div>
-<div class="text-2xl text-white mt-4 font-bold">ENTRY DECLINED</div>
-<p class="text-xs dim leading-6 mt-4">
-The submitted transaction reference could not be cryptographically authenticated.
+<section id="reject" class="panel mt-7 p-7 hidden fade text-center">
+
+<div class="text-red-600 text-xs">
+● VERIFICATION FAILED
+</div>
+
+<h2 class="text-2xl text-white mt-4">
+ENTRY REJECTED
+</h2>
+
+<p class="small leading-6 mt-4">
+The submitted transaction could not be verified.
 </p>
+
 </section>
 
-<!-- LEDGER -->
-<section class="panel p-6 mb-6 rounded-lg">
+<!-- LIVE STREAM -->
+<section class="panel mt-7 p-7">
+
 <div class="flex justify-between items-center">
-<div class="text-[10px] red tracking-widest">[ 05 ] // LIVE CLANDESTINE FEED</div>
-<div class="text-[9px] dim">REALTIME STREAM</div>
+<h2 class="text-xl text-white">
+LIVE VAULT STREAM
+</h2>
+<span id="lockBadge" class="badge">LOCKED</span>
 </div>
 
 <div class="line my-5"></div>
 
-<div id="feed" class="space-y-3">
-<div class="text-[10px] dim text-center py-6">
-ESTABLISHING SECURE SOCKET...
+<div id="feed" class="stream">
+
+<div class="entry">
+<div class="meta">
+<span>NODE // SEALED</span>
+<span>THE SILENT ARCHIVE</span>
 </div>
+<div class="locked text-lg mt-3">
+Entry content remains sealed until verified.
+</div>
+</div>
+
+<div class="entry">
+<div class="meta">
+<span>NODE // SEALED</span>
+<span>ANONYMOUS</span>
+</div>
+<div class="locked text-lg mt-3">
+A truth exists here, but its contents remain hidden.
+</div>
+</div>
+
+<div class="entry">
+<div class="meta">
+<span>NODE // SEALED</span>
+<span>PRIVATE ENTRY</span>
+</div>
+<div class="locked text-lg mt-3">
+The ledger contains no names. Only verified entries.
+</div>
+</div>
+
 </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="text-center py-8 text-[10px] dim leading-6 tracking-widest">
-THE BLACK LEDGER<br>
-30-DAY MONOLITH PROTOCOL<br>
-<span class="red">NO NAMES // NO FACES // ABSOLUTE ANONYMITY</span>
+<footer class="text-center mt-8 small leading-6">
+THE BLACK LEDGER // 30-DAY PROTOCOL<br>
+NO NAMES // NO FACES // NO FALSE CLAIMS
 </footer>
 
-</main>
+</div>
 
 <script>
-const $=id=>document.getElementById(id);
-const confession=$("confession"),chars=$("chars");
+const $=x=>document.getElementById(x);
+const confession=$("confession");
 
-confession.oninput=()=>chars.textContent=confession.value.length+"/280";
+confession.oninput=()=>{
+ $("chars").textContent=confession.value.length+" / 280";
+};
 
-$("beginBtn").onclick=()=>{
+$("startBtn").onclick=()=>{
  if(confession.value.trim().length<10)
   return alert("Write at least 10 characters.");
- $("paymentBox").classList.remove("hidden");
- $("paymentBox").scrollIntoView({behavior:"smooth"});
+
+ $("payment").classList.remove("hidden");
+ $("payment").scrollIntoView({behavior:"smooth"});
 };
 
 $("paidBtn").onclick=()=>{
- $("utrBox").classList.remove("hidden");
- $("utrBox").scrollIntoView({behavior:"smooth"});
+ $("utrPanel").classList.remove("hidden");
+ $("utrPanel").scrollIntoView({behavior:"smooth"});
 };
 
 $("utr").oninput=e=>{
@@ -238,76 +298,101 @@ $("utr").oninput=e=>{
 };
 
 $("submitBtn").onclick=async()=>{
- const text=confession.value.trim(),code=$("utr").value.trim();
+ const text=confession.value.trim();
+ const code=$("utr").value.trim();
 
- if(text.length<10)return alert("Confession is too short.");
+ if(text.length<10)
+  return alert("Write at least 10 characters.");
+
  if(!/^\d{12}$/.test(code))
   return alert("Enter a valid 12-digit UTR.");
 
  const btn=$("submitBtn");
- btn.disabled=true;btn.textContent="TRANSMITTING TRACE...";
+ btn.disabled=true;
+ btn.textContent="TRANSMITTING...";
 
  try{
   const r=await fetch("/api/submit",{
    method:"POST",
    headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({utr:code,confession:text})
+   body:JSON.stringify({
+    utr:code,
+    confession:text
+   })
   });
+
   const d=await r.json();
-  if(!r.ok)throw Error(d.error||"Submission failed");
+
+  if(!r.ok)
+   throw Error(d.error||"Submission failed");
 
   localStorage.setItem("bl_id",d.submissionId);
   localStorage.setItem("bl_token",d.token);
 
-  $("paymentBox").classList.add("hidden");
-  $("utrBox").classList.add("hidden");
+  $("payment").classList.add("hidden");
+  $("utrPanel").classList.add("hidden");
   $("pending").classList.remove("hidden");
+
   $("pending").scrollIntoView({behavior:"smooth"});
   watch();
+
  }catch(e){
   alert(e.message);
   btn.disabled=false;
-  btn.textContent="SEAL ENTRY FOR VERIFICATION";
+  btn.textContent="SUBMIT & SEAL";
  }
 };
 
-async function status(){
+async function getStatus(){
  const id=localStorage.getItem("bl_id");
  const token=localStorage.getItem("bl_token");
+
  if(!id||!token)return null;
 
- const r=await fetch("/api/status?id="+encodeURIComponent(id)+
- "&token="+encodeURIComponent(token));
+ const r=await fetch(
+  "/api/status?id="+encodeURIComponent(id)+
+  "&token="+encodeURIComponent(token)
+ );
+
  if(!r.ok)return null;
- return r.json();
+ return await r.json();
 }
 
 function watch(){
  const timer=setInterval(async()=>{
-  const d=await status();
-  $("poll").textContent="LAST CHECK // "+new Date().toLocaleTimeString();
+  const d=await getStatus();
+
+  $("statusText").textContent=
+   "LAST CHECK // "+new Date().toLocaleTimeString();
 
   if(!d)return;
 
   if(d.status==="verified"){
    clearInterval(timer);
+
    $("pending").classList.add("hidden");
    $("access").classList.remove("hidden");
+
    $("node").textContent=d.nodeId||"#------";
    $("persona").textContent=d.persona||"UNKNOWN";
+
    $("access").scrollIntoView({behavior:"smooth"});
   }
 
   if(d.status==="rejected"){
    clearInterval(timer);
+
    $("pending").classList.add("hidden");
-   $("rejected").classList.remove("hidden");
+   $("reject").classList.remove("hidden");
+
+   $("reject").scrollIntoView({behavior:"smooth"});
   }
  },5000);
 }
 
 async function restore(){
- const d=await status();
+ const d=await getStatus();
+
  if(!d)return;
 
  if(d.status==="pending"){
@@ -322,44 +407,52 @@ async function restore(){
  }
 
  if(d.status==="rejected")
-  $("rejected").classList.remove("hidden");
+  $("reject").classList.remove("hidden");
 }
 
-async function feed(){
+async function loadFeed(){
  try{
   const r=await fetch("/api/feed");
+
   if(!r.ok)return;
-  const d=await r.json(),box=$("feed");
-  box.replaceChildren();
 
-  (d.items||[]).slice(0,10).forEach(x=>{
-   const card=document.createElement("div");
-   card.className="node p-4 rounded";
+  const d=await r.json();
+  const feed=$("feed");
 
-   const top=document.createElement("div");
-   top.className="flex justify-between text-[10px]";
+  if(!d.items||!d.items.length)return;
 
-   const id=document.createElement("span");
-   id.className="red font-bold";id.textContent=x.nodeId||"NODE";
+  feed.replaceChildren();
+
+  d.items.slice(0,8).forEach(x=>{
+   const e=document.createElement("div");
+   e.className="entry";
+
+   const m=document.createElement("div");
+   m.className="meta";
+
+   const n=document.createElement("span");
+   n.textContent=x.nodeId||"NODE";
 
    const p=document.createElement("span");
-   p.className="dim";p.textContent=x.persona||"UNKNOWN";
+   p.textContent=x.persona||"ANONYMOUS";
 
-   const msg=document.createElement("div");
-   msg.className="text-xs text-neutral-400 mt-3 leading-relaxed";
-   msg.textContent=x.confession||"";
+   m.append(n,p);
 
-   top.append(id,p);card.append(top,msg);box.append(card);
+   const c=document.createElement("div");
+   c.className="text-lg mt-3";
+   c.textContent=x.confession||"";
+
+   e.append(m,c);
+   feed.appendChild(e);
   });
 
-  if(!box.children.length)
-   box.innerHTML='<div class="text-[10px] dim text-center py-6">LEDGER IS CURRENTLY EMPTY.</div>';
+  $("lockBadge").textContent="LIVE";
+
  }catch(e){}
 }
 
 restore();
-feed();
+loadFeed();
 </script>
 </body>
 </html>
-
