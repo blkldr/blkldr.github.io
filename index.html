@@ -3,63 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>THE BLACK LEDGER // MONOLITH PROTOCOL</title>
+<title>THE BLACK LEDGER // VIP VAULT PROTOCOL</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#030303;color:#aaa;font-family:'Share Tech Mono',monospace}
-body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.055;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,#fff 3px)}
-.glow{text-shadow:0 0 14px rgba(255,0,0,.3)}.red{color:#d40000}.dim{color:#555}
-.panel{background:linear-gradient(145deg,#090909,#030303);border:1px solid #242424;box-shadow:0 0 35px #000}
-.line{height:1px;background:#191919}.mono{font-family:inherit}
-input,textarea{width:100%;background:#050505;border:1px solid #292929;color:#ddd;outline:0;font-family:inherit}
-input:focus,textarea:focus{border-color:#700000;box-shadow:0 0 15px #200000}
-button{font-family:inherit;cursor:pointer}.scan{position:relative;overflow:hidden}.scan:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,#250000,transparent);transform:translateX(-100%);animation:sweep 6s infinite}
-@keyframes sweep{60%,100%{transform:translateX(100%)}}@keyframes pulse{50%{opacity:.35}}
-.pulse{animation:pulse 2s infinite}.hidden{display:none!important}.fade{animation:fade .45s ease}
-@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.node{border:1px solid #321010;background:#070303}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#020202;color:#b3b3b3;font-family:'Share Tech Mono',monospace}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.04;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,#fff 3px)}
+.glow{text-shadow:0 0 20px rgba(220,38,38,.4)}
+.red{color:#dc2626}
+.dim{color:#666}
+.panel{background:linear-gradient(145deg,#070707,#010101);border:1px solid #1f1f1f;box-shadow:0 0 40px rgba(0,0,0,.9)}
+.line{height:1px;background:linear-gradient(90deg,transparent,#262626,transparent)}
+input,textarea{width:100%;background:#040404;border:1px solid #222;color:#eee;outline:0;font-family:inherit;transition:all .3s}
+input:focus,textarea:focus{border-color:#dc2626;box-shadow:0 0 20px rgba(220,38,38,.2)}
+button{font-family:inherit;cursor:pointer;transition:all .3s}
+.scan{position:relative;overflow:hidden}
+.scan:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(220,38,38,.07),transparent);transform:translateX(-100%);animation:sweep 5s infinite}
+@keyframes sweep{60%,100%{transform:translateX(100%)}}
+@keyframes pulse-slow{0%,100%{opacity:1}50%{opacity:.4}}
+.pulse{animation:pulse-slow 2s infinite}
+.hidden{display:none!important}
+.fade{animation:fade .4s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.node{border:1px solid #2a0808;background:#050202}
 </style>
 </head>
 
 <body>
-<main class="max-w-2xl mx-auto px-4 py-6">
+<main class="max-w-2xl mx-auto px-4 py-8">
 
 <!-- HEADER -->
-<header class="panel p-4 mb-5 scan">
-<div class="flex justify-between text-[10px] red">
-<span>LEDGER PROTOCOL // 30-DAY</span>
-<span>● OPERATIONAL</span>
+<header class="panel p-6 mb-6 scan rounded-lg">
+<div class="flex justify-between text-[10px] red tracking-widest font-bold">
+<span>VIP PROTOCOL // LEVEL-5 SECURE</span>
+<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span> ONLINE</span>
 </div>
-<div class="line my-4"></div>
-<h1 class="text-4xl md:text-5xl text-white glow tracking-tight">THE BLACK LEDGER</h1>
-<p class="text-[11px] dim mt-3">MONOLITH // ANONYMOUS HUMAN ARCHIVE</p>
-<div class="flex justify-between mt-5 text-[9px]">
-<span class="dim">SYSTEM: ACTIVE</span>
-<span class="red">NO NAMES // NO FACES</span>
+<div class="line my-5"></div>
+<h1 class="text-4xl md:text-5xl text-white glow tracking-wider uppercase font-extrabold">THE BLACK LEDGER</h1>
+<p class="text-[11px] dim mt-3 tracking-wider">ELITE ANONYMOUS HUMAN ARCHIVE</p>
+<div class="flex justify-between mt-6 text-[10px] border-t border-neutral-900 pt-4">
+<span class="dim">ENCRYPTION: AES-256-GMC</span>
+<span class="red tracking-widest">ZERO TRACE GUARANTEE</span>
 </div>
 </header>
 
 <!-- INTRO -->
-<section class="panel p-6 mb-5">
-<div class="text-[10px] red mb-5">[ 01 ] // THE VAULT</div>
-<h2 class="text-2xl md:text-3xl text-white leading-tight">
+<section class="panel p-6 mb-6 rounded-lg">
+<div class="text-[10px] red mb-4 tracking-widest">[ 01 ] // THE CLASSIFIED VAULT</div>
+<h2 class="text-2xl md:text-3xl text-white leading-snug font-bold">
 Some truths are never meant<br>to leave your head.
 </h2>
-<p class="text-xs text-neutral-600 leading-6 mt-5">
-This is a private anonymous archive. No name. No profile.
-Just one thing you never said.
+<p class="text-xs text-neutral-500 leading-6 mt-4">
+A private, elite underground archive. No names. No profiles. Just raw, unfiltered thoughts locked forever.
 </p>
 
-<div class="node p-4 mt-6">
-<div class="flex justify-between text-[9px]">
-<span class="red">VAULT INPUT</span>
-<span class="dim">MAX 280</span>
+<div class="node p-5 mt-6 rounded">
+<div class="flex justify-between text-[10px]">
+<span class="red font-bold">VAULT DEPOSIT</span>
+<span class="dim">MAX 280 CHARS</span>
 </div>
-<textarea id="confession" rows="6" maxlength="280"
-class="mt-3 p-4 text-sm"
-placeholder="Deposit your unsaid truth..."></textarea>
-<div class="flex justify-between text-[9px] mt-2">
+<textarea id="confession" rows="5" maxlength="280"
+class="mt-3 p-4 text-xs rounded"
+placeholder="Deposit your unsaid truth here..."></textarea>
+<div class="flex justify-between text-[10px] mt-3">
 <span class="dim">SERVER SANITIZER: ACTIVE</span>
 <span id="chars" class="dim">0/280</span>
 </div>
@@ -67,150 +75,142 @@ placeholder="Deposit your unsaid truth..."></textarea>
 </section>
 
 <!-- ENTRY -->
-<section class="panel p-6 mb-5">
-<div class="text-[10px] red mb-5">[ 02 ] // ENTRY PROTOCOL</div>
+<section class="panel p-6 mb-6 rounded-lg">
+<div class="text-[10px] red mb-4 tracking-widest">[ 02 ] // ACCESS PROTOCOL</div>
 
-<div class="text-center py-4">
-<div class="text-[10px] dim">ACCESS CONTRIBUTION</div>
-<div class="text-5xl text-white mt-2">₹13</div>
-<div class="text-[9px] dim mt-2">ONE ENTRY // ONE NODE</div>
+<div class="text-center py-4 bg-black/40 rounded border border-neutral-900">
+<div class="text-[10px] dim tracking-widest">VIP ACCESS FEE</div>
+<div class="text-5xl text-white mt-2 glow font-extrabold">₹13</div>
+<div class="text-[10px] dim mt-2">ONE ENTRY // UNIQUE NODE ASSIGNMENT</div>
 </div>
 
-<div class="line my-5"></div>
+<div class="line my-6"></div>
 
-<div class="grid grid-cols-3 gap-2 text-center text-[9px]">
-<div class="border border-neutral-900 p-3">
-<div class="text-white">01</div><div class="dim mt-1">PAY</div>
+<div class="grid grid-cols-3 gap-3 text-center text-[10px]">
+<div class="border border-neutral-900 bg-black/20 p-3 rounded">
+<div class="text-white font-bold">01</div><div class="dim mt-1">PAY ₹13</div>
 </div>
-<div class="border border-neutral-900 p-3">
-<div class="text-white">02</div><div class="dim mt-1">VERIFY</div>
+<div class="border border-neutral-900 bg-black/20 p-3 rounded">
+<div class="text-white font-bold">02</div><div class="dim mt-1">SUBMIT UTR</div>
 </div>
-<div class="border border-neutral-900 p-3">
-<div class="text-white">03</div><div class="dim mt-1">UNLOCK</div>
+<div class="border border-neutral-900 bg-black/20 p-3 rounded">
+<div class="text-white font-bold">03</div><div class="dim mt-1">DECRYPT</div>
 </div>
 </div>
 
 <button id="beginBtn"
-class="w-full mt-6 bg-white text-black py-4 font-bold text-sm hover:bg-neutral-300">
-INITIATE ENTRY // ₹13
+class="w-full mt-6 bg-gradient-to-r from-red-950 via-red-900 to-red-950 hover:from-red-900 hover:to-red-800 text-white border border-red-800 py-4 font-bold text-xs tracking-widest uppercase rounded shadow-lg">
+INITIATE VIP ENTRY // ₹13
 </button>
-
-<p class="text-[9px] text-center dim mt-3">
-PAYMENT IS VERIFIED BEFORE ACCESS IS GRANTED
-</p>
 </section>
 
 <!-- PAYMENT -->
-<section id="paymentBox" class="panel p-6 mb-5 hidden fade">
-<div class="text-[10px] red mb-5">[ 03 ] // PAYMENT CHANNEL</div>
+<section id="paymentBox" class="panel p-6 mb-6 rounded-lg hidden fade">
+<div class="text-[10px] red mb-4 tracking-widest">[ 03 ] // PAYMENT GATEWAY</div>
 
-<div class="border border-neutral-900 bg-black p-5 text-center">
-<div class="text-[9px] dim">SCAN TO ENTER THE LEDGER</div>
+<div class="border border-neutral-900 bg-black p-6 text-center rounded">
+<div class="text-[10px] dim tracking-wider">SCAN TO UNLOCK THE VAULT</div>
 <img src="qr.png" alt="Payment QR"
-class="w-56 h-56 mx-auto mt-5 bg-white p-2">
+class="w-56 h-56 mx-auto mt-5 bg-white p-2.5 rounded shadow-2xl">
 
-<div class="text-white text-xl mt-4">₹13</div>
-<div class="text-[9px] dim mt-2">UPI PAYMENT</div>
+<div class="text-white text-2xl mt-4 font-bold">₹13.00</div>
+<div class="text-[10px] dim mt-1">INSTANT UPI TRANSFER</div>
 </div>
 
-<div class="border border-red-950 bg-red-950/10 p-4 mt-5 text-[10px] leading-5">
-<span class="red">NOTICE //</span>
-Complete the ₹13 payment first. Then submit the UTR below.
-Access is granted only after verification.
+<div class="border border-red-950 bg-red-950/20 p-4 mt-5 text-[10px] leading-5 rounded text-neutral-400">
+<span class="red font-bold">NOTICE //</span> Complete the UPI payment first, then click below to enter your 12-digit UTR reference number for verification.
 </div>
 
 <button id="paidBtn"
-class="w-full mt-5 border border-neutral-700 text-white py-4 hover:border-red-900">
+class="w-full mt-5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-white py-4 text-xs font-bold tracking-widest uppercase rounded">
 PAYMENT COMPLETED → ENTER UTR
 </button>
 </section>
 
 <!-- UTR -->
-<section id="utrBox" class="panel p-6 mb-5 hidden fade">
-<div class="text-[10px] red mb-5">[ 04 ] // PAYMENT TRACE</div>
+<section id="utrBox" class="panel p-6 mb-6 rounded-lg hidden fade">
+<div class="text-[10px] red mb-4 tracking-widest">[ 04 ] // TRANSACTION TRACE</div>
 
-<div class="text-xs text-neutral-500 leading-6 mb-5">
-The ledger does not trust screenshots. Your transaction reference
-will be checked before your node is created.
+<div class="text-xs text-neutral-400 leading-6 mb-5">
+The ledger verifies every transaction manually. Enter your 12-digit UTR to establish your cryptographic claim.
 </div>
 
-<label class="text-[9px] dim">12-DIGIT UTR</label>
+<label class="text-[10px] dim tracking-widest">12-DIGIT UTR NUMBER</label>
 <input id="utr" maxlength="12" inputmode="numeric"
-class="mt-2 p-4 text-sm tracking-widest"
-placeholder="000000000000">
+class="mt-2 p-4 text-sm tracking-widest rounded"
+placeholder="Enter 12-digit reference">
 
 <button id="submitBtn"
-class="w-full mt-5 bg-red-950 border border-red-900 text-white py-4 font-bold">
+class="w-full mt-5 bg-red-950 hover:bg-red-900 border border-red-700 text-white py-4 font-bold text-xs tracking-widest uppercase rounded">
 SEAL ENTRY FOR VERIFICATION
 </button>
 </section>
 
 <!-- PENDING -->
-<section id="pending" class="panel p-7 mb-5 hidden fade text-center">
-<div class="text-[10px] red pulse">● VERIFICATION CHANNEL ACTIVE</div>
-<div class="text-3xl text-white mt-5">ENTRY PENDING</div>
-<p class="text-xs dim leading-6 mt-4">
-Your confession has been received.<br>
-Payment verification is in progress.
+<section id="pending" class="panel p-8 mb-6 rounded-lg hidden fade text-center">
+<div class="text-[10px] red pulse font-bold tracking-widest">● VERIFICATION PROTOCOL ACTIVE</div>
+<div class="text-3xl text-white mt-5 tracking-wide font-extrabold">ENTRY PENDING</div>
+<p class="text-xs dim leading-6 mt-4 max-w-sm mx-auto">
+Your entry has been securely transmitted. Ledger administration is verifying the UTR. Keep this session active.
 </p>
-<div class="node p-4 mt-6 text-[9px]">
-<div class="dim">TRANSACTION STATUS</div>
-<div id="poll" class="text-yellow-600 mt-2">WAITING FOR VERIFICATION...</div>
+<div class="node p-4 mt-6 rounded text-[10px]">
+<div class="dim tracking-widest">STATUS CHECKER</div>
+<div id="poll" class="text-yellow-500 mt-2 font-bold">WAITING FOR NETWORK ACKNOWLEDGEMENT...</div>
 </div>
 </section>
 
 <!-- ACCESS -->
-<section id="access" class="panel p-6 mb-5 hidden fade">
-<div class="text-[10px] text-green-600">● ACCESS GRANTED</div>
+<section id="access" class="panel p-6 mb-6 rounded-lg hidden fade">
+<div class="text-[10px] text-green-500 font-bold tracking-widest">● ACCESS GRANTED // NODE UNLOCKED</div>
 <div class="line my-5"></div>
 
-<div class="text-[9px] dim">YOUR LEDGER NODE</div>
-<div id="node" class="text-5xl text-white glow mt-2">#------</div>
+<div class="text-[10px] dim tracking-widest">YOUR ASSIGNED NODE</div>
+<div id="node" class="text-5xl text-white glow mt-2 font-black">#------</div>
 
-<div class="node p-5 mt-6">
-<div class="text-[9px] dim">DARK PERSONA PROFILE</div>
-<div id="persona" class="text-xl text-white mt-3"></div>
+<div class="node p-5 mt-6 rounded">
+<div class="text-[10px] dim tracking-widest">DARK PERSONA PROFILE</div>
+<div id="persona" class="text-xl text-white mt-3 font-bold tracking-wider"></div>
 <div class="line my-4"></div>
 <p class="text-[10px] dim leading-5">
-Your entry now exists inside the anonymous ledger.
+Your unsaid truth is now permanently embedded in the clandestine ledger stream.
 </p>
 </div>
 
-<div class="text-center text-[9px] dim mt-6">
-NODE SEALED // ACCESS CONFIRMED
+<div class="text-center text-[10px] dim mt-6 tracking-widest">
+NODE IMMUTABLE // SECURE ARCHIVE
 </div>
 </section>
 
 <!-- REJECT -->
-<section id="rejected" class="panel p-7 mb-5 hidden fade text-center">
-<div class="red text-[10px]">● VERIFICATION FAILED</div>
-<div class="text-2xl text-white mt-4">ENTRY REJECTED</div>
+<section id="rejected" class="panel p-8 mb-6 rounded-lg hidden fade text-center">
+<div class="red text-[10px] font-bold tracking-widest">● VERIFICATION REJECTED</div>
+<div class="text-2xl text-white mt-4 font-bold">ENTRY DECLINED</div>
 <p class="text-xs dim leading-6 mt-4">
-The submitted transaction could not be verified.
+The submitted transaction reference could not be cryptographically authenticated.
 </p>
 </section>
 
 <!-- LEDGER -->
-<section class="panel p-6 mb-5">
+<section class="panel p-6 mb-6 rounded-lg">
 <div class="flex justify-between items-center">
-<div class="text-[10px] red">[ 05 ] // LIVE LEDGER</div>
-<div class="text-[9px] dim">ANONYMOUS FEED</div>
+<div class="text-[10px] red tracking-widest">[ 05 ] // LIVE CLANDESTINE FEED</div>
+<div class="text-[9px] dim">REALTIME STREAM</div>
 </div>
 
 <div class="line my-5"></div>
 
 <div id="feed" class="space-y-3">
-<div class="text-[9px] dim text-center py-5">
-CONNECTING TO LEDGER...
+<div class="text-[10px] dim text-center py-6">
+ESTABLISHING SECURE SOCKET...
 </div>
 </div>
 </section>
 
 <!-- FOOTER -->
-<footer class="text-center py-8 text-[9px] dim leading-6">
+<footer class="text-center py-8 text-[10px] dim leading-6 tracking-widest">
 THE BLACK LEDGER<br>
 30-DAY MONOLITH PROTOCOL<br>
-<span class="red">NO NAMES // NO FACES // NO FALSE CLAIMS</span>
+<span class="red">NO NAMES // NO FACES // ABSOLUTE ANONYMITY</span>
 </footer>
 
 </main>
@@ -245,7 +245,7 @@ $("submitBtn").onclick=async()=>{
   return alert("Enter a valid 12-digit UTR.");
 
  const btn=$("submitBtn");
- btn.disabled=true;btn.textContent="TRANSMITTING...";
+ btn.disabled=true;btn.textContent="TRANSMITTING TRACE...";
 
  try{
   const r=await fetch("/api/submit",{
@@ -334,26 +334,26 @@ async function feed(){
 
   (d.items||[]).slice(0,10).forEach(x=>{
    const card=document.createElement("div");
-   card.className="node p-4";
+   card.className="node p-4 rounded";
 
    const top=document.createElement("div");
-   top.className="flex justify-between text-[9px]";
+   top.className="flex justify-between text-[10px]";
 
    const id=document.createElement("span");
-   id.className="red";id.textContent=x.nodeId||"NODE";
+   id.className="red font-bold";id.textContent=x.nodeId||"NODE";
 
    const p=document.createElement("span");
    p.className="dim";p.textContent=x.persona||"UNKNOWN";
 
    const msg=document.createElement("div");
-   msg.className="text-xs text-neutral-500 mt-3 leading-5";
+   msg.className="text-xs text-neutral-400 mt-3 leading-relaxed";
    msg.textContent=x.confession||"";
 
    top.append(id,p);card.append(top,msg);box.append(card);
   });
 
   if(!box.children.length)
-   box.innerHTML='<div class="text-[9px] dim text-center py-5">LEDGER IS EMPTY.</div>';
+   box.innerHTML='<div class="text-[10px] dim text-center py-6">LEDGER IS CURRENTLY EMPTY.</div>';
  }catch(e){}
 }
 
@@ -362,3 +362,4 @@ feed();
 </script>
 </body>
 </html>
+
