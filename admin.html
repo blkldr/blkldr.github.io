@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Black Ledger // Admin</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background:#050505;
+      color:#E5E5E5;
+      font-family:'Space Grotesk',sans-serif;
+    }
+
+    .mono {
+      font-family:'Space Mono',monospace;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen p-4">
+
+  <main class="w-full max-w-2xl mx-auto">
+
+    <header class="border border-neutral-800 bg-neutral-950 p-4 rounded-lg mb-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="text-xs text-red-500 mono">
+            BLACK LEDGER // ADMIN
+          </div>
+
+          <h1 class="text-lg font-bold text-white">
+            Payment Verification
+          </h1>
+        </div>
+
+        <div id="adminStatus"
+             class="text-[10px] text-yellow-500 mono">
+          AUTHENTICATING...
+        </div>
+      </div>
+    </header>
+
+
+    <!-- LOGIN -->
+
+    <section id="loginBox"
+      class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg">
+
+      <div class="text-xs text-neutral-400 mono mb-3">
+        ADMIN AUTHENTICATION
+      </div>
+
+      <input
+        id="email"
+        type="email"
+        placeholder="Admin email"
+        class="w-full bg-neutral-900 border border-neutral-800 rounded p-3 text-sm text-white mb-2 outline-none"
+      >
+
+      <input
+        id="password"
+        type="password"
+        placeholder="Password"
+        class="w-full bg-neutral-900 border border-neutral-800 rounded p-3 text-sm text-white mb-3 outline-none"
+      >
+
+      <button
+        onclick="adminLogin()"
+        class="w-full bg-neutral-100 text-black font-bold py-3 rounded text-xs mono">
+        LOGIN
+      </button>
+
+      <p id="loginMsg"
+         class="text-[10px] text-red-400 mono mt-3 text-center">
+      </p>
+
+    </section>
+
+
+    <!-- REQUESTS -->
+
+    <section id="adminPanel" class="hidden">
+
+      <div class="flex justify-between items-center mb-3">
+
+        <div class="text-xs text-neutral-400 mono">
+          LIVE PAYMENT REQUESTS
+        </div>
+
+        <button
+          onclick="adminLogout()"
+          class="text-[10px] border border-neutral-800 px-3 py-1 rounded text-neutral-400 mono">
+          LOGOUT
+        </button>
+
+      </div>
+
+      <div id="requestList" class="flex flex-col gap-3">
+      </div>
+
+    </section>
+
+  </main>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+}
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+import {
+  getDatabase,
+  ref,
+  onValue,
+  update
+}
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+/* =========================
+   FIREBASE CONFIG
+========================= */
+
+const firebaseConfig = {
+
+  apiKey: "YOUR_FIREBASE_API_KEY",
+
+  authDomain:
+    "blackledger-759c1.firebaseapp.com",
+
+  databaseURL:
+    "https://blackledger-759c1-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+  projectId:
+    "blackledger-759c1",
+
+  storageBucket:
+    "blackledger-759c1.appspot.com",
+
+  messagingSenderId:
+    "1064101172402",
+
+  appId:
+    "1:1064101172402:web:951950dd4e136c44e965eb"
+};
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getDatabase(app);
+
+
+/* =========================
+   ADMIN UID
+========================= */
+
+const ADMIN_UID =
+  "GkwTBWnIkJb9XlZFzOUEmI4BNgo1";
+
+
+/* =========================
+   AUTH STATE
+========================= */
+
+onAuthStateChanged(auth, (user) => {
+
+  if (!user) {
+
+    document.getElementById("adminStatus")
+      .innerText = "NOT LOGGED IN";
+
+    document.getElementById("loginBox")
+      .classList.remove("hidden");
+
+    document.getElementById("adminPanel")
+      .classList.add("hidden");
+
+    return;
+  }
+
+
+  if (user.uid !== ADMIN_UID) {
+
+    document.getElementById("adminStatus")
+      .innerText = "ACCESS DENIED";
+
+    alert("This account is not an admin.");
+
+    signOut(auth);
+
+    return;
+  }
+
+
+  document.getElementById("adminStatus")
+    .innerText = "● ADMIN ONLINE";
+
+  document.getElementById("loginBox")
+    .classList.add("hidden");
+
+  document.getElementById("adminPanel")
+    .classList.remove("hidden");
+
+  loadRequests();
+
+});
+
+
+/* =========================
+   LOGIN
+========================= */
+
+window.adminLogin = async function() {
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+
+  if (!email || !password) {
+
+    document.getElementById("loginMsg")
+      .innerText = "Email and password required.";
+
+    return;
+  }
+
+
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+  } catch (error) {
+
+    document.getElementById("loginMsg")
+      .innerText =
+        "Login failed: " + error.message;
+
+  }
+
+};
+
+
+/* =========================
+   LOAD REQUESTS
+========================= */
+
+function loadRequests() {
+
+  const requestsRef =
+    ref(db, "paymentRequests");
+
+
+  onValue(requestsRef, (snapshot) => {
+
+    const data = snapshot.val();
+
+    const list =
+      document.getElementById("requestList");
+
+    list.innerHTML = "";
+
+
+    if (!data) {
+
+      list.innerHTML = `
+        <div class="border border-neutral-800
+                    bg-neutral-950
+                    rounded-lg
+                    p-5
+                    text-center
+                    text-xs
+                    text-neutral-500
+                    mono">
+          NO PAYMENT REQUESTS
+        </div>
+      `;
+
+      return;
+    }
+
+
+    const entries =
+      Object.entries(data)
+      .sort((a,b) =>
+        (b[1].timestamp || 0) -
+        (a[1].timestamp || 0)
+      );
+
+
+    entries.forEach(([requestId, request]) => {
+
+      createRequestCard(
+        requestId,
+        request,
+        list
+      );
+
+    });
+
+  });
+
+}
+
+
+/* =========================
+   REQUEST CARD
+========================= */
+
+function createRequestCard(
+  requestId,
+  request,
+  list
+) {
+
+  const card =
+    document.createElement("div");
+
+
+  card.className =
+    "border border-neutral-800 bg-neutral-950 rounded-lg p-4";
+
+
+  const status =
+    request.status || "UNKNOWN";
+
+
+  let statusClass =
+    "text-yellow-400";
+
+
+  if (status === "APPROVED")
+    statusClass = "text-green-400";
+
+
+  if (status === "REJECTED")
+    statusClass = "text-red-400";
+
+
+  const confession =
+    escapeHtml(request.confession || "");
+
+
+  card.innerHTML = `
+
+    <div class="flex justify-between items-center mb-3">
+
+      <div class="text-xs font-bold text-white mono">
+        ${requestId}
+      </div>
+
+      <div class="text-[10px] ${statusClass} mono">
+        ● ${status}
+      </div>
+
+    </div>
+
+
+    <div class="space-y-2 text-xs">
+
+      <div>
+        <span class="text-neutral-500 mono">
+          UTR:
+        </span>
+
+        <span class="text-white mono">
+          ${escapeHtml(request.utr || "-")}
+        </span>
+      </div>
+
+
+      <div>
+        <span class="text-neutral-500 mono">
+          AMOUNT:
+        </span>
+
+        <span class="text-white mono">
+          ₹${request.amount || 0}
+        </span>
+      </div>
+
+
+      <div>
+        <span class="text-neutral-500 mono">
+          CONFESSION:
+        </span>
+
+        <div class="mt-1 text-neutral-300
+                    bg-neutral-900
+                    border border-neutral-800
+                    rounded
+                    p-3">
+          ${confession}
+        </div>
+      </div>
+
+    </div>
+
+
+    ${
+      status === "PENDING"
+      ? `
+
+      <div class="grid grid-cols-2 gap-2 mt-4">
+
+        <button
+          onclick="changeStatus('${requestId}', 'APPROVED')"
+          class="bg-green-700 hover:bg-green-600
+                 text-white
+                 py-2.5
+                 rounded
+                 text-[11px]
+                 font-bold
+                 mono">
+          APPROVE
+        </button>
+
+
+        <button
+          onclick="changeStatus('${requestId}', 'REJECTED')"
+          class="bg-red-700 hover:bg-red-600
+                 text-white
+                 py-2.5
+                 rounded
+                 text-[11px]
+                 font-bold
+                 mono">
+          REJECT
+        </button>
+
+      </div>
+
+      `
+      : ""
+    }
+
+  `;
+
+
+  list.appendChild(card);
+
+}
+
+
+/* =========================
+   CHANGE STATUS
+========================= */
+
+window.changeStatus =
+async function(requestId, newStatus) {
+
+  const confirmText =
+    newStatus === "APPROVED"
+      ? "Approve this payment?"
+      : "Reject this payment?";
+
+
+  if (!confirm(confirmText))
+    return;
+
+
+  try {
+
+    const requestRef =
+      ref(
+        db,
+        "paymentRequests/" + requestId
+      );
+
+
+    await update(requestRef, {
+
+      status: newStatus,
+
+      reviewedAt: Date.now(),
+
+      reviewedBy: auth.currentUser.uid
+
+    });
+
+
+  } catch (error) {
+
+    alert(
+      "Update failed: " +
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+window.adminLogout =
+function() {
+
+  signOut(auth);
+
+};
+
+
+/* =========================
+   HTML ESCAPE
+========================= */
+
+function escapeHtml(value) {
+
+  return String(value)
+
+    .replaceAll("&", "&amp;")
+
+    .replaceAll("<", "&lt;")
+
+    .replaceAll(">", "&gt;")
+
+    .replaceAll('"', "&quot;")
+
+    .replaceAll("'", "&#039;");
+
+}
+
+</script>
+
+</body>
+</html>
