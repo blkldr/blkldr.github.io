@@ -235,16 +235,16 @@ signInAnonymously(auth)
 
 onAuthStateChanged(auth, (user) => {
 
-  if (user) {
+  if (!user) return;
 
-    currentUser = user;
+  currentUser = user;
 
-    console.log(
-      "Firebase UID:",
-      user.uid
-    );
+  console.log(
+    "Firebase UID:",
+    user.uid
+  );
 
-  }
+  restorePayment();
 
 });
 
