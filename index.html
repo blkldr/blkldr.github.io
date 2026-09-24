@@ -83,7 +83,7 @@
     <div id="pendingBox" class="hidden border border-yellow-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center">
       <div class="text-[10px] text-yellow-500 tracking-widest uppercase mb-1">● VERIFICATION IN PROGRESS</div>
       <h2 class="text-base font-bold text-white uppercase tracking-wider mb-2">ENTRY PENDING</h2>
-      <p id="pollStatus" class="text-xs text-neutral-400 mb-4">Awaiting administrator verification of your UTR...</p>
+      <p id="pollStatus" class="text-xs text-neutral-400 mb-4">Trace submitted successfully to Telegram!</p>
     </div>
 
     <!-- ACCESS GRANTED / UNLOCKED NODE -->
@@ -134,283 +134,139 @@
   
     
   <script>
-const input=document.getElementById('confessionInput');
-const UPI_ID="BHARATPE2Y0M0B8N0T09199@unitype";
-const AMOUNT="13";
+const input = document.getElementById('confessionInput');
+const UPI_ID = "BHARATPE2Y0M0B8N0T09199@unitype";
+const AMOUNT = "13";
 
-input.addEventListener('input',()=>{
- document.getElementById('charCount').textContent=
- `${input.value.length} / 280`;
+input.addEventListener('input', () => {
+ document.getElementById('charCount').textContent = `${input.value.length} / 280`;
 });
 
-        function openPaymentModal(){
-      const text=input.value.trim();
-      if(text.length<10){
-        alert("Enter at least 10 characters of your confession.");
-        return;
-      }
-      document.getElementById('payModal').classList.remove('hidden');
-    }
-
-    // Yeh wala function yahan daal do:
-    async function downloadQR() {
-      const imageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fpay%3Fpa%3DBHARATPE2Y0M0B8N0T09199%40unitype%26pn%3DBlack%20Ledger%26am%3D13%26cu%3DINR%26tn%3DBlack%20Ledger%26entry";
-      try {
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = 'Black-Ledger-QR.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } catch (e) {
-        window.open(imageUrl, '_blank');
-      }
-    }
-    
-    
-function openPaymentModal(){
- const text=input.value.trim();
-
- if(text.length<10){
+function openPaymentModal() {
+ const text = input.value.trim();
+ if (text.length < 10) {
   alert("Enter at least 10 characters of your confession.");
   return;
  }
-
  document.getElementById('payModal').classList.remove('hidden');
 }
 
-function closeModalAndVerify(){
+function closeModalAndVerify() {
  document.getElementById('payModal').classList.add('hidden');
  document.getElementById('stepInitiate').classList.add('hidden');
  document.getElementById('stepVerify').classList.remove('hidden');
 }
 
-function openUPI(){
- const url=
- `upi://pay?pa=${encodeURIComponent(UPI_ID)}`+
- `&pn=Black%20Ledger&am=${AMOUNT}&cu=INR`+
- `&tn=Black%20Ledger%20Entry`;
-
- window.location.href=url;
+function openUPI() {
+ const url = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=Black%20Ledger&am=${AMOUNT}&cu=INR&tn=Black%20Ledger%20Entry`;
+ window.location.href = url;
 }
 
-async function submitUtrForVerification(){
+async function submitUtrForVerification() {
+ const text = input.value.trim();
+ const utr = document.getElementById('utrInput').value.trim();
+ const btn = document.getElementById('verifyBtn');
+ const msg = document.getElementById('verifyMsg');
 
- const text=input.value.trim();
- const utr=document.getElementById('utrInput').value.trim();
- const btn=document.getElementById('verifyBtn');
- const msg=document.getElementById('verifyMsg');
-
- if(text.length<10){
+ if (text.length < 10) {
   alert("Enter at least 10 characters.");
   return;
  }
 
- if(!/^\d{12}$/.test(utr)){
+ if (!/^\d{12}$/.test(utr)) {
   alert("Please enter a valid 12-digit UTR reference number.");
   return;
  }
 
- btn.disabled=true;
- btn.innerText="TRANSMITTING TRACE...";
+ btn.disabled = true;
+ btn.innerText = "TRANSMITTING TRACE...";
  msg.classList.remove('hidden');
- msg.innerText="Sending payment trace...";
+ msg.innerText = "Sending payment trace to Telegram...";
 
- try{
+ try {
+  const submissionId = 'bl_' + Math.random().toString(36).substring(2, 9);
+  const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
-  const r=await fetch("/api/submit",{
-   method:"POST",
-   headers:{
-    "Content-Type":"application/json"
-   },
-   body:JSON.stringify({
-    utr:utr,
-    confession:text
+  const TELEGRAM_BOT_TOKEN = '8616348252:AAEl1hljJkamKp6E99EjCYz7TMsF_Ozig_Y';
+  const TELEGRAM_CHAT_ID = '7499975513';
+
+  const message = `🔔 New UTR Submission!\n\nUTR: ${utr}\nConfession: ${text}\nSubmission ID: ${submissionId}\nStatus: Pending`;
+  const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+  const response = await fetch(telegramUrl, {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({
+    chat_id: TELEGRAM_CHAT_ID,
+    text: message
    })
   });
 
-  const d=await r.json();
+  const data = await response.json();
 
-  if(!r.ok)
-   throw Error(d.error||"Submission failed");
+  if (!data.ok) {
+   throw new Error('Telegram Error: ' + (data.description || 'Unknown error'));
+  }
 
-  localStorage.setItem("bl_id",d.submissionId);
-  localStorage.setItem("bl_token",d.token);
+  localStorage.setItem("bl_id", submissionId);
+  localStorage.setItem("bl_token", token);
 
   document.getElementById('stepVerify').classList.add('hidden');
   document.getElementById('pendingBox').classList.remove('hidden');
 
-  msg.innerText="Trace submitted.";
-  watchStatus();
+  msg.innerText = "Trace submitted successfully.";
 
- }catch(e){
-
+ } catch (e) {
   alert(e.message);
-
-  btn.disabled=false;
-  btn.innerText="SUBMIT FOR VERIFICATION";
-  msg.innerText="";
+  btn.disabled = false;
+  btn.innerText = "SUBMIT FOR VERIFICATION";
+  msg.innerText = "";
  }
 }
 
-async function checkStatus(){
-
- const id=localStorage.getItem("bl_id");
- const token=localStorage.getItem("bl_token");
-
- if(!id||!token)return null;
-
- try{
-
-  const r=await fetch(
-   `/api/status?id=${encodeURIComponent(id)}&token=${encodeURIComponent(token)}`
-  );
-
-  if(!r.ok)return null;
-
-  return await r.json();
-
- }catch(e){
-  return null;
- }
+async function checkStatus() {
+ return null;
 }
 
-function showVerified(d){
-
+function showVerified(d) {
  document.getElementById('pendingBox').classList.add('hidden');
  document.getElementById('accessBox').classList.remove('hidden');
-
- document.getElementById('unlockedNode').textContent=
- `NODE ${d.nodeId||"------"}`;
-
- document.getElementById('unlockedPersona').textContent=
- d.persona||"UNKNOWN";
-
+ document.getElementById('unlockedNode').textContent = `NODE ${d.nodeId || "------"}`;
+ document.getElementById('unlockedPersona').textContent = d.persona || "UNKNOWN";
  window.scrollTo({
-  top:document.getElementById('accessBox').offsetTop-20,
-  behavior:"smooth"
+  top: document.getElementById('accessBox').offsetTop - 20,
+  behavior: "smooth"
  });
 }
 
-function showRejected(){
-
+function showRejected() {
  document.getElementById('pendingBox').classList.add('hidden');
-
  document.getElementById('stepVerify').classList.remove('hidden');
-
- const msg=document.getElementById('verifyMsg');
+ const msg = document.getElementById('verifyMsg');
  msg.classList.remove('hidden');
- msg.className="text-[10px] text-center text-red-500 mt-1 mono";
- msg.innerText="Payment could not be verified.";
-
- const btn=document.getElementById('verifyBtn');
- btn.disabled=false;
- btn.innerText="SUBMIT FOR VERIFICATION";
+ msg.className = "text-[10px] text-center text-red-500 mt-1 mono";
+ msg.innerText = "Payment could not be verified.";
+ const btn = document.getElementById('verifyBtn');
+ btn.disabled = false;
+ btn.innerText = "SUBMIT FOR VERIFICATION";
 }
 
-function watchStatus(){
+function watchStatus() {}
 
- const timer=setInterval(async()=>{
+async function restorePayment() {}
 
-  const d=await checkStatus();
-
-  if(!d)return;
-
-  document.getElementById('pollStatus').innerText=
-  d.status==="pending"
-  ?"Awaiting administrator verification of your UTR..."
-  :"Checking ledger status...";
-
-  if(d.status==="verified"){
-   clearInterval(timer);
-   showVerified(d);
-  }
-
-  if(d.status==="rejected"){
-   clearInterval(timer);
-   showRejected();
-  }
-
- },5000);
-}
-
-async function restorePayment(){
-
- const d=await checkStatus();
-
- if(!d)return;
-
- if(d.status==="pending"){
-  document.getElementById('stepInitiate').classList.add('hidden');
-  document.getElementById('stepVerify').classList.add('hidden');
-  document.getElementById('pendingBox').classList.remove('hidden');
-  watchStatus();
- }
-
- if(d.status==="verified")
-  showVerified(d);
-
- if(d.status==="rejected")
-  showRejected();
-}
-
-async function loadFeed(){
-
- try{
-
-  const r=await fetch("/api/feed");
-
-  if(!r.ok)return;
-
-  const d=await r.json();
-  const feed=document.getElementById('feedList');
-
-  feed.replaceChildren();
-
-  if(!d.items||!d.items.length){
-
-   const p=document.createElement("p");
-   p.className="text-neutral-500 text-[11px] mono";
-   p.textContent="Archive waiting for verified entries...";
-   feed.appendChild(p);
-   return;
-  }
-
-  document.getElementById('lockBadge').textContent="LIVE";
-
-  d.items.slice(0,10).forEach(item=>{
-
-   const div=document.createElement('div');
-   div.className="border-l-2 border-neutral-800 pl-3 py-1";
-
-   const meta=document.createElement('div');
-   meta.className=
-   "flex justify-between text-[10px] mono text-neutral-500 mb-1";
-
-   const node=document.createElement('span');
-   node.textContent="NODE "+(item.nodeId||"------");
-
-   const persona=document.createElement('span');
-   persona.textContent=item.persona||"ANONYMOUS";
-
-   meta.append(node,persona);
-
-   const text=document.createElement('p');
-   text.className="text-neutral-300";
-   text.textContent=item.confession||"";
-
-   div.append(meta,text);
-   feed.appendChild(div);
-  });
-
- }catch(e){}
+async function loadFeed() {
+ document.getElementById('lockBadge').textContent = "LIVE";
+ const feed = document.getElementById('feedList');
+ feed.replaceChildren();
+ const p = document.createElement("p");
+ p.className = "text-neutral-500 text-[11px] mono";
+ p.textContent = "Archive running on direct client connection...";
+ feed.appendChild(p);
 }
 
 restorePayment();
 loadFeed();
-                              </script>
+  </script>
 </body>
 </html>
