@@ -111,20 +111,20 @@
           <span>SEAL ENTRY & UNLOCK — ₹13</span>
         </button>
         <p class="text-[10px] text-center text-neutral-500 mt-2.5 mono">
-          Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)
+          Scan QR Code or Screenshot to Pay via UPI
         </p>
       </div>
 
-      <!-- Step 2: UTR Verification Block (Appears after closing modal) -->
+      <!-- Step 2: UTR Verification Block -->
       <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-700">
         <p class="text-xs text-neutral-200 mono font-semibold">Payment Completed?</p>
-        <p class="text-[11px] text-neutral-400">Successful payment ke baad transaction screen se 12-digit UTR enter karein:</p>
+        <p class="text-[11px] text-neutral-400">Payment karne ke baad transaction se 12-digit UTR / Reference number yahan dalein:</p>
         <input
           type="text"
           id="utrInput"
           inputmode="numeric"
           maxlength="12"
-          placeholder="12-digit UTR reference number"
+          placeholder="Enter 12-digit UTR"
           class="w-full bg-neutral-950 border border-neutral-700 rounded p-2.5 text-xs text-white mono focus:border-red-500 focus:outline-none"
         >
         <button
@@ -177,23 +177,20 @@
 
   </main>
 
-  <!-- Instant Payment Modal Gateway -->
+  <!-- Payment Modal with User's BharatPe QR Image -->
   <div id="payModal" style="display: none;" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="border border-neutral-700 bg-neutral-900 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center shadow-2xl">
-      <div class="text-[11px] text-red-500 font-bold mb-1 tracking-wider">SECURE MERCHANT GATEWAY</div>
-      <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 to Seal Node</h3>
+      <div class="text-[11px] text-red-500 font-bold mb-1 tracking-wider">SCAN OR SCREENSHOT TO PAY</div>
+      <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 via BharatPe UPI</h3>
       
-      <div class="bg-white p-2.5 rounded mb-3 shadow-inner">
-        <img id="modalQrImg" class="w-44 h-44 object-contain" alt="Merchant UPI QR">
+      <!-- Direct user provided BharatPe QR Image -->
+      <div class="bg-white p-2 rounded mb-3 shadow-inner">
+        <img src="1000189674.jpg" class="w-48 h-48 object-contain" alt="BharatPe QR Code">
       </div>
 
-      <p class="text-[10px] text-neutral-400 mb-3">Scan with GPay / PhonePe / Paytm OR tap below:</p>
+      <p class="text-[10px] text-neutral-400 mb-4 leading-relaxed">Screenshot lein, apne UPI app se pay karein, aur wapas aakar UTR enter karein.</p>
       
-      <a id="modalUpiLink" href="#" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black py-2.5 px-3 rounded text-xs font-bold uppercase mb-2 block text-center font-bold">
-        OPEN UPI APP DIRECTLY
-      </a>
-      
-      <button type="button" id="closeModalBtn" class="w-full bg-transparent border border-neutral-600 hover:border-neutral-400 text-neutral-300 py-2.5 rounded text-[11px] uppercase cursor-pointer tracking-wider font-bold">
+      <button type="button" id="closeModalBtn" class="w-full bg-neutral-100 hover:bg-white text-black py-2.5 rounded text-xs uppercase cursor-pointer tracking-wider font-bold">
         I HAVE PAID (ENTER UTR)
       </button>
     </div>
@@ -215,15 +212,10 @@
     const db = firebase.database();
     const confessionsRef = db.ref("confessions");
 
-    const MERCHANT_UPI_ID = "BHARATPE2YOMOB8NOT09199@unitype";[span_0](start_span)[span_0](end_span)
-    const MERCHANT_NAME = "VISHAL";[span_1](start_span)[span_1](end_span)
-    const PAYMENT_AMOUNT = "13.00";
-    const TRANSACTION_NOTE = "BlackLedgerVault";
-
     let isUnlocked = false;
     const confessionInput = document.getElementById("confessionInput");
 
-    // Live Session Self-Destruct Timer (5 Minutes Countdown)
+    // Timer
     let timeLeft = 300;
     setInterval(() => {
       if (timeLeft > 0) {
@@ -234,7 +226,7 @@
       }
     }, 1000);
 
-    // Randomize Online Agents slightly for realism
+    // Online agents ticker
     setInterval(() => {
       let currentAgents = parseInt(document.getElementById("onlineAgents").innerText);
       let fluctuation = Math.floor(Math.random() * 5) - 2;
@@ -252,12 +244,6 @@
         alert("Pehle apna raaz toh likho!");
         return;
       }
-
-      const upiUri = `upi://pay?pa=${encodeURIComponent(MERCHANT_UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${PAYMENT_AMOUNT}&cu=INR&tn=${encodeURIComponent(TRANSACTION_NOTE)}`;
-      
-      document.getElementById("modalQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUri)}`;
-      document.getElementById("modalUpiLink").href = upiUri;
-      
       document.getElementById("payModal").style.display = "flex";
     });
 
@@ -266,18 +252,15 @@
       document.getElementById("stepInitiate").style.display = "none";
       document.getElementById("stepVerify").style.display = "flex";
       document.getElementById("verifyMsg").style.display = "block";
-      document.getElementById("verifyMsg").innerText = "Payment successful hone ke baad UTR enter karein.";
+      document.getElementById("verifyMsg").innerText = "Payment ke baad 12-digit UTR enter karein.";
     });
 
     document.getElementById("verifyUtrBtn").addEventListener("click", () => {
       const utr = document.getElementById("utrInput").value.trim();
       if (!/^\d{12}$/.test(utr)) {
-        alert("Please enter a valid 12-digit UTR / reference number.");
+        alert("Please enter a valid 12-digit UTR reference number.");
         return;
       }
-
-      const confirmed = confirm("Confirm that your UPI app shows a successful ₹13 payment to:\n\n" + MERCHANT_UPI_ID + "\n\nUTR: " + utr);
-      if (!confirmed) return;
 
       if (isUnlocked) return;
       isUnlocked = true;
@@ -395,3 +378,4 @@
   </script>
 </body>
 </html>
+
