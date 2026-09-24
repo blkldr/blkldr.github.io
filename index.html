@@ -152,6 +152,34 @@ input.addEventListener('input',()=>{
  `${input.value.length} / 280`;
 });
 
+        function openPaymentModal(){
+      const text=input.value.trim();
+      if(text.length<10){
+        alert("Enter at least 10 characters of your confession.");
+        return;
+      }
+      document.getElementById('payModal').classList.remove('hidden');
+    }
+
+    // Yeh wala function yahan daal do:
+    async function downloadQR() {
+      const imageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fpay%3Fpa%3DBHARATPE2Y0M0B8N0T09199%40unitype%26pn%3DBlack%20Ledger%26am%3D13%26cu%3DINR%26tn%3DBlack%20Ledger%26entry";
+      try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = 'Black-Ledger-QR.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (e) {
+        window.open(imageUrl, '_blank');
+      }
+    }
+    
+    
 function openPaymentModal(){
  const text=input.value.trim();
 
