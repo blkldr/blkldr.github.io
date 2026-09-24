@@ -132,141 +132,732 @@
     </div>
   </div>
   
-    
-  <script>
-const input = document.getElementById('confessionInput');
+   <script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+/* =========================================================
+   FIREBASE CONFIG
+   ========================================================= */
+
+const firebaseConfig = {
+  apiKey: "PASTE_YOUR_FULL_FIREBASE_API_KEY_HERE",
+  authDomain: "blackledger-759c1.firebaseapp.com",
+  databaseURL: "https://blackledger-759c1-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "blackledger-759c1",
+  storageBucket: "blackledger-759c1.appspot.com",
+  messagingSenderId: "1064101172402",
+  appId: "1:1064101172402:web:951950dd4e136c44e965eb"
+};
+
+
+/* =========================================================
+   FIREBASE INITIALIZATION
+   ========================================================= */
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let currentUser = null;
+let statusListener = null;
+
+
+/* =========================================================
+   EXISTING WEBSITE VARIABLES
+   ========================================================= */
+
+const input = document.getElementById("confessionInput");
+
 const UPI_ID = "BHARATPE2Y0M0B8N0T09199@unitype";
 const AMOUNT = "13";
 
-input.addEventListener('input', () => {
- document.getElementById('charCount').textContent = `${input.value.length} / 280`;
+
+/* =========================================================
+   CHARACTER COUNTER
+   ========================================================= */
+
+input.addEventListener("input", () => {
+
+  document.getElementById("charCount").textContent =
+    `${input.value.length} / 280`;
+
 });
 
-function openPaymentModal() {
- const text = input.value.trim();
- if (text.length < 10) {
-  alert("Enter at least 10 characters of your confession.");
-  return;
- }
- document.getElementById('payModal').classList.remove('hidden');
-}
 
-function closeModalAndVerify() {
- document.getElementById('payModal').classList.add('hidden');
- document.getElementById('stepInitiate').classList.add('hidden');
- document.getElementById('stepVerify').classList.remove('hidden');
-}
+/* =========================================================
+   ANONYMOUS FIREBASE LOGIN
+   ========================================================= */
 
-function openUPI() {
- const url = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=Black%20Ledger&am=${AMOUNT}&cu=INR&tn=Black%20Ledger%20Entry`;
- window.location.href = url;
-}
+signInAnonymously(auth)
+  .then((result) => {
 
-async function submitUtrForVerification() {
- const text = input.value.trim();
- const utr = document.getElementById('utrInput').value.trim();
- const btn = document.getElementById('verifyBtn');
- const msg = document.getElementById('verifyMsg');
+    currentUser = result.user;
 
- if (text.length < 10) {
-  alert("Enter at least 10 characters.");
-  return;
- }
+    console.log(
+      "Anonymous Firebase user:",
+      currentUser.uid
+    );
 
- if (!/^\d{12}$/.test(utr)) {
-  alert("Please enter a valid 12-digit UTR reference number.");
-  return;
- }
+    restorePayment();
 
- btn.disabled = true;
- btn.innerText = "TRANSMITTING TRACE...";
- msg.classList.remove('hidden');
- msg.innerText = "Sending payment trace to Telegram...";
+  })
+  .catch((error) => {
 
- try {
-  const submissionId = 'bl_' + Math.random().toString(36).substring(2, 9);
-  const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    console.error(
+      "Anonymous authentication failed:",
+      error
+    );
 
-  const TELEGRAM_BOT_TOKEN = '8616348252:AAEl1hljJkamKp6E99EjCYz7TMsF_Ozig_Y';
-  const TELEGRAM_CHAT_ID = '7499975513';
+    alert(
+      "Secure connection failed. Please refresh the page and try again."
+    );
 
-  const message = `🔔 New UTR Submission!\n\nUTR: ${utr}\nConfession: ${text}\nSubmission ID: ${submissionId}\nStatus: Pending`;
-  const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-
-  const response = await fetch(telegramUrl, {
-   method: 'POST',
-   headers: { 'Content-Type': 'application/json' },
-   body: JSON.stringify({
-    chat_id: TELEGRAM_CHAT_ID,
-    text: message
-   })
   });
 
-  const data = await response.json();
 
-  if (!data.ok) {
-   throw new Error('Telegram Error: ' + (data.description || 'Unknown error'));
+/* =========================================================
+   AUTH STATE
+   ========================================================= */
+
+onAuthStateChanged(auth, (user) => {
+
+  if (user) {
+
+    currentUser = user;
+
+    console.log(
+      "Firebase UID:",
+      user.uid
+    );
+
   }
 
-  localStorage.setItem("bl_id", submissionId);
-  localStorage.setItem("bl_token", token);
+});
 
-  document.getElementById('stepVerify').classList.add('hidden');
-  document.getElementById('pendingBox').classList.remove('hidden');
 
-  msg.innerText = "Trace submitted successfully.";
+/* =========================================================
+   PAYMENT MODAL
+   ========================================================= */
 
- } catch (e) {
-  alert(e.message);
-  btn.disabled = false;
-  btn.innerText = "SUBMIT FOR VERIFICATION";
-  msg.innerText = "";
- }
+window.openPaymentModal = function () {
+
+  const text = input.value.trim();
+
+  if (text.length < 10) {
+
+    alert(
+      "Enter at least 10 characters of your confession."
+    );
+
+    return;
+  }
+
+  document
+    .getElementById("payModal")
+    .classList
+    .remove("hidden");
+
+};
+
+
+/* =========================================================
+   CLOSE PAYMENT / OPEN UTR STEP
+   ========================================================= */
+
+window.closeModalAndVerify = function () {
+
+  document
+    .getElementById("payModal")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("stepInitiate")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("stepVerify")
+    .classList
+    .remove("hidden");
+
+};
+
+
+/* =========================================================
+   OPEN UPI APP
+   ========================================================= */
+
+window.openUPI = function () {
+
+  const url =
+    `upi://pay?pa=${encodeURIComponent(UPI_ID)}` +
+    `&pn=Black%20Ledger` +
+    `&am=${AMOUNT}` +
+    `&cu=INR` +
+    `&tn=Black%20Ledger%20Entry`;
+
+  window.location.href = url;
+
+};
+
+
+/* =========================================================
+   GENERATE REQUEST ID
+   ========================================================= */
+
+function generateRequestId() {
+
+  const randomPart =
+    Math.random()
+      .toString(36)
+      .substring(2, 9)
+      .toUpperCase();
+
+  return "BL_" + randomPart;
+
 }
 
-async function checkStatus() {
- return null;
+
+/* =========================================================
+   SUBMIT UTR
+   ========================================================= */
+
+window.submitUtrForVerification = async function () {
+
+  const text = input.value.trim();
+
+  const utr =
+    document
+      .getElementById("utrInput")
+      .value
+      .trim();
+
+  const btn =
+    document.getElementById("verifyBtn");
+
+  const msg =
+    document.getElementById("verifyMsg");
+
+
+  /* ---------- CONFESSION VALIDATION ---------- */
+
+  if (text.length < 10) {
+
+    alert(
+      "Enter at least 10 characters."
+    );
+
+    return;
+
+  }
+
+
+  /* ---------- UTR VALIDATION ---------- */
+
+  if (!/^\d{12}$/.test(utr)) {
+
+    alert(
+      "Please enter a valid 12-digit UTR reference number."
+    );
+
+    return;
+
+  }
+
+
+  /* ---------- FIREBASE AUTH CHECK ---------- */
+
+  if (!currentUser) {
+
+    alert(
+      "Secure connection is still starting. Please wait a moment and try again."
+    );
+
+    return;
+
+  }
+
+
+  btn.disabled = true;
+
+  btn.innerText =
+    "TRANSMITTING TRACE...";
+
+  msg.classList.remove("hidden");
+
+  msg.innerText =
+    "Sending payment trace securely...";
+
+
+  try {
+
+    /* ---------- UNIQUE REQUEST ID ---------- */
+
+    const requestId =
+      generateRequestId();
+
+
+    /* ---------- FIREBASE DATABASE PATH ---------- */
+
+    const requestRef =
+      ref(
+        db,
+        `paymentRequests/${requestId}`
+      );
+
+
+    /* ---------- REQUEST DATA ---------- */
+
+    const requestData = {
+
+      ownerUid: currentUser.uid,
+
+      utr: utr,
+
+      confession: text,
+
+      amount: 13,
+
+      status: "PENDING",
+
+      timestamp: Date.now()
+
+    };
+
+
+    /* ---------- SAVE TO FIREBASE ---------- */
+
+    await set(
+      requestRef,
+      requestData
+    );
+
+
+    /* ---------- SAVE LOCALLY ---------- */
+
+    localStorage.setItem(
+      "bl_request_id",
+      requestId
+    );
+
+
+    /* ---------- SHOW PENDING ---------- */
+
+    document
+      .getElementById("stepVerify")
+      .classList
+      .add("hidden");
+
+    document
+      .getElementById("pendingBox")
+      .classList
+      .remove("hidden");
+
+
+    document
+      .getElementById("pollStatus")
+      .innerText =
+      "Payment trace submitted. Waiting for verification...";
+
+
+    msg.innerText =
+      "Trace submitted successfully.";
+
+
+    /* ---------- START REALTIME STATUS ---------- */
+
+    listenToStatus(requestId);
+
+
+  } catch (error) {
+
+    console.error(
+      "Firebase submission error:",
+      error
+    );
+
+    alert(
+      "Submission failed: " +
+      error.message
+    );
+
+    btn.disabled = false;
+
+    btn.innerText =
+      "SUBMIT FOR VERIFICATION";
+
+    msg.innerText = "";
+
+  }
+
+};
+
+
+/* =========================================================
+   REALTIME STATUS LISTENER
+   ========================================================= */
+
+function listenToStatus(requestId) {
+
+  /* Remove previous listener if any */
+
+  if (statusListener) {
+
+    statusListener();
+
+    statusListener = null;
+
+  }
+
+
+  const statusRef =
+    ref(
+      db,
+      `paymentRequests/${requestId}/status`
+    );
+
+
+  statusListener =
+    onValue(
+      statusRef,
+      (snapshot) => {
+
+        const status =
+          snapshot.val();
+
+
+        console.log(
+          "Payment status:",
+          status
+        );
+
+
+        /* ---------- APPROVED ---------- */
+
+        if (status === "APPROVED") {
+
+          showVerified({
+            nodeId: requestId,
+            persona: "THE PRAGMATIC SINNER"
+          });
+
+        }
+
+
+        /* ---------- REJECTED ---------- */
+
+        else if (status === "REJECTED") {
+
+          showRejected();
+
+        }
+
+
+        /* ---------- PENDING ---------- */
+
+        else {
+
+          document
+            .getElementById("pollStatus")
+            .innerText =
+            "Payment trace submitted. Waiting for verification...";
+
+        }
+
+      },
+      (error) => {
+
+        console.error(
+          "Status listener error:",
+          error
+        );
+
+      }
+    );
+
 }
 
-function showVerified(d) {
- document.getElementById('pendingBox').classList.add('hidden');
- document.getElementById('accessBox').classList.remove('hidden');
- document.getElementById('unlockedNode').textContent = `NODE ${d.nodeId || "------"}`;
- document.getElementById('unlockedPersona').textContent = d.persona || "UNKNOWN";
- window.scrollTo({
-  top: document.getElementById('accessBox').offsetTop - 20,
-  behavior: "smooth"
- });
+
+/* =========================================================
+   SHOW VERIFIED / ACCESS GRANTED
+   ========================================================= */
+
+function showVerified(data) {
+
+  document
+    .getElementById("pendingBox")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("stepVerify")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("accessBox")
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("unlockedNode")
+    .textContent =
+    `NODE ${data.nodeId || "------"}`;
+
+
+  document
+    .getElementById("unlockedPersona")
+    .textContent =
+    data.persona || "UNKNOWN";
+
+
+  window.scrollTo({
+
+    top:
+      document
+        .getElementById("accessBox")
+        .offsetTop - 20,
+
+    behavior: "smooth"
+
+  });
+
+
+  localStorage.setItem(
+    "bl_verified",
+    "true"
+  );
+
 }
+
+
+/* =========================================================
+   SHOW REJECTED
+   ========================================================= */
 
 function showRejected() {
- document.getElementById('pendingBox').classList.add('hidden');
- document.getElementById('stepVerify').classList.remove('hidden');
- const msg = document.getElementById('verifyMsg');
- msg.classList.remove('hidden');
- msg.className = "text-[10px] text-center text-red-500 mt-1 mono";
- msg.innerText = "Payment could not be verified.";
- const btn = document.getElementById('verifyBtn');
- btn.disabled = false;
- btn.innerText = "SUBMIT FOR VERIFICATION";
+
+  document
+    .getElementById("pendingBox")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("stepVerify")
+    .classList
+    .remove("hidden");
+
+
+  const msg =
+    document.getElementById("verifyMsg");
+
+
+  msg.classList.remove("hidden");
+
+  msg.className =
+    "text-[10px] text-center text-red-500 mt-1 mono";
+
+  msg.innerText =
+    "Payment could not be verified.";
+
+
+  const btn =
+    document.getElementById("verifyBtn");
+
+
+  btn.disabled = false;
+
+  btn.innerText =
+    "SUBMIT FOR VERIFICATION";
+
 }
 
-function watchStatus() {}
 
-async function restorePayment() {}
+/* =========================================================
+   RESTORE PREVIOUS PAYMENT REQUEST
+   ========================================================= */
+
+function restorePayment() {
+
+  const requestId =
+    localStorage.getItem("bl_request_id");
+
+
+  if (!requestId || !currentUser) {
+
+    return;
+
+  }
+
+
+  const requestRef =
+    ref(
+      db,
+      `paymentRequests/${requestId}`
+    );
+
+
+  onValue(
+    requestRef,
+    (snapshot) => {
+
+      const data =
+        snapshot.val();
+
+
+      if (!data) {
+
+        return;
+
+      }
+
+
+      /* Security check */
+
+      if (
+        data.ownerUid !==
+        currentUser.uid
+      ) {
+
+        console.warn(
+          "Request does not belong to current user."
+        );
+
+        return;
+
+      }
+
+
+      if (data.status === "PENDING") {
+
+        document
+          .getElementById("stepInitiate")
+          .classList
+          .add("hidden");
+
+        document
+          .getElementById("stepVerify")
+          .classList
+          .add("hidden");
+
+        document
+          .getElementById("pendingBox")
+          .classList
+          .remove("hidden");
+
+        listenToStatus(requestId);
+
+      }
+
+
+      else if (data.status === "APPROVED") {
+
+        showVerified({
+
+          nodeId: requestId,
+
+          persona:
+            data.persona ||
+            "THE PRAGMATIC SINNER"
+
+        });
+
+      }
+
+
+      else if (data.status === "REJECTED") {
+
+        showRejected();
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   STATUS WATCHER
+   ========================================================= */
+
+window.watchStatus = function () {
+
+  const requestId =
+    localStorage.getItem("bl_request_id");
+
+  if (requestId) {
+
+    listenToStatus(requestId);
+
+  }
+
+};
+
+
+/* =========================================================
+   EXISTING FEED
+   ========================================================= */
 
 async function loadFeed() {
- document.getElementById('lockBadge').textContent = "LIVE";
- const feed = document.getElementById('feedList');
- feed.replaceChildren();
- const p = document.createElement("p");
- p.className = "text-neutral-500 text-[11px] mono";
- p.textContent = "Archive running on direct client connection...";
- feed.appendChild(p);
+
+  document
+    .getElementById("lockBadge")
+    .textContent = "LIVE";
+
+
+  const feed =
+    document.getElementById("feedList");
+
+
+  feed.replaceChildren();
+
+
+  const p =
+    document.createElement("p");
+
+
+  p.className =
+    "text-neutral-500 text-[11px] mono";
+
+
+  p.textContent =
+    "Archive running on direct client connection...";
+
+
+  feed.appendChild(p);
+
 }
 
-restorePayment();
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
 loadFeed();
-  </script>
+
+   </script> 
+  
+ 
 </body>
 </html>
