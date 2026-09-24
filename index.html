@@ -177,15 +177,14 @@
 
   </main>
 
-  <!-- Payment Modal with User's BharatPe QR Image -->
+  <!-- Payment Modal with Dynamic UPI QR Code -->
   <div id="payModal" style="display: none;" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="border border-neutral-700 bg-neutral-900 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center shadow-2xl">
       <div class="text-[11px] text-red-500 font-bold mb-1 tracking-wider">SCAN OR SCREENSHOT TO PAY</div>
-      <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 via BharatPe UPI</h3>
+      <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 via BharatPe</h3>
       
-      <!-- Direct user provided BharatPe QR Image -->
-      <div class="bg-white p-2 rounded mb-3 shadow-inner">
-        <img src="1000189674.jpg" class="w-48 h-48 object-contain" alt="BharatPe QR Code">
+      <div class="bg-white p-2.5 rounded mb-3 shadow-inner">
+        <img id="modalQrImg" class="w-44 h-44 object-contain" alt="UPI QR Code">
       </div>
 
       <p class="text-[10px] text-neutral-400 mb-4 leading-relaxed">Screenshot lein, apne UPI app se pay karein, aur wapas aakar UTR enter karein.</p>
@@ -211,6 +210,11 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const confessionsRef = db.ref("confessions");
+
+    const MERCHANT_UPI_ID = "BHARATPE2YOMOB8NOT09199@unitype";[span_0](start_span)[span_0](end_span)
+    const MERCHANT_NAME = "VISHAL";[span_1](start_span)[span_1](end_span)
+    const PAYMENT_AMOUNT = "13.00";
+    const TRANSACTION_NOTE = "BlackLedgerVault";
 
     let isUnlocked = false;
     const confessionInput = document.getElementById("confessionInput");
@@ -244,6 +248,10 @@
         alert("Pehle apna raaz toh likho!");
         return;
       }
+
+      const upiUri = `upi://pay?pa=${encodeURIComponent(MERCHANT_UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${PAYMENT_AMOUNT}&cu=INR&tn=${encodeURIComponent(TRANSACTION_NOTE)}`;
+      document.getElementById("modalQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUri)}`;
+      
       document.getElementById("payModal").style.display = "flex";
     });
 
@@ -378,4 +386,3 @@
   </script>
 </body>
 </html>
-
