@@ -699,7 +699,8 @@ function showRejected() {
 function restorePayment() {
 
   const requestId =
-    localStorage.getItem("bl_request_id");
+  localStorage.getItem('bl_requestId') ||
+  localStorage.getItem('bl_request_id');
 
 
   if (!requestId || !currentUser) {
