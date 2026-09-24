@@ -107,7 +107,7 @@
     </div>
 
   </main>
-    <!-- DYNAMIC PAYMENT MODAL -->
+        <!-- DYNAMIC PAYMENT MODAL -->
   <div id="payModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
       <div class="text-[10px] text-red-500 font-bold mb-1">SECURE UPI GATEWAY</div>
@@ -116,27 +116,21 @@
       <div class="text-[10px] text-neutral-500 mb-2">SCAN QR CODE:</div>
 
       <!-- Auto-Generated QR Code API -->
-      <div class="bg-white p-2 rounded mb-3 shadow-inner">
+      <div class="bg-white p-2 rounded mb-2 shadow-inner">
         <img id="modalQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi%3A%2F%2Fpay%3Fpa%3DBHARATPE2Y0M0B8N0T09199%40unitype%26pn%3DBlack%20Ledger%26am%3D13%26cu%3DINR%26tn%3DBlack%20Ledger%26entry" class="w-36 h-36 object-contain mx-auto" alt="UPI QR">
       </div>
       
-      <p class="text-[10px] text-neutral-400 mb-2">OR PAY DIRECTLY:</p>
+      <!-- Helpful instruction for mobile users -->
+      <p class="text-[10px] text-yellow-400 mb-3">💡 Screenshot lein aur UPI App ki Gallery se scan karein</p>
 
-      <!-- Direct 1-Tap UPI App Button (Moved Below QR) -->
-      <a href="upi://pay?pa=BHARATPE2Y0M0B8N0T09199@unitype&pn=Black%20Ledger&am=13.00&cu=INR&tn=Black%20Ledger%20Entry" 
-         class="w-full bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-white py-3 mb-3 rounded text-xs font-bold uppercase tracking-wider flex items-center justify-center">
-        PAY VIA UPI APP (PHONEPE / GPAY)
-      </a>
-      
       <!-- I Have Paid Button -->
       <button onclick="closeModalAndVerify()" 
-        class="w-full bg-neutral-100 text-black py-2 rounded text-[11px] font-bold uppercase">
+        class="w-full bg-neutral-100 text-black py-2.5 rounded text-[11px] font-bold uppercase tracking-wider">
         I HAVE PAID (ENTER UTR)
       </button>
     </div>
   </div>
-  
-  
+    
   <script>
 const input=document.getElementById('confessionInput');
 const UPI_ID="BHARATPE2Y0M0B8N0T09199@unitype";
