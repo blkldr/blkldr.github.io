@@ -150,7 +150,11 @@ let feedListener=null;
 let restoreStarted=false;
 
 const defaultEntries = [
-{ id: "BL-000170", confession: "Andar se itna akelapan hai ki kabhi-kabhi lagta hai sab kuch chhod kar kahin door chala jaun...", timestamp: Date.now() - 100000 }
+{ id: "BL-000170", confession: "Andar se itna akelapan hai ki kabhi-kabhi lagta hai sab kuch chhod kar kahin door chala jaun...", timestamp: Date.now() - 100000 },
+{ id: "BL-000169", confession: "Bachpan ke sapne kuch aur the, aur aaj is corporate rat race mein faskar bas ek zinda laash hoon.", timestamp: Date.now() - 200000 },
+{ id: "BL-000168", confession: "Kisi ko bataya nahi ki last month mera phone aur saare paise chori ho gaye the...", timestamp: Date.now() - 300000 },
+{ id: "BL-000167", confession: "Office mein bohot zyada toxic environment hai, roz rone ka man karta hai par majboori hai.", timestamp: Date.now() - 400000 },
+{ id: "BL-000166", confession: "Mera doston ne dhokha diya aur saari savings le kar bhaag gaye. Ab akela bacha hoon.", timestamp: Date.now() - 500000 }
 ];
 
 checkInitialState();
@@ -212,23 +216,9 @@ document.getElementById("stepVerify").classList.remove("hidden");
 document.getElementById("stepVerify").classList.add("flex");
 };
 
-async function generateSequentialNodeId(){
-const counterRef = ref(db, "metadata/nodeCounter");
-try {
-const snap = await get(counterRef);
-let nextNum = 170;
-if(snap.exists()){
-nextNum = Number(snap.val()) + 1;
-} else {
-nextNum = 171;
-}
-await set(counterRef, nextNum);
-return "BL-" + String(nextNum).padStart(6, '0');
-} catch(e) {
-// Fallback safely if permission is denied on metadata node
+function generateNodeId(){
 const randomNum = Math.floor(171 + Math.random() * 80000);
 return "BL-" + String(randomNum).padStart(6, '0');
-}
 }
 
 window.submitUtrForVerification=async function(){
@@ -248,7 +238,7 @@ msg.className="text-[10px] text-center text-neutral-400 mt-1 mono";
 msg.innerText="Sending payment trace securely...";
 
 try{
-const nodeId = await generateSequentialNodeId();
+const nodeId = generateNodeId();
 const requestRef=ref(db,`paymentRequests/${nodeId}`);
 
 const personas = ["THE SHADOW OBSERVER", "THE SILENT MARTYR", "THE PRAGMATIC SINNER", "THE ISOLATED DIGITAL"];
@@ -441,17 +431,20 @@ feedListener=null;
 const feedRef=ref(db,"paymentRequests");
 
 feedListener=onValue(feedRef,snapshot=>{
-let entries = [];
+let entries = [...defaultEntries];
 if(snapshot.exists()){
 const data=snapshot.val();
 const dbEntries = Object.entries(data)
 .map(([id,val])=>({id,...val}))
 .filter(entry=>entry.status==="APPROVED"&&entry.confession);
-entries = dbEntries;
-}
 
-if(entries.length === 0){
-entries = [...defaultEntries];
+const existingIds = new Set(dbEntries.map(e => e.id));
+for(const def of defaultEntries){
+if(!existingIds.has(def.id)){
+dbEntries.push(def);
+}
+}
+entries = dbEntries;
 }
 
 entries.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
