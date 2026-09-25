@@ -77,13 +77,16 @@ SUBMIT FOR VERIFICATION
 <p id="pollStatus" class="text-xs text-neutral-400 mb-2">Waiting for admin approval...</p>
 </div>
 
-<div id="accessBox" class="hidden border border-neutral-800 bg-neutral-950 p-6 rounded-lg mono flex flex-col">
+<div id="accessBox" class="hidden border border-neutral-800 bg-neutral-950 p-6 rounded-lg mono flex flex-col items-center text-center">
 <div class="text-[10px] text-neutral-500 tracking-wider mb-2">THE BLACK LEDGER // ARCHIVE PROTOCOL</div>
-<div id="unlockedToken" class="text-[11px] text-red-500 font-bold mb-6">TOKEN ID: #000162 | VERIFIED</div>
+<div id="unlockedToken" class="text-[11px] text-red-500 font-bold mb-4">TOKEN ID: #000162 | VERIFIED</div>
 <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-1" id="unlockedPersona">THE SILENT MARTYR</h2>
-<p class="text-xs text-red-500 mb-4">4.1% OF PARTICIPANTS</p>
-<p class="text-[11px] text-neutral-400 mb-8">CONFESSION PERMANENTLY SEALED IN VAULT</p>
-<div class="text-[10px] text-neutral-500 text-center mt-2">PURGE IMMINENT // projectblackledger</div>
+<p class="text-xs text-red-500 mb-3">4.1% OF PARTICIPANTS</p>
+<p class="text-[11px] text-neutral-400 mb-5">CONFESSION PERMANENTLY SEALED IN VAULT</p>
+<button onclick="shareToInstagramStory()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3 px-4 rounded text-xs tracking-wider uppercase mono transition mb-3">
+SHARE VAULT TOKEN (IG STORY)
+</button>
+<div class="text-[10px] text-neutral-500 text-center">PURGE IMMINENT // blkldr.github.io</div>
 </div>
 
 <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg mt-2">
@@ -92,7 +95,6 @@ SUBMIT FOR VERIFICATION
 <span id="lockBadge" class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono">LOCKED</span>
 </div>
 <div class="flex flex-col gap-3 text-xs" id="feedList">
-<!-- Instant fallback render -->
 </div>
 </div>
 
@@ -133,8 +135,6 @@ const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getDatabase(app);
 const input=document.getElementById("confessionInput");
-const UPI_ID="BHARATPE2Y0M0B8N0T09199@unitype";
-const AMOUNT="13";
 
 let currentUser=null;
 let statusListener=null;
@@ -154,7 +154,6 @@ const defaultEntries = [
 { id: "BL-000170", confession: "Andar se itna akelapan hai ki kabhi-kabhi lagta hai sab kuch chhod kar kahin door chala jaun...", timestamp: Date.now() - 900000 }
 ];
 
-// Render default entries immediately so the list is never empty on load
 renderFeedList(defaultEntries);
 
 input.addEventListener("input",()=>{
@@ -380,6 +379,20 @@ showRejected();
 listenToStatus(requestId);
 }
 
+window.shareToInstagramStory = function(){
+const tokenNum = localStorage.getItem("bl_tokenNum") || "000162";
+const persona = localStorage.getItem("bl_persona") || "THE SILENT MARTYR";
+const shareText = `🔒 THE BLACK LEDGER // VERIFIED PROTOCOL\nTOKEN ID: #${tokenNum}\nPERSONA: ${persona}\nMy unsaid truth is permanently sealed.\nJoin the archive: https://blkldr.github.io`;
+
+if (navigator.clipboard) {
+navigator.clipboard.writeText(shareText).then(() => {
+alert("Cryptic Card details copied! Now paste this on your Instagram Story and link blkldr.github.io");
+});
+} else {
+alert("Token ID: #" + tokenNum + " - Share on Instagram: blkldr.github.io");
+}
+};
+
 function startRealtimeFeed(){
 if(feedListener){
 feedListener();
@@ -497,3 +510,4 @@ feedListener=null;
 </script>
 </body>
 </html>
+
