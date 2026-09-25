@@ -92,7 +92,7 @@ SUBMIT FOR VERIFICATION
 <span id="lockBadge" class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono">LOCKED</span>
 </div>
 <div class="flex flex-col gap-3 text-xs" id="feedList">
-<p class="text-neutral-500 text-[11px] mono">Connecting to live archive feed...</p>
+<!-- Instant fallback render -->
 </div>
 </div>
 
@@ -141,6 +141,21 @@ let statusListener=null;
 let requestListener=null;
 let feedListener=null;
 let restoreStarted=false;
+
+const defaultEntries = [
+{ id: "BL-000162", confession: "Bhai, mera startup doob gaya hai aur ₹5 lakh ka karza hai, koi rasta nahi dikh raha... Call: 9876543210", timestamp: Date.now() - 100000 },
+{ id: "BL-000163", confession: "Depression ki wajeh se college chorna pada, agar kisi ke paas remote work ho toh please help karo... Contact: 9123456789", timestamp: Date.now() - 200000 },
+{ id: "BL-000164", confession: "Ghar walon se chup karaya tha loan, ab wo recovery wale pareshan kar rahe hain. Please koi salah do.", timestamp: Date.now() - 300000 },
+{ id: "BL-000165", confession: "Raat bhar panic attacks aate hain, samajh nahi aa raha life kis direction mein ja rahi hai...", timestamp: Date.now() - 400000 },
+{ id: "BL-000166", confession: "Mera doston ne dhokha diya aur saari savings le kar bhaag gaye. Ab akela bacha hoon.", timestamp: Date.now() - 500000 },
+{ id: "BL-000167", confession: "Office mein bohot zyada toxic environment hai, roz rone ka man karta hai par majboori hai.", timestamp: Date.now() - 600000 },
+{ id: "BL-000168", confession: "Kisi ko bataya nahi ki last month mera phone aur saare paise chori ho gaye the...", timestamp: Date.now() - 700000 },
+{ id: "BL-000169", confession: "Bachpan ke sapne kuch aur the, aur aaj is corporate rat race mein faskar bas ek zinda laash hoon.", timestamp: Date.now() - 800000 },
+{ id: "BL-000170", confession: "Andar se itna akelapan hai ki kabhi-kabhi lagta hai sab kuch chhod kar kahin door chala jaun...", timestamp: Date.now() - 900000 }
+];
+
+// Render default entries immediately so the list is never empty on load
+renderFeedList(defaultEntries);
 
 input.addEventListener("input",()=>{
 document.getElementById("charCount").textContent=`${input.value.length} / 280`;
@@ -374,7 +389,6 @@ feedListener=null;
 const feedRef=ref(db,"paymentRequests");
 
 feedListener=onValue(feedRef,snapshot=>{
-const feed=document.getElementById("feedList");
 const badge=document.getElementById("lockBadge");
 const isVerified=localStorage.getItem("bl_verified")==="true";
 
@@ -386,38 +400,34 @@ badge.textContent="LOCKED";
 badge.className="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono";
 }
 
-feed.replaceChildren();
-
-const defaultEntries = [
-{ id: "BL-000162", confession: "Bhai, mera startup doob gaya hai aur ₹5 lakh ka karza hai, koi rasta nahi dikh raha... Call: 9876543210", timestamp: Date.now() - 100000 },
-{ id: "BL-000163", confession: "Depression ki wajeh se college chorna pada, agar kisi ke paas remote work ho toh please help karo... Contact: 9123456789", timestamp: Date.now() - 200000 },
-{ id: "BL-000164", confession: "Ghar walon se chup karaya tha loan, ab wo recovery wale pareshan kar rahe hain. Please koi salah do.", timestamp: Date.now() - 300000 },
-{ id: "BL-000165", confession: "Raat bhar panic attacks aate hain, samajh nahi aa raha life kis direction mein ja rahi hai...", timestamp: Date.now() - 400000 },
-{ id: "BL-000166", confession: "Mera doston ne dhokha diya aur saari savings le kar bhaag gaye. Ab akela bacha hoon.", timestamp: Date.now() - 500000 },
-{ id: "BL-000167", confession: "Office mein bohot zyada toxic environment hai, roz rone ka man karta hai par majboori hai.", timestamp: Date.now() - 600000 },
-{ id: "BL-000168", confession: "Kisi ko bataya nahi ki last month mera phone aur saare paise chori ho gaye the...", timestamp: Date.now() - 700000 },
-{ id: "BL-000169", confession: "Bachpan ke sapne kuch aur the, aur aaj is corporate rat race mein faskar bas ek zinda laash hoon.", timestamp: Date.now() - 800000 },
-{ id: "BL-000170", confession: "Andar se itna akelapan hai ki kabhi-kabhi lagta hai sab kuch chhod kar kahin door chala jaun...", timestamp: Date.now() - 900000 }
-];
-
-let entries = [];
+let entries = [...defaultEntries];
 if(snapshot.exists()){
 const data=snapshot.val();
-entries = Object.entries(data)
+const dbEntries = Object.entries(data)
 .map(([id,val])=>({id,...val}))
 .filter(entry=>entry.status==="APPROVED"&&entry.confession);
-}
 
-if(entries.length < 9){
-const existingIds = new Set(entries.map(e => e.id));
+const existingIds = new Set(dbEntries.map(e => e.id));
 for(const def of defaultEntries){
 if(!existingIds.has(def.id)){
-entries.push(def);
+dbEntries.push(def);
 }
 }
+entries = dbEntries;
 }
 
 entries.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+renderFeedList(entries);
+
+},error=>{
+console.error("Realtime feed error:",error);
+});
+}
+
+function renderFeedList(entries){
+const feed=document.getElementById("feedList");
+const isVerified=localStorage.getItem("bl_verified")==="true";
+feed.replaceChildren();
 
 for(const entry of entries){
 const itemDiv=document.createElement("div");
@@ -426,7 +436,7 @@ itemDiv.className="border border-neutral-800 bg-neutral-900/40 p-3 rounded text-
 const headerRow=document.createElement("div");
 headerRow.className="flex justify-between text-neutral-500 mb-1 text-[9px]";
 
-let formattedId = entry.id;
+let formattedId = entry.id || "BL-000162";
 if(!formattedId.startsWith("BL-")) {
   formattedId = "BL-" + formattedId.replace("NODE_", "").replace("BL-", "");
 }
@@ -455,10 +465,6 @@ contentP.textContent=`"${entry.confession}"`;
 itemDiv.appendChild(contentP);
 feed.appendChild(itemDiv);
 }
-
-},error=>{
-console.error("Realtime feed error:",error);
-});
 }
 
 window.addEventListener("pageshow",()=>{
