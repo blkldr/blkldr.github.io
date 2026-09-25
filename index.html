@@ -42,10 +42,10 @@ Har insaan ke paas ek aisi baat hoti hai jo wo duniya se chhupata hai. Yahan aak
 </div>
 
 <div class="relative mb-3">
-<textarea id="confessionInput" rows="4" maxlength="280" placeholder="Apna unsaid sach, galti ya raaz yahan likho..."
+<textarea id="confessionInput" rows="4" maxlength="280" placeholder="Apna unsaid sach, galti ya raaz yahan likho (Help/Contact number bhi de sakte ho)..."
 class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"></textarea>
 <div class="flex justify-between text-[10px] mono text-neutral-500 mt-1">
-<span>PII SANITIZER: ACTIVE</span>
+<span>COMMUNITY MESH: ACTIVE</span>
 <span id="charCount">0 / 280</span>
 </div>
 </div>
@@ -182,7 +182,8 @@ if(window.crypto&&crypto.randomUUID)
 return"NODE_"+crypto.randomUUID().replaceAll("-","").substring(0,12).toUpperCase();
 return"NODE_"+Math.random().toString(36).substring(2,10).toUpperCase();
 }
-  window.submitUtrForVerification=async function(){
+
+window.submitUtrForVerification=async function(){
 const text=input.value.trim();
 const utr=document.getElementById("utrInput").value.trim();
 const btn=document.getElementById("verifyBtn");
@@ -384,7 +385,8 @@ showRejected();
 
 listenToStatus(requestId);
 }
-  function startRealtimeFeed(){
+
+function startRealtimeFeed(){
 if(feedListener){
 feedListener();
 feedListener=null;
@@ -400,27 +402,32 @@ const isVerified=localStorage.getItem("bl_verified")==="true";
 badge.textContent=isVerified?"UNLOCKED":"LOCKED";
 feed.replaceChildren();
 
-if(!snapshot.exists()){
-const p=document.createElement("p");
-p.className="text-neutral-500 text-[11px] mono";
-p.textContent="No confessions sealed yet. Be the first.";
-feed.appendChild(p);
-return;
+// Built-in 9 community fallback confessions with contact numbers if database is empty
+const defaultEntries = [
+{ id: "NODE_9481A", confession: "Job chodne ka mann hai par ghar walon ki umeedon ki wajeh se chupchap roz office ja raha hoon... Contact: 9876543210", timestamp: Date.now() - 100000 },
+{ id: "NODE_8372B", confession: "Mujhe sach mein nahi pata ki main apni life ke sath kya kar raha hoon, sabke samne bas dikhawa hai.", timestamp: Date.now() - 200000 },
+{ id: "NODE_7263C", confession: "Ek saal ho gaya breakup ko, par aaj bhi raat ko uska number dial karne ka man karta hai.", timestamp: Date.now() - 300000 },
+{ id: "NODE_6154D", confession: "Startup ke naam par sabko bolta hoon ki badhiya chal raha hai, andar se pura financial stress mein dooba hoon.", timestamp: Date.now() - 400000 },
+{ id: "NODE_5045E", confession: "Apne hi doston se andar hi andar jalan hoti hai jab wo aage badhte hain, par saamne se hamesha hasta hoon.", timestamp: Date.now() - 500000 },
+{ id: "NODE_4936F", confession: "Bhai, andar se itna akelapan hai ki kabhi-kabhi lagta hai kisi anjaan se apne saare raaz bol dun. Call me on 9123456789", timestamp: Date.now() - 600000 },
+{ id: "NODE_3827G", confession: "Ghar walon ko lagta hai padhai kar raha hoon, jabki poori raat bas apne future ko lekar panic attack aate hain.", timestamp: Date.now() - 700000 },
+{ id: "NODE_2718H", confession: "Kisi ko bataya nahi ki last month mera phone aur saare paise chori ho gaye the, doston se jhooth bol kar kaam chala raha hoon.", timestamp: Date.now() - 800000 },
+{ id: "NODE_1609I", confession: "Bachpan ke sapne kuch aur the, aur aaj is corporate rat race mein faskar bas ek zinda laash ban kar reh gaya hoon.", timestamp: Date.now() - 900000 }
+];
+
+let entries = [];
+if(snapshot.exists()){
+const data=snapshot.val();
+entries = Object.entries(data)
+.map(([id,val])=>({id,...val}))
+.filter(entry=>entry.status==="APPROVED"&&entry.confession);
 }
 
-const data=snapshot.val();
-
-const entries=Object.entries(data)
-.map(([id,val])=>({id,...val}))
-.filter(entry=>entry.status==="APPROVED"&&entry.confession)
-.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
-
-if(entries.length===0){
-const p=document.createElement("p");
-p.className="text-neutral-500 text-[11px] mono";
-p.textContent="Waiting for verified archive entries...";
-feed.appendChild(p);
-return;
+// Combine database entries with default ones if needed
+if(entries.length === 0){
+entries = defaultEntries;
+} else {
+entries.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
 }
 
 for(const entry of entries){
