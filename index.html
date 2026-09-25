@@ -220,19 +220,9 @@ document.getElementById("stepVerify").classList.remove("hidden");
 document.getElementById("stepVerify").classList.add("flex");
 };
 
-async function generateSequentialNodeId(){
-const counterRef = ref(db, "metadata/nodeCounter");
-try {
-const snap = await get(counterRef);
-let nextNum = 162;
-if(snap.exists()){
-nextNum = Number(snap.val()) + 1;
-}
-await set(counterRef, nextNum);
-return "BL-" + String(nextNum).padStart(6, '0');
-} catch(e) {
-return "BL-000163";
-}
+function generateNodeId(){
+const randomNum = Math.floor(171 + Math.random() * 80000);
+return "BL-" + String(randomNum).padStart(6, '0');
 }
 
 window.submitUtrForVerification=async function(){
@@ -252,7 +242,7 @@ msg.className="text-[10px] text-center text-neutral-400 mt-1 mono";
 msg.innerText="Sending payment trace securely...";
 
 try{
-const nodeId = await generateSequentialNodeId();
+const nodeId = generateNodeId();
 const requestRef=ref(db,`paymentRequests/${nodeId}`);
 
 const personas = ["THE SHADOW OBSERVER", "THE SILENT MARTYR", "THE PRAGMATIC SINNER", "THE ISOLATED DIGITAL"];
