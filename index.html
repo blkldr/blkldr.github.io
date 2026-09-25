@@ -9,7 +9,11 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  >
 
   <style>
     body {
@@ -49,8 +53,10 @@
 <body class="min-h-screen p-4 flex flex-col items-center justify-start scanline">
 
   <header class="w-full max-w-md border border-neutral-800 p-3 mb-4 bg-neutral-950/90 rounded flex justify-between items-center text-[11px] mono">
+
     <div class="flex items-center gap-2">
       <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+
       <span class="text-neutral-400">
         LEDGER PROTOCOL // 30-DAY
       </span>
@@ -58,13 +64,23 @@
 
     <div class="text-neutral-300">
       ARCHIVE:
-      <span id="counterDisplay" class="text-white font-bold">
+      <span
+        id="counterDisplay"
+        class="text-white font-bold"
+      >
         #000,170
       </span>
     </div>
+
   </header>
 
+
   <main class="w-full max-w-md flex flex-col gap-4">
+
+
+    <!-- ===============================
+         CONFESSION / PAYMENT BOX
+    ================================ -->
 
     <div
       id="vaultStage"
@@ -83,6 +99,7 @@
 
       </div>
 
+
       <div class="text-center mb-4">
 
         <h2 class="text-white text-sm font-bold tracking-wider uppercase mb-1">
@@ -99,6 +116,7 @@
         </div>
 
       </div>
+
 
       <div class="relative mb-3">
 
@@ -121,7 +139,9 @@
           </span>
 
         </div>
+
       </div>
+
 
       <div id="stepInitiate">
 
@@ -137,6 +157,7 @@
         </p>
 
       </div>
+
 
       <div
         id="stepVerify"
@@ -177,6 +198,11 @@
 
     </div>
 
+
+    <!-- ===============================
+         PENDING BOX
+    ================================ -->
+
     <div
       id="pendingBox"
       class="hidden border border-yellow-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center"
@@ -203,6 +229,11 @@
       ></div>
 
     </div>
+
+
+    <!-- ===============================
+         ACCESS GRANTED BOX
+    ================================ -->
 
     <div
       id="accessBox"
@@ -234,7 +265,14 @@
 
     </div>
 
-    <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
+
+    <!-- ===============================
+         LIVE VAULT
+    ================================ -->
+
+    <div
+      class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg"
+    >
 
       <div class="flex justify-between items-center mb-3">
 
@@ -251,25 +289,35 @@
 
       </div>
 
+
       <div
         class="flex flex-col gap-3 text-xs"
         id="feedList"
       >
+
         <p class="text-neutral-500 text-[11px] mono">
           Connecting to live archive feed...
         </p>
+
       </div>
 
     </div>
 
   </main>
 
+
+  <!-- ===============================
+       PAYMENT MODAL
+  ================================ -->
+
   <div
     id="payModal"
     class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
   >
 
-    <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
+    <div
+      class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center"
+    >
 
       <div class="text-[10px] text-red-500 font-bold mb-1">
         SECURE UPI GATEWAY
@@ -308,6 +356,8 @@
     </div>
 
   </div>
+
+
     <script type="module">
 
     import {
@@ -333,6 +383,10 @@
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
+    /* =========================
+       FIREBASE CONFIG
+    ========================= */
+
     const firebaseConfig = {
 
       apiKey: "AIzaSyAlmnaSJmU5FRTcpbmDa6MO0hdUwIeLOZc",
@@ -357,12 +411,19 @@
     };
 
 
-    const app = initializeApp(firebaseConfig);
+    const app =
+      initializeApp(firebaseConfig);
 
-    const auth = getAuth(app);
+    const auth =
+      getAuth(app);
 
-    const db = getDatabase(app);
+    const db =
+      getDatabase(app);
 
+
+    /* =========================
+       BASIC VARIABLES
+    ========================= */
 
     const input =
       document.getElementById("confessionInput");
@@ -370,8 +431,8 @@
     const UPI_ID =
       "BHARATPE2Y0M0B8N0T09199@unitype";
 
-    const AMOUNT = "13";
-
+    const AMOUNT =
+      "13";
 
     let currentUser = null;
 
@@ -382,13 +443,23 @@
     let restoreStarted = false;
 
 
+    /* =========================
+       CHARACTER COUNTER
+    ========================= */
+
     input.addEventListener("input", () => {
 
-      document.getElementById("charCount").textContent =
+      document.getElementById(
+        "charCount"
+      ).textContent =
         `${input.value.length} / 280`;
 
     });
 
+
+    /* =========================
+       ANONYMOUS LOGIN
+    ========================= */
 
     async function startAuthentication() {
 
@@ -417,6 +488,10 @@
     }
 
 
+    /* =========================
+       AUTH STATE
+    ========================= */
+
     onAuthStateChanged(
       auth,
       async (user) => {
@@ -441,6 +516,10 @@
 
     startAuthentication();
 
+
+    /* =========================
+       PAYMENT MODAL
+    ========================= */
 
     window.openPaymentModal = function () {
 
@@ -490,6 +569,10 @@
     };
 
 
+    /* =========================
+       REQUEST ID
+    ========================= */
+
     function generateRequestId() {
 
       if (
@@ -521,23 +604,14 @@
     }
 
 
-    /*
-      NODE NUMBER SYSTEM
+    /* =========================
+       NODE NUMBER
+       000099 → 000170 → 000171...
+    ========================= */
 
-      Existing archive:
-      000099 ... 000170
-
-      New entries:
-      000171
-      000172
-      000173
-      ...
-
-      Firebase transaction makes the counter
-      safe when multiple users submit.
-    */
-
-    async function reserveNodeNumber(requestId) {
+    async function reserveNodeNumber(
+      requestId
+    ) {
 
       const requestRef =
         ref(
@@ -559,7 +633,10 @@
 
 
       const counterRef =
-        ref(db, "ledgerCounter");
+        ref(
+          db,
+          "ledgerCounter"
+        );
 
 
       const result =
@@ -586,17 +663,21 @@
 
 
       const nextNumber =
-        Number(result.snapshot.val());
+        Number(
+          result.snapshot.val()
+        );
 
 
       const nodeNumber =
-        String(nextNumber).padStart(6, "0");
+        String(nextNumber)
+          .padStart(6, "0");
 
 
       await update(
         requestRef,
         {
-          nodeNumber: nodeNumber
+          nodeNumber:
+            nodeNumber
         }
       );
 
@@ -605,6 +686,10 @@
 
     }
 
+
+    /* =========================
+       SUBMIT UTR
+    ========================= */
 
     window.submitUtrForVerification =
       async function () {
@@ -668,7 +753,9 @@
           "TRANSMITTING TRACE...";
 
 
-        msg.classList.remove("hidden");
+        msg.classList.remove(
+          "hidden"
+        );
 
         msg.className =
           "text-[10px] text-center text-neutral-400 mt-1 mono";
@@ -728,6 +815,13 @@
           );
 
 
+          /*
+             IMPORTANT:
+
+             Refresh ke baad bhi
+             pending screen restore hogi.
+          */
+
           localStorage.setItem(
             "bl_requestId",
             requestId
@@ -748,11 +842,17 @@
             nodeNumber
           );
 
+          localStorage.setItem(
+            "bl_paymentPending",
+            "true"
+          );
+
 
           showPending(
             requestId,
             nodeNumber
           );
+
 
           listenToStatus(
             requestId
@@ -780,6 +880,10 @@
 
       };
 
+
+    /* =========================
+       PENDING SCREEN
+    ========================= */
 
     function showPending(
       requestId,
@@ -833,12 +937,12 @@
       msg.className =
         "text-[10px] text-center text-yellow-500 mt-1 mono";
 
-
-      msg.classList.remove("hidden");
-
+      msg.classList.remove(
+        "hidden"
+      );
 
       msg.innerText =
-        "Waiting for admin approval...";
+        "Payment received. Waiting for admin approval...";
 
 
       const btn =
@@ -854,6 +958,10 @@
 
     }
 
+
+    /* =========================
+       STATUS LISTENER
+    ========================= */
 
     function listenToStatus(
       requestId
@@ -940,7 +1048,10 @@
 
               showPending(
                 requestId,
-                data.nodeNumber
+                data.nodeNumber ||
+                localStorage.getItem(
+                  "bl_nodeNumber"
+                )
               );
 
             }
@@ -949,7 +1060,11 @@
         );
 
     }
-          function showVerified(data) {
+          /* =========================
+       ACCESS GRANTED
+    ========================= */
+
+    function showVerified(data) {
 
       document
         .getElementById("pendingBox")
@@ -1007,12 +1122,13 @@
         "true"
       );
 
+      localStorage.removeItem(
+        "bl_paymentPending"
+      );
+
 
       /*
-        Feed listener already running.
-        Firebase realtime update immediately
-        changes the user's own message from
-        PENDING/blurred to full text.
+        Feed ko immediately refresh karo.
       */
 
       startRealtimeFeed();
@@ -1032,6 +1148,10 @@
 
     }
 
+
+    /* =========================
+       REJECTED PAYMENT
+    ========================= */
 
     function showRejected() {
 
@@ -1062,6 +1182,10 @@
 
       localStorage.removeItem(
         "bl_verified"
+      );
+
+      localStorage.removeItem(
+        "bl_paymentPending"
       );
 
 
@@ -1115,17 +1239,19 @@
       msg.className =
         "text-[10px] text-center text-red-500 mt-1 mono";
 
-
       msg.classList.remove(
         "hidden"
       );
-
 
       msg.innerText =
         "Payment could not be verified. Please make a new payment.";
 
     }
 
+
+    /* =========================
+       RESTORE AFTER REFRESH
+    ========================= */
 
     async function restorePayment() {
 
@@ -1203,6 +1329,11 @@
           if (!data) return;
 
 
+          /*
+             Security check:
+             sirf apna request restore karo.
+          */
+
           if (
             data.ownerUid &&
             data.ownerUid !==
@@ -1221,7 +1352,10 @@
 
             showPending(
               requestId,
-              data.nodeNumber
+              data.nodeNumber ||
+              localStorage.getItem(
+                "bl_nodeNumber"
+              )
             );
 
 
@@ -1255,6 +1389,10 @@
       );
 
 
+      /*
+         Status listener bhi active rahega.
+      */
+
       listenToStatus(
         requestId
       );
@@ -1262,18 +1400,9 @@
     }
 
 
-    /*
-      LIVE VAULT STREAM
-
-      IMPORTANT:
-
-      - PENDING message appears at TOP.
-      - APPROVED message also remains at TOP.
-      - Newest timestamp first.
-      - Approved users see FULL messages.
-      - Non-approved users see messages blurred.
-      - Existing old messages remain visible.
-    */
+    /* =========================
+       LIVE VAULT STREAM
+    ========================= */
 
     function startRealtimeFeed() {
 
@@ -1334,14 +1463,11 @@
                   "p"
                 );
 
-
               p.className =
                 "text-neutral-500 text-[11px] mono";
 
-
               p.textContent =
                 "No confessions yet. Be the first.";
-
 
               feed.appendChild(p);
 
@@ -1355,11 +1481,10 @@
 
 
             /*
-              ALL ENTRIES:
-
               PENDING + APPROVED
+              dono list me rahenge.
 
-              Newest first.
+              Latest timestamp sabse upar.
             */
 
             const entries =
@@ -1404,6 +1529,10 @@
                 "border border-neutral-800 bg-neutral-900/40 p-3 rounded text-[11px] mono";
 
 
+              /*
+                 HEADER
+              */
+
               const headerRow =
                 document.createElement(
                   "div"
@@ -1437,6 +1566,10 @@
               );
 
 
+              /*
+                 CONFESSION TEXT
+              */
+
               const contentP =
                 document.createElement(
                   "p"
@@ -1448,13 +1581,11 @@
 
 
               /*
-                APPROVED:
+                 Approved + unlocked:
+                 full message
 
-                Verified user:
-                FULL TEXT
-
-                Non verified:
-                BLURRED
+                 Locked:
+                 blurred message
               */
 
               if (
@@ -1487,6 +1618,11 @@
                 contentP
               );
 
+
+              /*
+                 Pending entry ke niche
+                 verification status.
+              */
 
               if (
                 entry.status !==
@@ -1553,12 +1689,13 @@
             );
 
           }
+
         );
 
     }
-
 
   </script>
 
 </body>
 </html>
+  
