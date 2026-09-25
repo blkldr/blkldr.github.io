@@ -150,15 +150,7 @@ let feedListener=null;
 let restoreStarted=false;
 
 const defaultEntries = [
-{ id: "BL-000170", confession: "Andar se itna akelapan hai ki kabhi-kabhi lagta hai sab kuch chhod kar kahin door chala jaun...", timestamp: Date.now() - 100000 },
-{ id: "BL-000169", confession: "Bachpan ke sapne kuch aur the, aur aaj is corporate rat race mein faskar bas ek zinda laash hoon.", timestamp: Date.now() - 200000 },
-{ id: "BL-000168", confession: "Kisi ko bataya nahi ki last month mera phone aur saare paise chori ho gaye the...", timestamp: Date.now() - 300000 },
-{ id: "BL-000167", confession: "Office mein bohot zyada toxic environment hai, roz rone ka man karta hai par majboori hai.", timestamp: Date.now() - 400000 },
-{ id: "BL-000166", confession: "Mera doston ne dhokha diya aur saari savings le kar bhaag gaye. Ab akela bacha hoon.", timestamp: Date.now() - 500000 },
-{ id: "BL-000165", confession: "Raat bhar panic attacks aate hain, samajh nahi aa raha life kis direction mein ja rahi hai...", timestamp: Date.now() - 600000 },
-{ id: "BL-000164", confession: "Ghar walon se chup karaya tha loan, ab wo recovery wale pareshan kar rahe hain. Please koi salah do.", timestamp: Date.now() - 700000 },
-{ id: "BL-000163", confession: "Depression ki wajeh se college chorna pada, agar kisi ke paas remote work ho toh please help karo... Contact: 9123456789", timestamp: Date.now() - 800000 },
-{ id: "BL-000162", confession: "Bhai, mera startup doob gaya hai aur ₹5 lakh ka karza hai, koi rasta nahi dikh raha... Call: 9876543210", timestamp: Date.now() - 900000 }
+{ id: "BL-000170", confession: "Andar se itna akelapan hai ki kabhi-kabhi lagta hai sab kuch chhod kar kahin door chala jaun...", timestamp: Date.now() - 100000 }
 ];
 
 checkInitialState();
@@ -408,7 +400,6 @@ requestListener=onValue(requestRef,snapshot=>{
 const data=snapshot.val();
 
 if(!data)return;
-if(data.ownerUid&&data.ownerUid!==currentUser.uid)return;
 
 if(data.status==="PENDING"){
 showPending(requestId);
@@ -448,20 +439,17 @@ feedListener=null;
 const feedRef=ref(db,"paymentRequests");
 
 feedListener=onValue(feedRef,snapshot=>{
-let entries = [...defaultEntries];
+let entries = [];
 if(snapshot.exists()){
 const data=snapshot.val();
 const dbEntries = Object.entries(data)
 .map(([id,val])=>({id,...val}))
 .filter(entry=>entry.status==="APPROVED"&&entry.confession);
-
-const existingIds = new Set(dbEntries.map(e => e.id));
-for(const def of defaultEntries){
-if(!existingIds.has(def.id)){
-dbEntries.push(def);
-}
-}
 entries = dbEntries;
+}
+
+if(entries.length === 0){
+entries = [...defaultEntries];
 }
 
 entries.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
