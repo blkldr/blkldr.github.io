@@ -79,10 +79,10 @@ SUBMIT FOR VERIFICATION
 
 <div id="accessBox" class="hidden border border-neutral-800 bg-neutral-950 p-6 rounded-lg mono flex flex-col">
 <div class="text-[10px] text-neutral-500 tracking-wider mb-2">THE BLACK LEDGER // ARCHIVE PROTOCOL</div>
-<div id="unlockedNode" class="text-[11px] text-red-500 font-bold mb-6">TOKEN ID: #000000 | VERIFIED</div>
+<div id="unlockedToken" class="text-[11px] text-red-500 font-bold mb-6">TOKEN ID: #000162 | VERIFIED</div>
 <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-1" id="unlockedPersona">THE SILENT MARTYR</h2>
 <p class="text-xs text-red-500 mb-4">4.1% OF PARTICIPANTS</p>
-<p class="text-[11px] text-neutral-400 mb-8" id="shareId">CONFESSION PERMANENTLY SEALED IN VAULT</p>
+<p class="text-[11px] text-neutral-400 mb-8">CONFESSION PERMANENTLY SEALED IN VAULT</p>
 <div class="text-[10px] text-neutral-500 text-center mt-2">PURGE IMMINENT // projectblackledger</div>
 </div>
 
@@ -181,9 +181,9 @@ document.getElementById("stepVerify").classList.remove("hidden");
 document.getElementById("stepVerify").classList.add("flex");
 };
 
-function generateRequestId(){
-const randomNum = Math.floor(100000 + Math.random() * 900000);
-return "BL-" + randomNum;
+function generateNodeId(){
+const randomNum = Math.floor(160 + Math.random() * 80000);
+return "BL-" + String(randomNum).padStart(6, '0');
 }
 
 window.submitUtrForVerification=async function(){
@@ -203,8 +203,8 @@ msg.className="text-[10px] text-center text-neutral-400 mt-1 mono";
 msg.innerText="Sending payment trace securely...";
 
 try{
-const requestId=generateRequestId();
-const requestRef=ref(db,`paymentRequests/${requestId}`);
+const nodeId = generateNodeId();
+const requestRef=ref(db,`paymentRequests/${nodeId}`);
 
 const personas = ["THE SILENT MARTYR", "THE SHADOW OBSERVER", "THE PRAGMATIC SINNER", "THE ISOLATED DIGITAL"];
 const selectedPersona = personas[Math.floor(Math.random() * personas.length)];
@@ -219,14 +219,14 @@ persona: selectedPersona,
 timestamp:Date.now()
 });
 
-localStorage.setItem("bl_requestId",requestId);
-localStorage.setItem("bl_request_id",requestId);
+localStorage.setItem("bl_requestId",nodeId);
+localStorage.setItem("bl_request_id",nodeId);
 localStorage.setItem("bl_confession",text);
 localStorage.setItem("bl_utr",utr);
 localStorage.removeItem("bl_verified");
 
-showPending(requestId);
-listenToStatus(requestId);
+showPending(nodeId);
+listenToStatus(nodeId);
 
 }catch(error){
 console.error("Firebase submission error:",error);
@@ -289,9 +289,10 @@ document.getElementById("vaultStage").classList.add("hidden");
 document.getElementById("pendingBox").classList.add("hidden");
 document.getElementById("accessBox").classList.remove("hidden");
 
-const tokenNum = data.nodeId ? data.nodeId.replace("BL-", "") : Math.floor(100000 + Math.random() * 900000);
+const fullId = data.nodeId || "BL-000162";
+const tokenNum = fullId.replace("BL-", "");
 
-document.getElementById("unlockedNode").textContent=`TOKEN ID: #${tokenNum} | VERIFIED`;
+document.getElementById("unlockedToken").textContent=`TOKEN ID: #${tokenNum} | VERIFIED`;
 document.getElementById("unlockedPersona").textContent=data.persona||"THE SILENT MARTYR";
 
 localStorage.setItem("bl_verified","true");
@@ -331,9 +332,9 @@ const isVerified = localStorage.getItem("bl_verified") === "true";
 if(isVerified){
 document.getElementById("vaultStage").classList.add("hidden");
 document.getElementById("accessBox").classList.remove("hidden");
-const tokenNum = localStorage.getItem("bl_tokenNum") || "68019";
+const tokenNum = localStorage.getItem("bl_tokenNum") || "000162";
 const persona = localStorage.getItem("bl_persona") || "THE SILENT MARTYR";
-document.getElementById("unlockedNode").textContent=`TOKEN ID: #${tokenNum} | VERIFIED`;
+document.getElementById("unlockedToken").textContent=`TOKEN ID: #${tokenNum} | VERIFIED`;
 document.getElementById("unlockedPersona").textContent=persona;
 startRealtimeFeed();
 return;
@@ -388,15 +389,15 @@ badge.className="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 
 feed.replaceChildren();
 
 const defaultEntries = [
-{ id: "BL-680191", confession: "Bhai, mera startup doob gaya hai aur ₹5 lakh ka karza hai, koi rasta nahi dikh raha... Call: 9876543210", timestamp: Date.now() - 100000 },
-{ id: "BL-680192", confession: "Depression ki wajeh se college chorna pada, agar kisi ke paas remote work ho toh please help karo... Contact: 9123456789", timestamp: Date.now() - 200000 },
-{ id: "BL-680193", confession: "Ghar walon se chup karaya tha loan, ab wo recovery wale pareshan kar rahe hain. Please koi salah do.", timestamp: Date.now() - 300000 },
-{ id: "BL-680194", confession: "Raat bhar panic attacks aate hain, samajh nahi aa raha life kis direction mein ja rahi hai...", timestamp: Date.now() - 400000 },
-{ id: "BL-680195", confession: "Mera dosto ne dhokha diya aur saari savings le kar bhaag gaye. Ab akela bacha hoon.", timestamp: Date.now() - 500000 },
-{ id: "BL-680196", confession: "Office mein bohot zyada toxic environment hai, roz rone ka man karta hai par majboori hai.", timestamp: Date.now() - 600000 },
-{ id: "BL-680197", confession: "Kisi ko bataya nahi ki last month mera phone aur saare paise chori ho gaye the...", timestamp: Date.now() - 700000 },
-{ id: "BL-680198", confession: "Bachpan ke sapne kuch aur the, aur aaj is corporate rat race mein faskar bas ek zinda laash hoon.", timestamp: Date.now() - 800000 },
-{ id: "BL-680199", confession: "Andar se itna akelapan hai ki kabhi-kabhi lagta hai sab kuch chhod kar kahin door chala jaun...", timestamp: Date.now() - 900000 }
+{ id: "BL-000162", confession: "Bhai, mera startup doob gaya hai aur ₹5 lakh ka karza hai, koi rasta nahi dikh raha... Call: 9876543210", timestamp: Date.now() - 100000 },
+{ id: "BL-000163", confession: "Depression ki wajeh se college chorna pada, agar kisi ke paas remote work ho toh please help karo... Contact: 9123456789", timestamp: Date.now() - 200000 },
+{ id: "BL-000164", confession: "Ghar walon se chup karaya tha loan, ab wo recovery wale pareshan kar rahe hain. Please koi salah do.", timestamp: Date.now() - 300000 },
+{ id: "BL-000165", confession: "Raat bhar panic attacks aate hain, samajh nahi aa raha life kis direction mein ja rahi hai...", timestamp: Date.now() - 400000 },
+{ id: "BL-000166", confession: "Mera doston ne dhokha diya aur saari savings le kar bhaag gaye. Ab akela bacha hoon.", timestamp: Date.now() - 500000 },
+{ id: "BL-000167", confession: "Office mein bohot zyada toxic environment hai, roz rone ka man karta hai par majboori hai.", timestamp: Date.now() - 600000 },
+{ id: "BL-000168", confession: "Kisi ko bataya nahi ki last month mera phone aur saare paise chori ho gaye the...", timestamp: Date.now() - 700000 },
+{ id: "BL-000169", confession: "Bachpan ke sapne kuch aur the, aur aaj is corporate rat race mein faskar bas ek zinda laash hoon.", timestamp: Date.now() - 800000 },
+{ id: "BL-000170", confession: "Andar se itna akelapan hai ki kabhi-kabhi lagta hai sab kuch chhod kar kahin door chala jaun...", timestamp: Date.now() - 900000 }
 ];
 
 let entries = [];
