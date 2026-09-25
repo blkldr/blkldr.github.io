@@ -77,7 +77,6 @@ SUBMIT FOR VERIFICATION
 <p id="pollStatus" class="text-xs text-neutral-400 mb-2">Waiting for admin approval...</p>
 </div>
 
-<!-- Exact Long Card Format matching screenshot reference -->
 <div id="accessBox" class="hidden border border-neutral-800 bg-neutral-950 p-8 rounded-lg mono flex flex-col justify-between" style="min-height: 420px;">
 <div>
 <div class="text-[10px] text-red-600 tracking-wider mb-1">THE BLACK LEDGER // ARCHIVE PROTOCOL</div>
@@ -163,7 +162,21 @@ const defaultEntries = [
 { id: "BL-000162", confession: "Bhai, mera startup doob gaya hai aur ₹5 lakh ka karza hai, koi rasta nahi dikh raha... Call: 9876543210", timestamp: Date.now() - 900000 }
 ];
 
+// Page load hote hi turant local storage check karke render karo
+checkInitialState();
+
+async function checkInitialState(){
+const isVerified = localStorage.getItem("bl_verified") === "true";
+if(isVerified){
+document.getElementById("vaultStage").classList.add("hidden");
+document.getElementById("accessBox").classList.remove("hidden");
+const nodeId = localStorage.getItem("bl_nodeId") || "BL-000163";
+const persona = localStorage.getItem("bl_persona") || "THE SHADOW OBSERVER";
+document.getElementById("unlockedToken").textContent=`TOKEN ID: ${nodeId} | VERIFIED`;
+document.getElementById("unlockedPersona").textContent=persona;
+}
 renderFeedList(defaultEntries);
+}
 
 input.addEventListener("input",()=>{
 document.getElementById("charCount").textContent=`${input.value.length} / 280`;
@@ -488,37 +501,3 @@ if(isVerified){
 contentP.textContent=`"${entry.confession}"`;
 }else{
 contentP.classList.add("blurred","text-neutral-400");
-contentP.textContent=`"${entry.confession}"`;
-}
-
-itemDiv.appendChild(contentP);
-feed.appendChild(itemDiv);
-}
-}
-
-window.addEventListener("pageshow",()=>{
-const requestId=localStorage.getItem("bl_requestId")||localStorage.getItem("bl_request_id");
-
-if(currentUser&&requestId){
-restorePayment();
-}
-
-if(currentUser){
-startRealtimeFeed();
-}
-});
-
-window.addEventListener("beforeunload",()=>{
-if(statusListener){
-statusListener();
-statusListener=null;
-}
-if(requestListener){
-requestListener();
-requestListener=null;
-}
-if(feedListener){
-feedListener();
-feedListener=null;
-}
-});
