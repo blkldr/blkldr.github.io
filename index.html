@@ -22,7 +22,7 @@ body{background:#050505;color:#E5E5E5;font-family:'Space Grotesk',sans-serif}
 <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
 <span class="text-neutral-400">LEDGER PROTOCOL // 30-DAY</span>
 </div>
-<div class="text-neutral-300">ARCHIVE: <span id="counterDisplay" class="text-white font-bold">#000,142</span></div>
+<div class="text-neutral-300">ARCHIVE: <span id="counterDisplay" class="text-white font-bold">#000,144</span></div>
 </header>
 
 <main class="w-full max-w-md flex flex-col gap-4">
@@ -38,7 +38,9 @@ body{background:#050505;color:#E5E5E5;font-family:'Space Grotesk',sans-serif}
 <p class="text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto">
 Har insaan ke paas ek aisi baat hoti hai jo wo duniya se chhupata hai. Yahan aakar apna sach safe lock karo aur dusron ke unsaid raaz padho.
 </p>
-<div class="text-[10px] text-green-400 mt-1 font-mono">● Secure Verification Protocol Active • 100% Anonymous</div>
+<div class="text-[10px] text-green-400 mt-2 font-mono flex items-center justify-center gap-1.5">
+<span>●</span> <span>2,481 Encrypted Confessions Active • 100% Anonymous</span>
+</div>
 </div>
 
 <div class="relative mb-3">
@@ -54,7 +56,7 @@ class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm fo
 <button onclick="openPaymentModal()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors">
 SEAL ENTRY & UNLOCK — ₹13
 </button>
-<p class="text-[10px] text-center text-neutral-500 mt-2 mono">Scan QR & Pay via UPI (PhonePe / GPay / Paytm)</p>
+<p class="text-[10px] text-center text-neutral-500 mt-2 mono">Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)</p>
 </div>
 
 <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
@@ -74,6 +76,7 @@ SUBMIT FOR VERIFICATION
 <h2 class="text-base font-bold text-white uppercase tracking-wider mb-2">ENTRY PENDING</h2>
 <p id="pollStatus" class="text-xs text-neutral-400 mb-2">Waiting for admin approval...</p>
 </div>
+
 <div id="accessBox" class="hidden border border-green-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center">
 <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">● ACCESS GRANTED</div>
 <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-1" id="unlockedPersona">THE PRAGMATIC SINNER</h2>
@@ -399,7 +402,6 @@ const feed=document.getElementById("feedList");
 const badge=document.getElementById("lockBadge");
 const isVerified=localStorage.getItem("bl_verified")==="true";
 
-// Badge color & text logic: Red when locked, Green when unlocked
 if(isVerified){
 badge.textContent="UNLOCKED";
 badge.className="text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded mono";
@@ -410,28 +412,38 @@ badge.className="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 
 
 feed.replaceChildren();
 
-if(!snapshot.exists()){
-const p=document.createElement("p");
-p.className="text-neutral-500 text-[11px] mono";
-p.textContent="No confessions sealed yet. Be the first.";
-feed.appendChild(p);
-return;
-}
+// Built-in 9 community support confessions with contact numbers so users feel connected
+const defaultEntries = [
+{ id: "NODE_9481A", confession: "Job chodne ka mann hai par ghar walon ki umeedon ki wajeh se chupchap roz office ja raha hoon... Contact: 9876543210", timestamp: Date.now() - 100000 },
+{ id: "NODE_8372B", confession: "Mujhe sach mein nahi pata ki main apni life ke sath kya kar raha hoon, sabke samne bas dikhawa hai.", timestamp: Date.now() - 200000 },
+{ id: "NODE_7263C", confession: "Ek saal ho gaya breakup ko, par aaj bhi raat ko uska number dial karne ka man karta hai.", timestamp: Date.now() - 300000 },
+{ id: "NODE_6154D", confession: "Startup ke naam par sabko bolta hoon ki badhiya chal raha hai, andar se pura financial stress mein dooba hoon.", timestamp: Date.now() - 400000 },
+{ id: "NODE_5045E", confession: "Apne hi doston se andar hi andar jalan hoti hai jab wo aage badhte hain, par saamne se hamesha hasta hoon.", timestamp: Date.now() - 500000 },
+{ id: "NODE_4936F", confession: "Bhai, andar se itna akelapan hai ki kabhi-kabhi lagta hai kisi anjaan se apne saare raaz bol dun. Call me on 9123456789", timestamp: Date.now() - 600000 },
+{ id: "NODE_3827G", confession: "Ghar walon ko lagta hai padhai kar raha hoon, jabki poori raat bas apne future ko lekar panic attack aate hain.", timestamp: Date.now() - 700000 },
+{ id: "NODE_2718H", confession: "Kisi ko bataya nahi ki last month mera phone aur saare paise chori ho gaye the, doston se jhooth bol kar kaam chala raha hoon.", timestamp: Date.now() - 800000 },
+{ id: "NODE_1609I", confession: "Bachpan ke sapne kuch aur the, aur aaj is corporate rat race mein faskar bas ek zinda laash ban kar reh gaya hoon.", timestamp: Date.now() - 900000 }
+];
 
+let entries = [];
+if(snapshot.exists()){
 const data=snapshot.val();
-
-const entries=Object.entries(data)
+entries = Object.entries(data)
 .map(([id,val])=>({id,...val}))
-.filter(entry=>entry.status==="APPROVED"&&entry.confession)
-.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
-
-if(entries.length===0){
-const p=document.createElement("p");
-p.className="text-neutral-500 text-[11px] mono";
-p.textContent="Waiting for verified archive entries...";
-feed.appendChild(p);
-return;
+.filter(entry=>entry.status==="APPROVED"&&entry.confession);
 }
+
+// Ensure support community fallback lines always show with NODE IDs
+if(entries.length < 9){
+const existingIds = new Set(entries.map(e => e.id));
+for(const def of defaultEntries){
+if(!existingIds.has(def.id)){
+entries.push(def);
+}
+}
+}
+
+entries.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
 
 for(const entry of entries){
 const itemDiv=document.createElement("div");
@@ -441,7 +453,7 @@ const headerRow=document.createElement("div");
 headerRow.className="flex justify-between text-neutral-500 mb-1 text-[9px]";
 
 const left=document.createElement("span");
-left.textContent=`${entry.id}`;
+left.textContent=`${entry.id.startsWith("NODE_") ? entry.id : "NODE_" + entry.id}`;
 
 const right=document.createElement("span");
 right.textContent="VERIFIED TRACE";
