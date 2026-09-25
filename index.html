@@ -80,8 +80,8 @@ SUBMIT FOR VERIFICATION
 <div id="accessBox" class="hidden border border-green-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center">
 <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">● ACCESS GRANTED</div>
 <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-1" id="unlockedPersona">THE PRAGMATIC SINNER</h2>
-<p class="text-xs text-neutral-400 mb-2" id="unlockedNode">NODE #------</p>
-<div id="shareId" class="text-[11px] text-green-400 mb-3">YOUR LEDGER ID: ------</div>
+<p class="text-xs text-neutral-400 mb-2" id="unlockedNode">NODE // BL-000000</p>
+<div id="shareId" class="text-[11px] text-green-400 mb-3">YOUR LEDGER ID: BL-000000</div>
 <p class="text-xs text-neutral-300">Your entry is permanently sealed. Scroll down to read unlocked confessions.</p>
 </div>
 
@@ -181,9 +181,8 @@ document.getElementById("stepVerify").classList.add("flex");
 };
 
 function generateRequestId(){
-if(window.crypto&&crypto.randomUUID)
-return"NODE_"+crypto.randomUUID().replaceAll("-","").substring(0,12).toUpperCase();
-return"NODE_"+Math.random().toString(36).substring(2,10).toUpperCase();
+const randomNum = Math.floor(100 + Math.random() * 90000);
+return "BL-" + String(randomNum).padStart(6, '0');
 }
 
 window.submitUtrForVerification=async function(){
@@ -299,10 +298,10 @@ document.getElementById("stepVerify").classList.add("hidden");
 document.getElementById("stepVerify").classList.remove("flex");
 document.getElementById("accessBox").classList.remove("hidden");
 
-const nodeId=data.nodeId||"------";
+const nodeId=data.nodeId||"BL-000162";
 const ledgerId=data.ledgerId||nodeId;
 
-document.getElementById("unlockedNode").textContent=`NODE #${nodeId}`;
+document.getElementById("unlockedNode").textContent=`NODE // ${nodeId}`;
 document.getElementById("unlockedPersona").textContent=data.persona||"THE PRAGMATIC SINNER";
 document.getElementById("shareId").textContent=`YOUR LEDGER ID: ${ledgerId}`;
 
@@ -412,17 +411,17 @@ badge.className="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 
 
 feed.replaceChildren();
 
-// Built-in 9 community support confessions with contact numbers so users feel connected
+// Built-in support community confessions with NODE // BL-XXXXXX format
 const defaultEntries = [
-{ id: "NODE_9481A", confession: "Job chodne ka mann hai par ghar walon ki umeedon ki wajeh se chupchap roz office ja raha hoon... Contact: 9876543210", timestamp: Date.now() - 100000 },
-{ id: "NODE_8372B", confession: "Mujhe sach mein nahi pata ki main apni life ke sath kya kar raha hoon, sabke samne bas dikhawa hai.", timestamp: Date.now() - 200000 },
-{ id: "NODE_7263C", confession: "Ek saal ho gaya breakup ko, par aaj bhi raat ko uska number dial karne ka man karta hai.", timestamp: Date.now() - 300000 },
-{ id: "NODE_6154D", confession: "Startup ke naam par sabko bolta hoon ki badhiya chal raha hai, andar se pura financial stress mein dooba hoon.", timestamp: Date.now() - 400000 },
-{ id: "NODE_5045E", confession: "Apne hi doston se andar hi andar jalan hoti hai jab wo aage badhte hain, par saamne se hamesha hasta hoon.", timestamp: Date.now() - 500000 },
-{ id: "NODE_4936F", confession: "Bhai, andar se itna akelapan hai ki kabhi-kabhi lagta hai kisi anjaan se apne saare raaz bol dun. Call me on 9123456789", timestamp: Date.now() - 600000 },
-{ id: "NODE_3827G", confession: "Ghar walon ko lagta hai padhai kar raha hoon, jabki poori raat bas apne future ko lekar panic attack aate hain.", timestamp: Date.now() - 700000 },
-{ id: "NODE_2718H", confession: "Kisi ko bataya nahi ki last month mera phone aur saare paise chori ho gaye the, doston se jhooth bol kar kaam chala raha hoon.", timestamp: Date.now() - 800000 },
-{ id: "NODE_1609I", confession: "Bachpan ke sapne kuch aur the, aur aaj is corporate rat race mein faskar bas ek zinda laash ban kar reh gaya hoon.", timestamp: Date.now() - 900000 }
+{ id: "BL-000162", confession: "Job chodne ka mann hai par ghar walon ki umeedon ki wajeh se chupchap roz office ja raha hoon... Contact: 9876543210", timestamp: Date.now() - 100000 },
+{ id: "BL-000163", confession: "Mujhe sach mein nahi pata ki main apni life ke sath kya kar raha hoon, sabke samne bas dikhawa hai.", timestamp: Date.now() - 200000 },
+{ id: "BL-000164", confession: "Ek saal ho gaya breakup ko, par aaj bhi raat ko uska number dial karne ka man karta hai.", timestamp: Date.now() - 300000 },
+{ id: "BL-000165", confession: "Startup ke naam par sabko bolta hoon ki badhiya chal raha hai, andar se pura financial stress mein dooba hoon.", timestamp: Date.now() - 400000 },
+{ id: "BL-000166", confession: "Apne hi doston se andar hi andar jalan hoti hai jab wo aage badhte hain, par saamne se hamesha hasta hoon.", timestamp: Date.now() - 500000 },
+{ id: "BL-000167", confession: "Bhai, andar se itna akelapan hai ki kabhi-kabhi lagta hai kisi anjaan se apne saare raaz bol dun. Call me on 9123456789", timestamp: Date.now() - 600000 },
+{ id: "BL-000168", confession: "Ghar walon ko lagta hai padhai kar raha hoon, jabki poori raat bas apne future ko lekar panic attack aate hain.", timestamp: Date.now() - 700000 },
+{ id: "BL-000169", confession: "Kisi ko bataya nahi ki last month mera phone aur saare paise chori ho gaye the, doston se jhooth bol kar kaam chala raha hoon.", timestamp: Date.now() - 800000 },
+{ id: "BL-000170", confession: "Bachpan ke sapne kuch aur the, aur aaj is corporate rat race mein faskar bas ek zinda laash ban kar reh gaya hoon.", timestamp: Date.now() - 900000 }
 ];
 
 let entries = [];
@@ -433,7 +432,6 @@ entries = Object.entries(data)
 .filter(entry=>entry.status==="APPROVED"&&entry.confession);
 }
 
-// Ensure support community fallback lines always show with NODE IDs
 if(entries.length < 9){
 const existingIds = new Set(entries.map(e => e.id));
 for(const def of defaultEntries){
@@ -452,8 +450,13 @@ itemDiv.className="border border-neutral-800 bg-neutral-900/40 p-3 rounded text-
 const headerRow=document.createElement("div");
 headerRow.className="flex justify-between text-neutral-500 mb-1 text-[9px]";
 
+let formattedId = entry.id;
+if(!formattedId.startsWith("BL-")) {
+  formattedId = "BL-" + formattedId.replace("NODE_", "").replace("BL-", "");
+}
+
 const left=document.createElement("span");
-left.textContent=`${entry.id.startsWith("NODE_") ? entry.id : "NODE_" + entry.id}`;
+left.textContent=`NODE // ${formattedId}`;
 
 const right=document.createElement("span");
 right.textContent="VERIFIED TRACE";
