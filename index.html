@@ -3,18 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>The Black Ledger // Monolith Protocol</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap"
-    rel="stylesheet"
-  >
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -53,38 +48,23 @@
 
 <body class="min-h-screen p-4 flex flex-col items-center justify-start scanline">
 
-  <header
-    class="w-full max-w-md border border-neutral-800 p-3 mb-4 bg-neutral-950/90 rounded flex justify-between items-center text-[11px] mono"
-  >
-
+  <header class="w-full max-w-md border border-neutral-800 p-3 mb-4 bg-neutral-950/90 rounded flex justify-between items-center text-[11px] mono">
     <div class="flex items-center gap-2">
-
       <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
-
       <span class="text-neutral-400">
         LEDGER PROTOCOL // 30-DAY
       </span>
-
     </div>
 
     <div class="text-neutral-300">
-
       ARCHIVE:
-
-      <span
-        id="counterDisplay"
-        class="text-white font-bold"
-      >
+      <span id="counterDisplay" class="text-white font-bold">
         #000,170
       </span>
-
     </div>
-
   </header>
 
-
   <main class="w-full max-w-md flex flex-col gap-4">
-
 
     <div
       id="vaultStage"
@@ -93,44 +73,32 @@
 
       <div class="flex justify-between items-center mb-1">
 
-        <h1
-          class="text-base font-bold tracking-tight text-white uppercase mono"
-        >
+        <h1 class="text-base font-bold tracking-tight text-white uppercase mono">
           The Black Ledger
         </h1>
 
-        <span
-          class="text-[10px] mono text-neutral-400 border border-neutral-800 px-2 py-0.5 rounded"
-        >
+        <span class="text-[10px] mono text-neutral-400 border border-neutral-800 px-2 py-0.5 rounded">
           ZERO LOGS
         </span>
 
       </div>
 
-
       <div class="text-center mb-4">
 
-        <h2
-          class="text-white text-sm font-bold tracking-wider uppercase mb-1"
-        >
+        <h2 class="text-white text-sm font-bold tracking-wider uppercase mb-1">
           Jo Sach Kahin Nahi Bola Gaya, Wo Yahan Hai.
         </h2>
 
-        <p
-          class="text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto"
-        >
+        <p class="text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto">
           Har insaan ke paas ek aisi baat hoti hai jo wo duniya se chhupata hai.
           Yahan aakar apna sach safe lock karo aur dusron ke unsaid raaz padho.
         </p>
 
-        <div
-          class="text-[10px] text-green-400 mt-1 font-mono"
-        >
+        <div class="text-[10px] text-green-400 mt-1 font-mono">
           ● Secure Verification Protocol Active • 100% Anonymous
         </div>
 
       </div>
-
 
       <div class="relative mb-3">
 
@@ -142,9 +110,7 @@
           class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"
         ></textarea>
 
-        <div
-          class="flex justify-between text-[10px] mono text-neutral-500 mt-1"
-        >
+        <div class="flex justify-between text-[10px] mono text-neutral-500 mt-1">
 
           <span>
             PII SANITIZER: ACTIVE
@@ -155,9 +121,7 @@
           </span>
 
         </div>
-
       </div>
-
 
       <div id="stepInitiate">
 
@@ -168,14 +132,11 @@
           SEAL ENTRY & UNLOCK — ₹13
         </button>
 
-        <p
-          class="text-[10px] text-center text-neutral-500 mt-2 mono"
-        >
+        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">
           Instant QR & 1-Tap UPI (PhonePe / GPay / Paytm)
         </p>
 
       </div>
-
 
       <div
         id="stepVerify"
@@ -216,21 +177,16 @@
 
     </div>
 
-
     <div
       id="pendingBox"
       class="hidden border border-yellow-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center"
     >
 
-      <div
-        class="text-[10px] text-yellow-500 tracking-widest uppercase mb-1"
-      >
+      <div class="text-[10px] text-yellow-500 tracking-widest uppercase mb-1">
         ● VERIFICATION IN PROGRESS
       </div>
 
-      <h2
-        class="text-base font-bold text-white uppercase tracking-wider mb-2"
-      >
+      <h2 class="text-base font-bold text-white uppercase tracking-wider mb-2">
         ENTRY PENDING
       </h2>
 
@@ -248,15 +204,12 @@
 
     </div>
 
-
     <div
       id="accessBox"
       class="hidden border border-green-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center"
     >
 
-      <div
-        class="text-[10px] text-green-500 tracking-widest uppercase mb-1"
-      >
+      <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">
         ● ACCESS GRANTED
       </div>
 
@@ -281,18 +234,11 @@
 
     </div>
 
+    <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
 
-    <div
-      class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg"
-    >
+      <div class="flex justify-between items-center mb-3">
 
-      <div
-        class="flex justify-between items-center mb-3"
-      >
-
-        <span
-          class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono"
-        >
+        <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">
           Live Vault Stream
         </span>
 
@@ -309,26 +255,21 @@
         class="flex flex-col gap-3 text-xs"
         id="feedList"
       >
-
         <p class="text-neutral-500 text-[11px] mono">
           Connecting to live archive feed...
         </p>
-
       </div>
 
     </div>
 
   </main>
 
-
   <div
     id="payModal"
     class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
   >
 
-    <div
-      class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center"
-    >
+    <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
 
       <div class="text-[10px] text-red-500 font-bold mb-1">
         SECURE UPI GATEWAY
@@ -368,7 +309,6 @@
 
   </div>
 
-
   <script type="module">
 
     import {
@@ -389,14 +329,13 @@
       set,
       get,
       onValue,
-      runTransaction
+      runTransaction,
+      update
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
 
     const firebaseConfig = {
 
-      apiKey:
-        "AIzaSyAlmnaSJmU5FRTcpbmDa6MO0hdUwIeLOZc",
+      apiKey: "AIzaSyAlmnaSJmU5FRTcpbmDa6MO0hdUwIeLOZc",
 
       authDomain:
         "blackledger-759c1.firebaseapp.com",
@@ -415,28 +354,21 @@
 
       appId:
         "1:1064101172402:web:951950dd4e136c44e965eb"
-
     };
 
+    const app = initializeApp(firebaseConfig);
 
-    const app =
-      initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-
-    const auth =
-      getAuth(app);
-
-
-    const db =
-      getDatabase(app);
-
+    const db = getDatabase(app);
 
     const input =
       document.getElementById("confessionInput");
 
+    const UPI_ID =
+      "BHARATPE2Y0M0B8N0T09199@unitype";
 
-    const AMOUNT = 13;
-
+    const AMOUNT = "13";
 
     let currentUser = null;
 
@@ -446,19 +378,12 @@
 
     let restoreStarted = false;
 
+    input.addEventListener("input", () => {
 
-    input.addEventListener(
-      "input",
-      () => {
+      document.getElementById("charCount").textContent =
+        `${input.value.length} / 280`;
 
-        document
-          .getElementById("charCount")
-          .textContent =
-          `${input.value.length} / 280`;
-
-      }
-    );
-
+    });
 
     async function startAuthentication() {
 
@@ -468,7 +393,6 @@
           auth,
           browserLocalPersistence
         );
-
 
         if (!auth.currentUser) {
 
@@ -483,45 +407,23 @@
           error
         );
 
-        const msg =
-          document.getElementById("verifyMsg");
-
-        msg.classList.remove("hidden");
-
-        msg.className =
-          "text-[10px] text-center text-red-500 mt-1 mono";
-
-        msg.innerText =
-          "Secure connection failed. Firebase Anonymous Authentication check karein.";
-
       }
 
     }
-
 
     onAuthStateChanged(
       auth,
       async (user) => {
 
-        if (!user) {
-
-          currentUser = null;
-
-          return;
-
-        }
-
+        if (!user) return;
 
         currentUser = user;
-
 
         if (!restoreStarted) {
 
           restoreStarted = true;
 
-
           await restorePayment();
-
 
           startRealtimeFeed();
 
@@ -530,64 +432,53 @@
       }
     );
 
-
     startAuthentication();
 
+    window.openPaymentModal = function () {
 
-    window.openPaymentModal =
-      function () {
+      const text =
+        input.value.trim();
 
-        const text =
-          input.value.trim();
+      if (text.length < 10) {
 
+        alert(
+          "Enter at least 10 characters of your confession to proceed."
+        );
 
-        if (text.length < 10) {
+        return;
 
-          alert(
-            "Enter at least 10 characters of your confession to proceed."
-          );
+      }
 
-          return;
+      document
+        .getElementById("payModal")
+        .classList
+        .remove("hidden");
 
-        }
+    };
 
+    window.closeModalAndVerify = function () {
 
-        document
-          .getElementById("payModal")
-          .classList
-          .remove("hidden");
+      document
+        .getElementById("payModal")
+        .classList
+        .add("hidden");
 
-      };
+      document
+        .getElementById("stepInitiate")
+        .classList
+        .add("hidden");
 
+      document
+        .getElementById("stepVerify")
+        .classList
+        .remove("hidden");
 
-    window.closeModalAndVerify =
-      function () {
+      document
+        .getElementById("stepVerify")
+        .classList
+        .add("flex");
 
-        document
-          .getElementById("payModal")
-          .classList
-          .add("hidden");
-
-
-        document
-          .getElementById("stepInitiate")
-          .classList
-          .add("hidden");
-
-
-        document
-          .getElementById("stepVerify")
-          .classList
-          .remove("hidden");
-
-
-        document
-          .getElementById("stepVerify")
-          .classList
-          .add("flex");
-
-      };
-
+    };
 
     function generateRequestId() {
 
@@ -607,7 +498,6 @@
 
       }
 
-
       return (
         "REQ_" +
         Date.now() +
@@ -620,15 +510,28 @@
 
     }
 
+    async function reserveNodeNumber(requestId) {
 
-    async function reserveNodeNumber() {
-
-      const counterRef =
+      const requestRef =
         ref(
           db,
-          "ledgerCounter"
+          `paymentRequests/${requestId}`
         );
 
+      const existing =
+        await get(requestRef);
+
+      if (
+        existing.exists() &&
+        existing.val().nodeNumber
+      ) {
+
+        return existing.val().nodeNumber;
+
+      }
+
+      const counterRef =
+        ref(db, "ledgerCounter");
 
       const result =
         await runTransaction(
@@ -638,12 +541,10 @@
             const number =
               Number(current || 170);
 
-
             return number + 1;
 
           }
         );
-
 
       if (!result.committed) {
 
@@ -653,29 +554,27 @@
 
       }
 
-
       const nextNumber =
-        Number(
-          result.snapshot.val()
-        );
+        Number(result.snapshot.val());
 
+      const nodeNumber =
+        String(nextNumber).padStart(6, "0");
 
-      return String(
-        nextNumber
-      ).padStart(
-        6,
-        "0"
+      await update(
+        requestRef,
+        {
+          nodeNumber: nodeNumber
+        }
       );
 
+      return nodeNumber;
+
     }
-
-
-    window.submitUtrForVerification =
+        window.submitUtrForVerification =
       async function () {
 
         const text =
           input.value.trim();
-
 
         const utr =
           document
@@ -683,18 +582,15 @@
             .value
             .trim();
 
-
         const btn =
           document.getElementById(
             "verifyBtn"
           );
 
-
         const msg =
           document.getElementById(
             "verifyMsg"
           );
-
 
         if (text.length < 10) {
 
@@ -706,7 +602,6 @@
 
         }
 
-
         if (!/^\d{12}$/.test(utr)) {
 
           alert(
@@ -716,7 +611,6 @@
           return;
 
         }
-
 
         if (!currentUser) {
 
@@ -728,56 +622,34 @@
 
         }
 
-
         btn.disabled = true;
 
         btn.innerText =
           "TRANSMITTING TRACE...";
 
-
-        msg.classList.remove(
-          "hidden"
-        );
-
+        msg.classList.remove("hidden");
 
         msg.className =
           "text-[10px] text-center text-neutral-400 mt-1 mono";
 
-
         msg.innerText =
           "Sending payment trace securely...";
-
 
         try {
 
           const requestId =
             generateRequestId();
 
-
-          /*
-            IMPORTANT FIX:
-
-            Pehle code yahan paymentRequests/requestId
-            me sirf nodeNumber likh raha tha.
-
-            Firebase Rules us partial write ko reject
-            kar rahi thi.
-
-            Ab node number sirf ledgerCounter me reserve
-            hoga. Payment request uske baad ek hi baar
-            COMPLETE object ke saath save hogi.
-          */
-
           const nodeNumber =
-            await reserveNodeNumber();
-
+            await reserveNodeNumber(
+              requestId
+            );
 
           const requestRef =
             ref(
               db,
               `paymentRequests/${requestId}`
             );
-
 
           const requestData = {
 
@@ -791,7 +663,7 @@
               text,
 
             amount:
-              AMOUNT,
+              13,
 
             nodeNumber:
               nodeNumber,
@@ -804,62 +676,39 @@
 
           };
 
-
-          /*
-            COMPLETE request is written in ONE operation.
-          */
-
           await set(
             requestRef,
             requestData
           );
-
-
-          /*
-            Local storage makes refresh restore
-            the same pending request.
-          */
 
           localStorage.setItem(
             "bl_requestId",
             requestId
           );
 
-
           localStorage.setItem(
             "bl_confession",
             text
           );
-
 
           localStorage.setItem(
             "bl_utr",
             utr
           );
 
-
           localStorage.setItem(
             "bl_nodeNumber",
             nodeNumber
           );
-
-
-          localStorage.setItem(
-            "bl_verified",
-            "false"
-          );
-
 
           showPending(
             requestId,
             nodeNumber
           );
 
-
           listenToStatus(
             requestId
           );
-
 
         } catch (error) {
 
@@ -868,12 +717,10 @@
             error
           );
 
-
           alert(
             "Submission failed: " +
             error.message
           );
-
 
           btn.disabled = false;
 
@@ -883,7 +730,6 @@
         }
 
       };
-
 
     function showPending(
       requestId,
@@ -895,30 +741,25 @@
         .classList
         .add("hidden");
 
-
       document
         .getElementById("stepVerify")
         .classList
         .remove("hidden");
-
 
       document
         .getElementById("stepVerify")
         .classList
         .add("flex");
 
-
       document
         .getElementById("pendingBox")
         .classList
         .remove("hidden");
 
-
       document
         .getElementById("pollStatus")
         .innerText =
         "Waiting for admin approval...";
-
 
       document
         .getElementById("pendingNode")
@@ -927,31 +768,23 @@
           ? `NODE // ${nodeNumber}`
           : "NODE // ALLOCATING";
 
-
       const msg =
         document.getElementById(
           "verifyMsg"
         );
 
-
       msg.className =
         "text-[10px] text-center text-yellow-500 mt-1 mono";
 
-
-      msg.classList.remove(
-        "hidden"
-      );
-
+      msg.classList.remove("hidden");
 
       msg.innerText =
         "Waiting for admin approval...";
-
 
       const btn =
         document.getElementById(
           "verifyBtn"
         );
-
 
       btn.disabled = true;
 
@@ -959,7 +792,8 @@
         "VERIFICATION PENDING";
 
     }
-        function listenToStatus(
+
+    function listenToStatus(
       requestId
     ) {
 
@@ -971,13 +805,11 @@
 
       }
 
-
       const statusRef =
         ref(
           db,
           `paymentRequests/${requestId}/status`
         );
-
 
       statusListener =
         onValue(
@@ -986,7 +818,6 @@
 
             const status =
               snapshot.val();
-
 
             if (
               status === "APPROVED"
@@ -998,14 +829,11 @@
                   `paymentRequests/${requestId}`
                 );
 
-
               const fullSnap =
                 await get(fullRef);
 
-
               const data =
                 fullSnap.val() || {};
-
 
               showVerified({
 
@@ -1021,13 +849,11 @@
 
               });
 
-
             } else if (
               status === "REJECTED"
             ) {
 
               showRejected();
-
 
             } else {
 
@@ -1037,14 +863,11 @@
                   `paymentRequests/${requestId}`
                 );
 
-
               const fullSnap =
                 await get(fullRef);
 
-
               const data =
                 fullSnap.val() || {};
-
 
               showPending(
                 requestId,
@@ -1053,54 +876,37 @@
 
             }
 
-          },
-
-          (error) => {
-
-            console.error(
-              "Status listener error:",
-              error
-            );
-
           }
         );
 
     }
 
-
-    function showVerified(
-      data
-    ) {
+    function showVerified(data) {
 
       document
         .getElementById("pendingBox")
         .classList
         .add("hidden");
 
-
       document
         .getElementById("stepInitiate")
         .classList
         .add("hidden");
 
-
       document
         .getElementById("stepVerify")
         .classList
         .add("hidden");
-
 
       document
         .getElementById("stepVerify")
         .classList
         .remove("flex");
 
-
       document
         .getElementById("accessBox")
         .classList
         .remove("hidden");
-
 
       const node =
         data.nodeId ||
@@ -1109,12 +915,10 @@
         ) ||
         "------";
 
-
       document
         .getElementById("unlockedNode")
         .textContent =
         `NODE // ${node}`;
-
 
       document
         .getElementById("unlockedPersona")
@@ -1122,21 +926,12 @@
         data.persona ||
         "THE PRAGMATIC SINNER";
 
-
       localStorage.setItem(
         "bl_verified",
         "true"
       );
 
-
-      document
-        .getElementById("lockBadge")
-        .textContent =
-        "UNLOCKED";
-
-
       startRealtimeFeed();
-
 
       window.scrollTo({
 
@@ -1152,7 +947,6 @@
 
     }
 
-
     function showRejected() {
 
       if (statusListener) {
@@ -1163,110 +957,83 @@
 
       }
 
-
       localStorage.removeItem(
         "bl_requestId"
       );
-
 
       localStorage.removeItem(
         "bl_confession"
       );
 
-
       localStorage.removeItem(
         "bl_utr"
       );
-
 
       localStorage.removeItem(
         "bl_nodeNumber"
       );
 
-
       localStorage.removeItem(
         "bl_verified"
       );
-
 
       document
         .getElementById("pendingBox")
         .classList
         .add("hidden");
 
-
       document
         .getElementById("stepVerify")
         .classList
         .add("hidden");
-
 
       document
         .getElementById("stepVerify")
         .classList
         .remove("flex");
 
-
       document
         .getElementById("stepInitiate")
         .classList
         .remove("hidden");
 
-
       document
         .getElementById("utrInput")
-        .value =
-        "";
-
+        .value = "";
 
       const btn =
         document.getElementById(
           "verifyBtn"
         );
 
-
       btn.disabled = false;
 
       btn.innerText =
         "SUBMIT FOR VERIFICATION";
-
 
       const msg =
         document.getElementById(
           "verifyMsg"
         );
 
-
       msg.className =
         "text-[10px] text-center text-red-500 mt-1 mono";
-
 
       msg.classList.remove(
         "hidden"
       );
-
 
       msg.innerText =
         "Payment could not be verified. Please make a new payment.";
 
     }
 
-
     async function restorePayment() {
-
-      /*
-        REFRESH FIX
-
-        Request ID localStorage me saved hai.
-        Isliye refresh ke baad same Firebase request
-        dobara load hogi.
-      */
 
       const requestId =
         localStorage.getItem(
           "bl_requestId"
         );
-
 
       if (
         !requestId ||
@@ -1277,42 +1044,40 @@
 
       }
 
-
       const savedConfession =
         localStorage.getItem(
           "bl_confession"
         );
-
 
       if (savedConfession) {
 
         input.value =
           savedConfession;
 
-
         document
-          .getElementById("charCount")
+          .getElementById(
+            "charCount"
+          )
           .textContent =
           `${savedConfession.length} / 280`;
 
       }
-
 
       const savedUtr =
         localStorage.getItem(
           "bl_utr"
         );
 
-
       if (savedUtr) {
 
         document
-          .getElementById("utrInput")
+          .getElementById(
+            "utrInput"
+          )
           .value =
           savedUtr;
 
       }
-
 
       const requestRef =
         ref(
@@ -1320,116 +1085,68 @@
           `paymentRequests/${requestId}`
         );
 
+      onValue(
+        requestRef,
+        (snapshot) => {
 
-      const snapshot =
-        await get(requestRef);
+          const data =
+            snapshot.val();
 
+          if (!data) return;
 
-      if (!snapshot.exists()) {
+          if (
+            data.ownerUid &&
+            data.ownerUid !==
+            currentUser.uid
+          ) {
 
-        /*
-          Agar localStorage me purana request ID ho
-          lekin Firebase me request nahi mile.
-        */
+            return;
 
-        localStorage.removeItem(
-          "bl_requestId"
-        );
+          }
 
-        localStorage.removeItem(
-          "bl_confession"
-        );
+          if (
+            data.status ===
+            "PENDING"
+          ) {
 
-        localStorage.removeItem(
-          "bl_utr"
-        );
+            showPending(
+              requestId,
+              data.nodeNumber
+            );
 
-        localStorage.removeItem(
-          "bl_nodeNumber"
-        );
+          } else if (
+            data.status ===
+            "APPROVED"
+          ) {
 
-        localStorage.removeItem(
-          "bl_verified"
-        );
+            showVerified({
 
-        return;
+              nodeId:
+                data.nodeNumber,
 
-      }
+              persona:
+                data.persona ||
+                "THE PRAGMATIC SINNER"
 
+            });
 
-      const data =
-        snapshot.val();
+          } else if (
+            data.status ===
+            "REJECTED"
+          ) {
 
+            showRejected();
 
-      /*
-        Security check:
-        Kisi dusre user's request ko restore nahi karna.
-      */
+          }
 
-      if (
-        data.ownerUid &&
-        data.ownerUid !==
-        currentUser.uid
-      ) {
-
-        return;
-
-      }
-
-
-      if (
-        data.status ===
-        "PENDING"
-      ) {
-
-        showPending(
-          requestId,
-          data.nodeNumber
-        );
-
-
-      } else if (
-        data.status ===
-        "APPROVED"
-      ) {
-
-        showVerified({
-
-          nodeId:
-            data.nodeNumber,
-
-          persona:
-            data.persona ||
-            "THE PRAGMATIC SINNER"
-
-        });
-
-
-      } else if (
-        data.status ===
-        "REJECTED"
-      ) {
-
-        showRejected();
-
-      }
-
-
-      /*
-        Refresh ke baad bhi Firebase status changes
-        realtime me milenge.
-      */
+        }
+      );
 
       listenToStatus(
         requestId
       );
 
     }
-
-
-    /*
-      LIVE VAULT STREAM
-    */
 
     function startRealtimeFeed() {
 
@@ -1441,13 +1158,11 @@
 
       }
 
-
       const feedRef =
         ref(
           db,
           "paymentRequests"
         );
-
 
       feedListener =
         onValue(
@@ -1459,27 +1174,22 @@
                 "feedList"
               );
 
-
             const badge =
               document.getElementById(
                 "lockBadge"
               );
-
 
             const isVerified =
               localStorage.getItem(
                 "bl_verified"
               ) === "true";
 
-
             badge.textContent =
               isVerified
                 ? "UNLOCKED"
                 : "LOCKED";
 
-
             feed.replaceChildren();
-
 
             if (
               !snapshot.exists()
@@ -1490,14 +1200,11 @@
                   "p"
                 );
 
-
               p.className =
                 "text-neutral-500 text-[11px] mono";
 
-
               p.textContent =
                 "No confessions yet. Be the first.";
-
 
               feed.appendChild(p);
 
@@ -1505,10 +1212,8 @@
 
             }
 
-
             const data =
               snapshot.val();
-
 
             const entries =
               Object.entries(data)
@@ -1531,9 +1236,7 @@
                     (a.timestamp || 0)
                 );
 
-
             let count = 0;
-
 
             for (
               const entry of entries
@@ -1541,32 +1244,26 @@
 
               count++;
 
-
               const itemDiv =
                 document.createElement(
                   "div"
                 );
 
-
               itemDiv.className =
                 "border border-neutral-800 bg-neutral-900/40 p-3 rounded text-[11px] mono";
-
 
               const headerRow =
                 document.createElement(
                   "div"
                 );
 
-
               headerRow.className =
                 "flex justify-between text-neutral-500 mb-1 text-[9px]";
-
 
               const nodeLabel =
                 entry.nodeNumber
                   ? `NODE // ${entry.nodeNumber}`
                   : "NODE // VERIFYING";
-
 
               const statusLabel =
                 entry.status ===
@@ -1574,48 +1271,21 @@
                   ? "VERIFIED TRACE"
                   : "VERIFICATION PENDING";
 
-
-              const leftSpan =
-                document.createElement(
-                  "span"
-                );
-
-              leftSpan.textContent =
-                nodeLabel;
-
-
-              const rightSpan =
-                document.createElement(
-                  "span"
-                );
-
-              rightSpan.textContent =
-                statusLabel;
-
-
-              headerRow.appendChild(
-                leftSpan
-              );
-
-              headerRow.appendChild(
-                rightSpan
-              );
-
+              headerRow.innerHTML =
+                `<span>${nodeLabel}</span>
+                 <span>${statusLabel}</span>`;
 
               itemDiv.appendChild(
                 headerRow
               );
-
 
               const contentP =
                 document.createElement(
                   "p"
                 );
 
-
               contentP.className =
                 "leading-relaxed";
-
 
               if (
                 entry.status ===
@@ -1642,11 +1312,9 @@
 
               }
 
-
               itemDiv.appendChild(
                 contentP
               );
-
 
               if (
                 entry.status !==
@@ -1658,14 +1326,11 @@
                     "div"
                   );
 
-
                 pendingText.className =
                   "text-[9px] text-yellow-600 mt-2 uppercase";
 
-
                 pendingText.textContent =
                   "ENTRY AWAITING VERIFICATION";
-
 
                 itemDiv.appendChild(
                   pendingText
@@ -1673,13 +1338,11 @@
 
               }
 
-
               feed.appendChild(
                 itemDiv
               );
 
             }
-
 
             if (
               count === 0
@@ -1690,14 +1353,11 @@
                   "p"
                 );
 
-
               p.className =
                 "text-neutral-500 text-[11px] mono";
 
-
               p.textContent =
                 "Waiting for archive entries...";
-
 
               feed.appendChild(p);
 
@@ -1716,7 +1376,8 @@
         );
 
     }
-      </script>
+
+  </script>
 
 </body>
 </html>
