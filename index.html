@@ -165,6 +165,7 @@ checkInitialState();
 
 async function checkInitialState(){
 const isVerified = localStorage.getItem("bl_verified") === "true";
+const badge = document.getElementById("lockBadge");
 if(isVerified){
 document.getElementById("vaultStage").classList.add("hidden");
 document.getElementById("accessBox").classList.remove("hidden");
@@ -172,6 +173,10 @@ const nodeId = localStorage.getItem("bl_nodeId") || "BL-000163";
 const persona = localStorage.getItem("bl_persona") || "THE SHADOW OBSERVER";
 document.getElementById("unlockedToken").textContent=`TOKEN ID: ${nodeId} | VERIFIED`;
 document.getElementById("unlockedPersona").textContent=persona;
+if(badge){
+badge.textContent="UNLOCKED";
+badge.className="text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded mono";
+}
 }
 renderFeedList(defaultEntries);
 }
@@ -337,6 +342,12 @@ const fullId = data.nodeId || "BL-000163";
 document.getElementById("unlockedToken").textContent=`TOKEN ID: ${fullId} | VERIFIED`;
 document.getElementById("unlockedPersona").textContent=data.persona||"THE SHADOW OBSERVER";
 
+const badge=document.getElementById("lockBadge");
+if(badge){
+badge.textContent="UNLOCKED";
+badge.className="text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded mono";
+}
+
 localStorage.setItem("bl_verified","true");
 localStorage.setItem("bl_nodeId", fullId);
 localStorage.setItem("bl_persona", data.persona || "THE SHADOW OBSERVER");
@@ -378,6 +389,11 @@ const nodeId = localStorage.getItem("bl_nodeId") || "BL-000163";
 const persona = localStorage.getItem("bl_persona") || "THE SHADOW OBSERVER";
 document.getElementById("unlockedToken").textContent=`TOKEN ID: ${nodeId} | VERIFIED`;
 document.getElementById("unlockedPersona").textContent=persona;
+const badge=document.getElementById("lockBadge");
+if(badge){
+badge.textContent="UNLOCKED";
+badge.className="text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded mono";
+}
 startRealtimeFeed();
 return;
 }
@@ -471,6 +487,17 @@ const feed=document.getElementById("feedList");
 if(!feed) return;
 const isVerified=localStorage.getItem("bl_verified")==="true";
 feed.replaceChildren();
+
+const badge=document.getElementById("lockBadge");
+if(badge){
+if(isVerified){
+badge.textContent="UNLOCKED";
+badge.className="text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded mono";
+}else{
+badge.textContent="LOCKED";
+badge.className="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono";
+}
+}
 
 for(const entry of entries){
 const itemDiv=document.createElement("div");
