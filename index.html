@@ -123,7 +123,7 @@ I HAVE PAID (ENTER UTR)
 </button>
 </div>
 </div>
-<script type="module">
+  <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import{getAuth,signInAnonymously,onAuthStateChanged,setPersistence,browserLocalPersistence}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import{getDatabase,ref,set,onValue,get}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -439,12 +439,14 @@ feedListener=onValue(feedRef,snapshot=>{
 const badge=document.getElementById("lockBadge");
 const isVerified=localStorage.getItem("bl_verified")==="true";
 
+if(badge){
 if(isVerified){
 badge.textContent="UNLOCKED";
 badge.className="text-[10px] bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded mono";
 }else{
 badge.textContent="LOCKED";
 badge.className="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono";
+}
 }
 
 let entries = [...defaultEntries];
@@ -557,3 +559,4 @@ feedListener=null;
 </script>
 </body>
 </html>
+
