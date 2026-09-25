@@ -80,7 +80,7 @@ SUBMIT FOR VERIFICATION
 <div id="accessBox" class="hidden border border-neutral-800 bg-neutral-950 p-8 rounded-lg mono flex flex-col justify-between" style="min-height: 420px;">
 <div>
 <div class="text-[10px] text-red-600 tracking-wider mb-1">THE BLACK LEDGER // ARCHIVE PROTOCOL</div>
-<div id="unlockedToken" class="text-xs text-neutral-300 font-bold pb-4 border-b border-neutral-800">TOKEN ID: BL-000163 | VERIFIED</div>
+<div id="unlockedToken" class="text-xs text-neutral-300 font-bold pb-4 border-b border-neutral-800">TOKEN ID: BL-000171 | VERIFIED</div>
 </div>
 
 <div class="my-auto py-6 text-center">
@@ -123,7 +123,6 @@ I HAVE PAID (ENTER UTR)
 </button>
 </div>
 </div>
-  
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import{getAuth,signInAnonymously,onAuthStateChanged,setPersistence,browserLocalPersistence}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -170,7 +169,7 @@ const badge = document.getElementById("lockBadge");
 if(isVerified){
 document.getElementById("vaultStage").classList.add("hidden");
 document.getElementById("accessBox").classList.remove("hidden");
-const nodeId = localStorage.getItem("bl_nodeId") || "BL-000163";
+const nodeId = localStorage.getItem("bl_nodeId") || "BL-000171";
 const persona = localStorage.getItem("bl_persona") || "THE SHADOW OBSERVER";
 document.getElementById("unlockedToken").textContent=`TOKEN ID: ${nodeId} | VERIFIED`;
 document.getElementById("unlockedPersona").textContent=persona;
@@ -221,9 +220,21 @@ document.getElementById("stepVerify").classList.remove("hidden");
 document.getElementById("stepVerify").classList.add("flex");
 };
 
-function generateNodeId(){
-const randomNum = Math.floor(171 + Math.random() * 80000);
-return "BL-" + String(randomNum).padStart(6, '0');
+async function generateSequentialNodeId(){
+const counterRef = ref(db, "metadata/nodeCounter");
+try {
+const snap = await get(counterRef);
+let nextNum = 170;
+if(snap.exists()){
+nextNum = Number(snap.val()) + 1;
+} else {
+nextNum = 171;
+}
+await set(counterRef, nextNum);
+return "BL-" + String(nextNum).padStart(6, '0');
+} catch(e) {
+return "BL-000171";
+}
 }
 
 window.submitUtrForVerification=async function(){
@@ -243,7 +254,7 @@ msg.className="text-[10px] text-center text-neutral-400 mt-1 mono";
 msg.innerText="Sending payment trace securely...";
 
 try{
-const nodeId = generateNodeId();
+const nodeId = await generateSequentialNodeId();
 const requestRef=ref(db,`paymentRequests/${nodeId}`);
 
 const personas = ["THE SHADOW OBSERVER", "THE SILENT MARTYR", "THE PRAGMATIC SINNER", "THE ISOLATED DIGITAL"];
@@ -329,7 +340,7 @@ document.getElementById("vaultStage").classList.add("hidden");
 document.getElementById("pendingBox").classList.add("hidden");
 document.getElementById("accessBox").classList.remove("hidden");
 
-const fullId = data.nodeId || "BL-000163";
+const fullId = data.nodeId || "BL-000171";
 document.getElementById("unlockedToken").textContent=`TOKEN ID: ${fullId} | VERIFIED`;
 document.getElementById("unlockedPersona").textContent=data.persona||"THE SHADOW OBSERVER";
 
@@ -376,7 +387,7 @@ const isVerified = localStorage.getItem("bl_verified") === "true";
 if(isVerified){
 document.getElementById("vaultStage").classList.add("hidden");
 document.getElementById("accessBox").classList.remove("hidden");
-const nodeId = localStorage.getItem("bl_nodeId") || "BL-000163";
+const nodeId = localStorage.getItem("bl_nodeId") || "BL-000171";
 const persona = localStorage.getItem("bl_persona") || "THE SHADOW OBSERVER";
 document.getElementById("unlockedToken").textContent=`TOKEN ID: ${nodeId} | VERIFIED`;
 document.getElementById("unlockedPersona").textContent=persona;
@@ -415,7 +426,7 @@ listenToStatus(requestId);
 }
 
 window.shareToInstagramStory = function(){
-const nodeId = localStorage.getItem("bl_nodeId") || "BL-000163";
+const nodeId = localStorage.getItem("bl_nodeId") || "BL-000171";
 const persona = localStorage.getItem("bl_persona") || "THE SHADOW OBSERVER";
 const shareText = `🔒 THE BLACK LEDGER // VERIFIED PROTOCOL\nTOKEN ID: ${nodeId}\nPERSONA: ${persona}\nMy unsaid truth is permanently sealed.\nJoin the archive: https://blkldr.github.io`;
 
@@ -499,7 +510,7 @@ itemDiv.className="border border-neutral-800 bg-neutral-900/40 p-3 rounded text-
 const headerRow=document.createElement("div");
 headerRow.className="flex justify-between text-neutral-500 mb-1 text-[9px]";
 
-let formattedId = entry.id || "BL-000163";
+let formattedId = entry.id || "BL-000171";
 if(!formattedId.startsWith("BL-")) {
   formattedId = "BL-" + formattedId.replace("NODE_", "").replace("BL-", "");
 }
