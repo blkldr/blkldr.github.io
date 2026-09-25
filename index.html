@@ -18,9 +18,9 @@
     }
   </style>
 </head>
+
 <body class="min-h-screen p-4 flex flex-col items-center justify-start scanline">
 
-  <!-- HUD STATUS HEADER -->
   <header class="w-full max-w-md border border-neutral-800 p-3 mb-4 bg-neutral-950/90 rounded flex justify-between items-center text-[11px] mono">
     <div class="flex items-center gap-2">
       <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
@@ -31,110 +31,204 @@
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
   <main class="w-full max-w-md flex flex-col gap-4">
 
-    <!-- SUBMISSION TERMINAL -->
     <div id="vaultStage" class="border border-neutral-800 bg-neutral-950/80 p-5 rounded-lg">
+
       <div class="flex justify-between items-center mb-1">
         <h1 class="text-base font-bold tracking-tight text-white uppercase mono">The Black Ledger</h1>
         <span class="text-[10px] mono text-neutral-400 border border-neutral-800 px-2 py-0.5 rounded">ZERO LOGS</span>
       </div>
+
       <div class="text-center mb-4">
-        <h2 class="text-white text-sm font-bold tracking-wider uppercase mb-1">Jo Sach Kahin Nahi Bola Gaya, Wo Yahan Hai.</h2>
-        <p class="text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto">Har insaan ke paas ek aisi baat hoti hai jo wo duniya se chhupata hai. Yahan aakar apna sach safe lock karo aur dusron ke unsaid raaz padho.</p>
-        <div class="text-[10px] text-green-400 mt-1 font-mono">● Secure Verification Protocol Active • 100% Anonymous</div>
+        <h2 class="text-white text-sm font-bold tracking-wider uppercase mb-1">
+          Jo Sach Kahin Nahi Bola Gaya, Wo Yahan Hai.
+        </h2>
+
+        <p class="text-xs text-neutral-400 leading-relaxed max-w-sm mx-auto">
+          Har insaan ke paas ek aisi baat hoti hai jo wo duniya se chhupata hai.
+          Yahan aakar apna sach safe lock karo aur dusron ke unsaid raaz padho.
+        </p>
+
+        <div class="text-[10px] text-green-400 mt-1 font-mono">
+          ● Secure Verification Protocol Active • 100% Anonymous
+        </div>
       </div>
 
-      <!-- TEXTAREA -->
       <div class="relative mb-3">
-        <textarea id="confessionInput" rows="4" maxlength="280"
+        <textarea
+          id="confessionInput"
+          rows="4"
+          maxlength="280"
           placeholder="Apna unsaid sach, galti ya raaz yahan likho... (Identity & IP auto-destroyed)"
-          class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"></textarea>
+          class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"
+        ></textarea>
+
         <div class="flex justify-between text-[10px] mono text-neutral-500 mt-1">
           <span>PII SANITIZER: ACTIVE</span>
           <span id="charCount">0 / 280</span>
         </div>
       </div>
 
-      <!-- INITIATE PAYMENT -->
       <div id="stepInitiate">
-        <button onclick="openPaymentModal()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2">
-            <span>SEAL ENTRY & UNLOCK — ₹13</span>
+        <button
+          onclick="openPaymentModal()"
+          class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3.5 px-4 rounded text-xs tracking-wider uppercase mono transition-colors flex items-center justify-center gap-2"
+        >
+          <span>SEAL ENTRY & UNLOCK — ₹13</span>
         </button>
-        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">Scan QR & Pay via UPI (PhonePe / GPay / Paytm)</p>
+
+        <p class="text-[10px] text-center text-neutral-500 mt-2 mono">
+          Scan QR & Pay via UPI (PhonePe / GPay / Paytm)
+        </p>
       </div>
-      
-      <!-- VERIFY STEP -->
+
       <div id="stepVerify" class="hidden flex-col gap-2 mt-3 pt-3 border-t border-neutral-800">
-        <p class="text-xs text-neutral-200 mono font-semibold">Payment Completed?</p>
-        <p class="text-[11px] text-neutral-400">Enter the 12-digit UPI Reference / UTR Number from your transaction screen:</p>
-        <input type="text" id="utrInput" maxlength="12" placeholder="12-digit UTR (e.g. 428190384721)" 
-          class="w-full bg-neutral-900 border border-neutral-800 rounded p-2.5 text-xs text-white mono focus:border-red-500 focus:outline-none">
-        <button id="verifyBtn" onclick="submitUtrForVerification()" 
-          class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95">
+
+        <p class="text-xs text-neutral-200 mono font-semibold">
+          Payment Completed?
+        </p>
+
+        <p class="text-[11px] text-neutral-400">
+          Enter the 12-digit UPI Reference / UTR Number from your transaction screen:
+        </p>
+
+        <input
+          type="text"
+          id="utrInput"
+          inputmode="numeric"
+          maxlength="12"
+          placeholder="12-digit UTR (e.g. 428190384721)"
+          class="w-full bg-neutral-900 border border-neutral-800 rounded p-2.5 text-xs text-white mono focus:border-red-500 focus:outline-none"
+        >
+
+        <button
+          id="verifyBtn"
+          onclick="submitUtrForVerification()"
+          class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded text-xs tracking-wider uppercase mono transition active:scale-95"
+        >
           SUBMIT FOR VERIFICATION
         </button>
-        <p id="verifyMsg" class="text-[10px] text-center text-neutral-400 mt-1 mono hidden"></p>
+
+        <p
+          id="verifyMsg"
+          class="text-[10px] text-center text-neutral-400 mt-1 mono hidden"
+        ></p>
+
       </div>
     </div>
 
-    <!-- PENDING STATUS BOX -->
-    <div id="pendingBox" class="hidden border border-yellow-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center">
-      <div class="text-[10px] text-yellow-500 tracking-widest uppercase mb-1">● VERIFICATION IN PROGRESS</div>
-      <h2 class="text-base font-bold text-white uppercase tracking-wider mb-2">ENTRY PENDING</h2>
-      <p id="pollStatus" class="text-xs text-neutral-400 mb-4">Trace submitted successfully to Telegram!</p>
+    <div
+      id="pendingBox"
+      class="hidden border border-yellow-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center"
+    >
+      <div class="text-[10px] text-yellow-500 tracking-widest uppercase mb-1">
+        ● VERIFICATION IN PROGRESS
+      </div>
+
+      <h2 class="text-base font-bold text-white uppercase tracking-wider mb-2">
+        ENTRY PENDING
+      </h2>
+
+      <p id="pollStatus" class="text-xs text-neutral-400 mb-4">
+        Waiting for admin approval...
+      </p>
     </div>
 
-    <!-- ACCESS GRANTED / UNLOCKED NODE -->
-    <div id="accessBox" class="hidden border border-green-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center">
-      <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">● ACCESS GRANTED</div>
-      <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-1" id="unlockedPersona">THE PRAGMATIC SINNER</h2>
-      <p class="text-xs text-neutral-400 mb-3" id="unlockedNode">NODE #------</p>
-      <p class="text-xs text-neutral-300">Your entry is now permanently sealed into the ledger.</p>
+    <div
+      id="accessBox"
+      class="hidden border border-green-900/60 bg-neutral-950 p-5 rounded-lg mono text-center flex flex-col items-center"
+    >
+      <div class="text-[10px] text-green-500 tracking-widest uppercase mb-1">
+        ● ACCESS GRANTED
+      </div>
+
+      <h2
+        class="text-lg font-bold text-white uppercase tracking-wider mb-1"
+        id="unlockedPersona"
+      >
+        THE PRAGMATIC SINNER
+      </h2>
+
+      <p class="text-xs text-neutral-400 mb-3" id="unlockedNode">
+        NODE #------
+      </p>
+
+      <p class="text-xs text-neutral-300">
+        Your entry is now permanently sealed into the ledger.
+      </p>
     </div>
 
-    <!-- LIVE VAULT STREAM -->
     <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg">
+
       <div class="flex justify-between items-center mb-3">
-        <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">Live Vault Stream</span>
-        <span id="lockBadge" class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono">LOCKED</span>
+        <span class="text-xs font-bold tracking-wider text-neutral-300 uppercase mono">
+          Live Vault Stream
+        </span>
+
+        <span
+          id="lockBadge"
+          class="text-[10px] bg-red-950 text-red-400 border border-red-900 px-2 py-0.5 rounded mono"
+        >
+          LOCKED
+        </span>
       </div>
 
       <div class="flex flex-col gap-3 text-xs" id="feedList">
-        <p class="text-neutral-500 text-[11px] mono">Connecting to encrypted archive feed...</p>
+        <p class="text-neutral-500 text-[11px] mono">
+          Connecting to encrypted archive feed...
+        </p>
       </div>
+
     </div>
 
   </main>
-            
-    <!-- DYNAMIC PAYMENT MODAL -->
-  <div id="payModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+
+  <div
+    id="payModal"
+    class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+  >
     <div class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg max-w-xs w-full mono text-center flex flex-col items-center">
-      <div class="text-[10px] text-red-500 font-bold mb-1">SECURE UPI GATEWAY</div>
-      <h3 class="text-sm font-bold text-white mb-3">Pay ₹13 to Seal Entry</h3>
-      
-      <div class="text-[10px] text-neutral-500 mb-2">SCAN QR CODE:</div>
 
-      <!-- Auto-Generated QR Code API -->
-      <div class="bg-white p-2 rounded mb-2 shadow-inner">
-        <img id="modalQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi%3A%2F%2Fpay%3Fpa%3DBHARATPE2Y0M0B8N0T09199%40unitype%26pn%3DBlack%20Ledger%26am%3D13%26cu%3DINR%26tn%3DBlack%20Ledger%26entry" class="w-36 h-36 object-contain mx-auto" alt="UPI QR">
+      <div class="text-[10px] text-red-500 font-bold mb-1">
+        SECURE UPI GATEWAY
       </div>
-      
-      <!-- Screenshot Instruction -->
-      <p class="text-[10px] text-yellow-400 mb-4">💡 Screenshot lein aur UPI App ki Gallery se scan karke pay karein</p>
 
-      <!-- I Have Paid Button -->
-      <button onclick="closeModalAndVerify()" 
-        class="w-full bg-neutral-100 text-black py-2.5 rounded text-[11px] font-bold uppercase tracking-wider">
+      <h3 class="text-sm font-bold text-white mb-3">
+        Pay ₹13 to Seal Entry
+      </h3>
+
+      <div class="text-[10px] text-neutral-500 mb-2">
+        SCAN QR CODE:
+      </div>
+
+      <div class="bg-white p-2 rounded mb-2 shadow-inner">
+        <img
+          id="modalQrImg"
+          src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi%3A%2F%2Fpay%3Fpa%3DBHARATPE2Y0M0B8N0T09199%40unitype%26pn%3DBlack%20Ledger%26am%3D13%26cu%3DINR%26tn%3DBlack%20Ledger%26entry"
+          class="w-36 h-36 object-contain mx-auto"
+          alt="UPI QR"
+        >
+      </div>
+
+      <p class="text-[10px] text-yellow-400 mb-4">
+        💡 Screenshot lein aur UPI App ki Gallery se scan karke pay karein
+      </p>
+
+      <button
+        onclick="closeModalAndVerify()"
+        class="w-full bg-neutral-100 text-black py-2.5 rounded text-[11px] font-bold uppercase tracking-wider"
+      >
         I HAVE PAID (ENTER UTR)
       </button>
+
     </div>
   </div>
-  
-   <script type="module">
+
+  <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
 import {
   getAuth,
   signInAnonymously,
@@ -149,10 +243,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
-/* =========================================================
-   FIREBASE CONFIG
-   ========================================================= */
-
 const firebaseConfig = {
   apiKey: "AIzaSyAlmnaSJmU5FRTcpbmDa6MO0hdUwIeLOZc",
   authDomain: "blackledger-759c1.firebaseapp.com",
@@ -164,10 +254,6 @@ const firebaseConfig = {
 };
 
 
-/* =========================================================
-   FIREBASE INITIALIZATION
-   ========================================================= */
-
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
@@ -177,19 +263,11 @@ let currentUser = null;
 let statusListener = null;
 
 
-/* =========================================================
-   EXISTING WEBSITE VARIABLES
-   ========================================================= */
-
 const input = document.getElementById("confessionInput");
 
 const UPI_ID = "BHARATPE2Y0M0B8N0T09199@unitype";
 const AMOUNT = "13";
 
-
-/* =========================================================
-   CHARACTER COUNTER
-   ========================================================= */
 
 input.addEventListener("input", () => {
 
@@ -198,10 +276,6 @@ input.addEventListener("input", () => {
 
 });
 
-
-/* =========================================================
-   ANONYMOUS FIREBASE LOGIN
-   ========================================================= */
 
 signInAnonymously(auth)
   .then((result) => {
@@ -213,6 +287,7 @@ signInAnonymously(auth)
       currentUser.uid
     );
 
+    restorePayment();
 
   })
   .catch((error) => {
@@ -229,29 +304,21 @@ signInAnonymously(auth)
   });
 
 
-/* =========================================================
-   AUTH STATE
-   ========================================================= */
-
 onAuthStateChanged(auth, (user) => {
 
-  if (!user) return;
+  if (user) {
 
-  currentUser = user;
+    currentUser = user;
 
-  console.log(
-    "Firebase UID:",
-    user.uid
-  );
+    console.log(
+      "Firebase UID:",
+      user.uid
+    );
 
-  restorePayment();
+  }
 
 });
 
-
-/* =========================================================
-   PAYMENT MODAL
-   ========================================================= */
 
 window.openPaymentModal = function () {
 
@@ -274,10 +341,6 @@ window.openPaymentModal = function () {
 };
 
 
-/* =========================================================
-   CLOSE PAYMENT / OPEN UTR STEP
-   ========================================================= */
-
 window.closeModalAndVerify = function () {
 
   document
@@ -295,12 +358,13 @@ window.closeModalAndVerify = function () {
     .classList
     .remove("hidden");
 
+  document
+    .getElementById("stepVerify")
+    .classList
+    .add("flex");
+
 };
 
-
-/* =========================================================
-   OPEN UPI APP
-   ========================================================= */
 
 window.openUPI = function () {
 
@@ -316,11 +380,15 @@ window.openUPI = function () {
 };
 
 
-/* =========================================================
-   GENERATE REQUEST ID
-   ========================================================= */
-
 function generateRequestId() {
+
+  if (window.crypto && crypto.randomUUID) {
+    return "BL_" +
+      crypto.randomUUID()
+        .replaceAll("-", "")
+        .substring(0, 20)
+        .toUpperCase();
+  }
 
   const randomPart =
     Math.random()
@@ -332,10 +400,6 @@ function generateRequestId() {
 
 }
 
-
-/* =========================================================
-   SUBMIT UTR
-   ========================================================= */
 
 window.submitUtrForVerification = async function () {
 
@@ -354,8 +418,6 @@ window.submitUtrForVerification = async function () {
     document.getElementById("verifyMsg");
 
 
-  /* ---------- CONFESSION VALIDATION ---------- */
-
   if (text.length < 10) {
 
     alert(
@@ -367,8 +429,6 @@ window.submitUtrForVerification = async function () {
   }
 
 
-  /* ---------- UTR VALIDATION ---------- */
-
   if (!/^\d{12}$/.test(utr)) {
 
     alert(
@@ -379,8 +439,6 @@ window.submitUtrForVerification = async function () {
 
   }
 
-
-  /* ---------- FIREBASE AUTH CHECK ---------- */
 
   if (!currentUser) {
 
@@ -400,28 +458,23 @@ window.submitUtrForVerification = async function () {
 
   msg.classList.remove("hidden");
 
+  msg.className =
+    "text-[10px] text-center text-neutral-400 mt-1 mono";
+
   msg.innerText =
     "Sending payment trace securely...";
 
 
   try {
 
-    /* ---------- UNIQUE REQUEST ID ---------- */
-
     const requestId =
       generateRequestId();
-
-
-    /* ---------- FIREBASE DATABASE PATH ---------- */
 
     const requestRef =
       ref(
         db,
         `paymentRequests/${requestId}`
       );
-
-
-    /* ---------- REQUEST DATA ---------- */
 
     const requestData = {
 
@@ -440,46 +493,19 @@ window.submitUtrForVerification = async function () {
     };
 
 
-    /* ---------- SAVE TO FIREBASE ---------- */
-
     await set(
       requestRef,
       requestData
     );
 
 
-    /* ---------- SAVE LOCALLY ---------- */
-
-    localStorage.setItem(
-      "bl_request_id",
-      requestId
-    );
+    localStorage.setItem("bl_requestId", requestId);
+    localStorage.setItem("bl_request_id", requestId);
+    localStorage.setItem("bl_confession", text);
+    localStorage.setItem("bl_utr", utr);
 
 
-    /* ---------- SHOW PENDING ---------- */
-
-    document
-      .getElementById("stepVerify")
-      .classList
-      .add("hidden");
-
-    document
-      .getElementById("pendingBox")
-      .classList
-      .remove("hidden");
-
-
-    document
-      .getElementById("pollStatus")
-      .innerText =
-      "Payment trace submitted. Waiting for verification...";
-
-
-    msg.innerText =
-      "Trace submitted successfully.";
-
-
-    /* ---------- START REALTIME STATUS ---------- */
+    showPending(requestId);
 
     listenToStatus(requestId);
 
@@ -512,9 +538,56 @@ window.submitUtrForVerification = async function () {
    REALTIME STATUS LISTENER
    ========================================================= */
 
-function listenToStatus(requestId) {
+function showPending(requestId) {
 
-  /* Remove previous listener if any */
+  document
+    .getElementById("stepInitiate")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("pendingBox")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("stepVerify")
+    .classList
+    .remove("hidden");
+
+  document
+    .getElementById("stepVerify")
+    .classList
+    .add("flex");
+
+  document
+    .getElementById("pollStatus")
+    .innerText =
+    "Waiting for admin approval...";
+
+  const msg =
+    document.getElementById("verifyMsg");
+
+  msg.className =
+    "text-[10px] text-center text-yellow-500 mt-1 mono";
+
+  msg.classList.remove("hidden");
+
+  msg.innerText =
+    "Waiting for admin approval...";
+
+  const btn =
+    document.getElementById("verifyBtn");
+
+  btn.disabled = true;
+
+  btn.innerText =
+    "VERIFICATION PENDING";
+
+}
+
+
+function listenToStatus(requestId) {
 
   if (statusListener) {
 
@@ -535,19 +608,17 @@ function listenToStatus(requestId) {
   statusListener =
     onValue(
       statusRef,
+
       (snapshot) => {
 
         const status =
           snapshot.val();
-
 
         console.log(
           "Payment status:",
           status
         );
 
-
-        /* ---------- APPROVED ---------- */
 
         if (status === "APPROVED") {
 
@@ -558,28 +629,20 @@ function listenToStatus(requestId) {
 
         }
 
-
-        /* ---------- REJECTED ---------- */
-
         else if (status === "REJECTED") {
 
           showRejected();
 
         }
 
-
-        /* ---------- PENDING ---------- */
-
         else {
 
-          document
-            .getElementById("pollStatus")
-            .innerText =
-            "Payment trace submitted. Waiting for verification...";
+          showPending(requestId);
 
         }
 
       },
+
       (error) => {
 
         console.error(
@@ -593,10 +656,6 @@ function listenToStatus(requestId) {
 }
 
 
-/* =========================================================
-   SHOW VERIFIED / ACCESS GRANTED
-   ========================================================= */
-
 function showVerified(data) {
 
   document
@@ -604,12 +663,20 @@ function showVerified(data) {
     .classList
     .add("hidden");
 
+  document
+    .getElementById("stepInitiate")
+    .classList
+    .add("hidden");
 
   document
     .getElementById("stepVerify")
     .classList
     .add("hidden");
 
+  document
+    .getElementById("stepVerify")
+    .classList
+    .remove("flex");
 
   document
     .getElementById("accessBox")
@@ -626,7 +693,8 @@ function showVerified(data) {
   document
     .getElementById("unlockedPersona")
     .textContent =
-    data.persona || "UNKNOWN";
+    data.persona ||
+    "UNKNOWN";
 
 
   window.scrollTo({
@@ -655,6 +723,21 @@ function showVerified(data) {
 
 function showRejected() {
 
+  if (statusListener) {
+
+    statusListener();
+
+    statusListener = null;
+
+  }
+
+
+  localStorage.removeItem("bl_requestId");
+  localStorage.removeItem("bl_request_id");
+  localStorage.removeItem("bl_utr");
+  localStorage.removeItem("bl_verified");
+
+
   document
     .getElementById("pendingBox")
     .classList
@@ -664,25 +747,41 @@ function showRejected() {
   document
     .getElementById("stepVerify")
     .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("stepVerify")
+    .classList
+    .remove("flex");
+
+
+  document
+    .getElementById("stepInitiate")
+    .classList
     .remove("hidden");
+
+
+  document
+    .getElementById("utrInput")
+    .value = "";
 
 
   const msg =
     document.getElementById("verifyMsg");
 
 
-  msg.classList.remove("hidden");
-
   msg.className =
     "text-[10px] text-center text-red-500 mt-1 mono";
 
+  msg.classList.remove("hidden");
+
   msg.innerText =
-    "Payment could not be verified.";
+    "Payment could not be verified. Please make a new payment and submit the new UTR.";
 
 
   const btn =
     document.getElementById("verifyBtn");
-
 
   btn.disabled = false;
 
@@ -690,22 +789,48 @@ function showRejected() {
     "SUBMIT FOR VERIFICATION";
 
 }
-
-
-/* =========================================================
+    /* =========================================================
    RESTORE PREVIOUS PAYMENT REQUEST
    ========================================================= */
 
 function restorePayment() {
 
   const requestId =
-  localStorage.getItem('bl_requestId') ||
-  localStorage.getItem('bl_request_id');
+    localStorage.getItem("bl_requestId") ||
+    localStorage.getItem("bl_request_id");
 
 
   if (!requestId || !currentUser) {
-
     return;
+  }
+
+
+  const savedConfession =
+    localStorage.getItem("bl_confession");
+
+  const savedUtr =
+    localStorage.getItem("bl_utr");
+
+
+  if (savedConfession) {
+
+    input.value =
+      savedConfession;
+
+    document
+      .getElementById("charCount")
+      .textContent =
+      `${savedConfession.length} / 280`;
+
+  }
+
+
+  if (savedUtr) {
+
+    document
+      .getElementById("utrInput")
+      .value =
+      savedUtr;
 
   }
 
@@ -718,30 +843,19 @@ function restorePayment() {
 
 
   onValue(
+
     requestRef,
+
     (snapshot) => {
 
       const data =
         snapshot.val();
 
 
-      if (!data) {
-
-        return;
-
-      }
-
-
-      /* Security check */
-
       if (
-        data.ownerUid !==
-        currentUser.uid
+        !data ||
+        data.ownerUid !== currentUser.uid
       ) {
-
-        console.warn(
-          "Request does not belong to current user."
-        );
 
         return;
 
@@ -750,31 +864,16 @@ function restorePayment() {
 
       if (data.status === "PENDING") {
 
-        document
-          .getElementById("stepInitiate")
-          .classList
-          .add("hidden");
-
-        document
-          .getElementById("stepVerify")
-          .classList
-          .add("hidden");
-
-        document
-          .getElementById("pendingBox")
-          .classList
-          .remove("hidden");
-
-        listenToStatus(requestId);
+        showPending(requestId);
 
       }
-
 
       else if (data.status === "APPROVED") {
 
         showVerified({
 
-          nodeId: requestId,
+          nodeId:
+            requestId,
 
           persona:
             data.persona ||
@@ -784,15 +883,27 @@ function restorePayment() {
 
       }
 
-
       else if (data.status === "REJECTED") {
 
         showRejected();
 
       }
 
+    },
+
+    (error) => {
+
+      console.error(
+        "Restore listener error:",
+        error
+      );
+
     }
+
   );
+
+
+  listenToStatus(requestId);
 
 }
 
@@ -804,7 +915,9 @@ function restorePayment() {
 window.watchStatus = function () {
 
   const requestId =
+    localStorage.getItem("bl_requestId") ||
     localStorage.getItem("bl_request_id");
+
 
   if (requestId) {
 
@@ -823,7 +936,8 @@ async function loadFeed() {
 
   document
     .getElementById("lockBadge")
-    .textContent = "LIVE";
+    .textContent =
+    "LIVE";
 
 
   const feed =
@@ -856,8 +970,7 @@ async function loadFeed() {
 
 loadFeed();
 
-   </script> 
-  
- 
+  </script>
+
 </body>
 </html>
