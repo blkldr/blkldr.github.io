@@ -225,7 +225,9 @@ nextNum = 171;
 await set(counterRef, nextNum);
 return "BL-" + String(nextNum).padStart(6, '0');
 } catch(e) {
-return "BL-000171";
+// Fallback safely if permission is denied on metadata node
+const randomNum = Math.floor(171 + Math.random() * 80000);
+return "BL-" + String(randomNum).padStart(6, '0');
 }
 }
 
