@@ -77,16 +77,25 @@ SUBMIT FOR VERIFICATION
 <p id="pollStatus" class="text-xs text-neutral-400 mb-2">Waiting for admin approval...</p>
 </div>
 
-<div id="accessBox" class="hidden border border-neutral-800 bg-neutral-950 p-6 rounded-lg mono flex flex-col items-center text-center">
-<div class="text-[10px] text-neutral-500 tracking-wider mb-2">THE BLACK LEDGER // ARCHIVE PROTOCOL</div>
-<div id="unlockedToken" class="text-[11px] text-red-500 font-bold mb-4">TOKEN ID: #000162 | VERIFIED</div>
-<h2 class="text-lg font-bold text-white uppercase tracking-wider mb-1" id="unlockedPersona">THE SILENT MARTYR</h2>
-<p class="text-xs text-red-500 mb-3">4.1% OF PARTICIPANTS</p>
-<p class="text-[11px] text-neutral-400 mb-5">CONFESSION PERMANENTLY SEALED IN VAULT</p>
-<button onclick="shareToInstagramStory()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3 px-4 rounded text-xs tracking-wider uppercase mono transition mb-3">
+<!-- Exact Long Card Format matching screenshot reference -->
+<div id="accessBox" class="hidden border border-neutral-800 bg-neutral-950 p-8 rounded-lg mono flex flex-col justify-between" style="min-height: 420px;">
+<div>
+<div class="text-[10px] text-red-600 tracking-wider mb-1">THE BLACK LEDGER // ARCHIVE PROTOCOL</div>
+<div id="unlockedToken" class="text-xs text-neutral-300 font-bold pb-4 border-b border-neutral-800">TOKEN ID: BL-000163 | VERIFIED</div>
+</div>
+
+<div class="my-auto py-6 text-center">
+<h2 class="text-xl font-bold text-white uppercase tracking-wider mb-2" id="unlockedPersona">THE SHADOW OBSERVER</h2>
+<p class="text-xs text-red-600 mb-3 font-bold">6.3% OF PARTICIPANTS</p>
+<p class="text-[11px] text-neutral-500">CONFESSION PERMANENTLY SEALED IN VAULT</p>
+</div>
+
+<div class="flex flex-col gap-3 pt-4 border-t border-neutral-800">
+<button onclick="shareToInstagramStory()" class="w-full bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-3 px-4 rounded text-xs tracking-wider uppercase mono transition">
 SHARE VAULT TOKEN (IG STORY)
 </button>
 <div class="text-[10px] text-neutral-500 text-center">PURGE IMMINENT // blkldr.github.io</div>
+</div>
 </div>
 
 <div class="border border-neutral-800 bg-neutral-950/60 p-4 rounded-lg mt-2">
@@ -206,8 +215,7 @@ nextNum = Number(snap.val()) + 1;
 await set(counterRef, nextNum);
 return "BL-" + String(nextNum).padStart(6, '0');
 } catch(e) {
-const randomNum = Math.floor(171 + Math.random() * 80000);
-return "BL-" + String(randomNum).padStart(6, '0');
+return "BL-000163";
 }
 }
 
@@ -231,7 +239,7 @@ try{
 const nodeId = await generateSequentialNodeId();
 const requestRef=ref(db,`paymentRequests/${nodeId}`);
 
-const personas = ["THE SILENT MARTYR", "THE SHADOW OBSERVER", "THE PRAGMATIC SINNER", "THE ISOLATED DIGITAL"];
+const personas = ["THE SHADOW OBSERVER", "THE SILENT MARTYR", "THE PRAGMATIC SINNER", "THE ISOLATED DIGITAL"];
 const selectedPersona = personas[Math.floor(Math.random() * personas.length)];
 
 await set(requestRef,{
@@ -299,7 +307,7 @@ const data=snap.val();
 if(data&&data.status==="APPROVED"){
 showVerified({
 nodeId:requestId,
-persona:data.persona||"THE SILENT MARTYR"
+persona:data.persona||"THE SHADOW OBSERVER"
 });
 }else{
 showPending(requestId);
@@ -314,15 +322,13 @@ document.getElementById("vaultStage").classList.add("hidden");
 document.getElementById("pendingBox").classList.add("hidden");
 document.getElementById("accessBox").classList.remove("hidden");
 
-const fullId = data.nodeId || "BL-000162";
-const tokenNum = fullId.replace("BL-", "");
-
-document.getElementById("unlockedToken").textContent=`TOKEN ID: #${tokenNum} | VERIFIED`;
-document.getElementById("unlockedPersona").textContent=data.persona||"THE SILENT MARTYR";
+const fullId = data.nodeId || "BL-000163";
+document.getElementById("unlockedToken").textContent=`TOKEN ID: ${fullId} | VERIFIED`;
+document.getElementById("unlockedPersona").textContent=data.persona||"THE SHADOW OBSERVER";
 
 localStorage.setItem("bl_verified","true");
-localStorage.setItem("bl_tokenNum", tokenNum);
-localStorage.setItem("bl_persona", data.persona || "THE SILENT MARTYR");
+localStorage.setItem("bl_nodeId", fullId);
+localStorage.setItem("bl_persona", data.persona || "THE SHADOW OBSERVER");
 
 startRealtimeFeed();
 }
@@ -337,7 +343,7 @@ localStorage.removeItem("bl_requestId");
 localStorage.removeItem("bl_request_id");
 localStorage.removeItem("bl_utr");
 localStorage.removeItem("bl_verified");
-localStorage.removeItem("bl_tokenNum");
+localStorage.removeItem("bl_nodeId");
 
 document.getElementById("pendingBox").classList.add("hidden");
 document.getElementById("accessBox").classList.add("hidden");
@@ -357,9 +363,9 @@ const isVerified = localStorage.getItem("bl_verified") === "true";
 if(isVerified){
 document.getElementById("vaultStage").classList.add("hidden");
 document.getElementById("accessBox").classList.remove("hidden");
-const tokenNum = localStorage.getItem("bl_tokenNum") || "000162";
-const persona = localStorage.getItem("bl_persona") || "THE SILENT MARTYR";
-document.getElementById("unlockedToken").textContent=`TOKEN ID: #${tokenNum} | VERIFIED`;
+const nodeId = localStorage.getItem("bl_nodeId") || "BL-000163";
+const persona = localStorage.getItem("bl_persona") || "THE SHADOW OBSERVER";
+document.getElementById("unlockedToken").textContent=`TOKEN ID: ${nodeId} | VERIFIED`;
 document.getElementById("unlockedPersona").textContent=persona;
 startRealtimeFeed();
 return;
@@ -380,7 +386,7 @@ showPending(requestId);
 }else if(data.status==="APPROVED"){
 showVerified({
 nodeId:requestId,
-persona:data.persona||"THE SILENT MARTYR"
+persona:data.persona||"THE SHADOW OBSERVER"
 });
 }else if(data.status==="REJECTED"){
 showRejected();
@@ -391,16 +397,16 @@ listenToStatus(requestId);
 }
 
 window.shareToInstagramStory = function(){
-const tokenNum = localStorage.getItem("bl_tokenNum") || "000162";
-const persona = localStorage.getItem("bl_persona") || "THE SILENT MARTYR";
-const shareText = `🔒 THE BLACK LEDGER // VERIFIED PROTOCOL\nTOKEN ID: #${tokenNum}\nPERSONA: ${persona}\nMy unsaid truth is permanently sealed.\nJoin the archive: https://blkldr.github.io`;
+const nodeId = localStorage.getItem("bl_nodeId") || "BL-000163";
+const persona = localStorage.getItem("bl_persona") || "THE SHADOW OBSERVER";
+const shareText = `🔒 THE BLACK LEDGER // VERIFIED PROTOCOL\nTOKEN ID: ${nodeId}\nPERSONA: ${persona}\nMy unsaid truth is permanently sealed.\nJoin the archive: https://blkldr.github.io`;
 
 if (navigator.clipboard) {
 navigator.clipboard.writeText(shareText).then(() => {
 alert("Cryptic Card details copied! Now paste this on your Instagram Story and link blkldr.github.io");
 });
 } else {
-alert("Token ID: #" + tokenNum + " - Share on Instagram: blkldr.github.io");
+alert("Token ID: " + nodeId + " - Share on Instagram: blkldr.github.io");
 }
 };
 
@@ -440,7 +446,6 @@ dbEntries.push(def);
 entries = dbEntries;
 }
 
-// Sort newest first (highest timestamp on top)
 entries.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
 renderFeedList(entries);
 
@@ -461,14 +466,13 @@ itemDiv.className="border border-neutral-800 bg-neutral-900/40 p-3 rounded text-
 const headerRow=document.createElement("div");
 headerRow.className="flex justify-between text-neutral-500 mb-1 text-[9px]";
 
-let formattedId = entry.id || "BL-000162";
+let formattedId = entry.id || "BL-000163";
 if(!formattedId.startsWith("BL-")) {
   formattedId = "BL-" + formattedId.replace("NODE_", "").replace("BL-", "");
 }
-let tokenNum = formattedId.replace("BL-", "");
 
 const left=document.createElement("span");
-left.textContent=`NODE // BL-${tokenNum}`;
+left.textContent=`NODE // ${formattedId}`;
 
 const right=document.createElement("span");
 right.textContent="VERIFIED TRACE";
@@ -518,5 +522,3 @@ feedListener();
 feedListener=null;
 }
 });
-
-</s
