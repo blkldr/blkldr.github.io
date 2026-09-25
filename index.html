@@ -123,7 +123,6 @@ I HAVE PAID (ENTER UTR)
 </button>
 </div>
 </div>
-
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import{getAuth,signInAnonymously,onAuthStateChanged,setPersistence,browserLocalPersistence}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -162,7 +161,6 @@ const defaultEntries = [
 { id: "BL-000162", confession: "Bhai, mera startup doob gaya hai aur ₹5 lakh ka karza hai, koi rasta nahi dikh raha... Call: 9876543210", timestamp: Date.now() - 900000 }
 ];
 
-// Page load hote hi turant local storage check karke render karo
 checkInitialState();
 
 async function checkInitialState(){
@@ -464,11 +462,13 @@ renderFeedList(entries);
 
 },error=>{
 console.error("Realtime feed error:",error);
+renderFeedList(defaultEntries);
 });
 }
 
 function renderFeedList(entries){
 const feed=document.getElementById("feedList");
+if(!feed) return;
 const isVerified=localStorage.getItem("bl_verified")==="true";
 feed.replaceChildren();
 
@@ -499,5 +499,44 @@ contentP.className="text-neutral-300 leading-relaxed";
 
 if(isVerified){
 contentP.textContent=`"${entry.confession}"`;
+contentP.classList.remove("blurred");
 }else{
-contentP.classList.add("blurred","text-neutral-400");
+contentP.textContent=`"${entry.confession}"`;
+contentP.classList.add("blurred");
+}
+
+itemDiv.appendChild(contentP);
+feed.appendChild(itemDiv);
+}
+}
+
+window.addEventListener("pageshow",()=>{
+const requestId=localStorage.getItem("bl_requestId")||localStorage.getItem("bl_request_id");
+
+if(currentUser&&requestId){
+restorePayment();
+}
+
+if(currentUser){
+startRealtimeFeed();
+}
+});
+
+window.addEventListener("beforeunload",()=>{
+if(statusListener){
+statusListener();
+statusListener=null;
+}
+if(requestListener){
+requestListener();
+requestListener=null;
+}
+if(feedListener){
+feedListener();
+feedListener=null;
+}
+});
+
+</script>
+</body>
+</html>
