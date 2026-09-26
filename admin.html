@@ -1,19 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Black Ledger // Admin</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
-  <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Black Ledger // Admin</title>  <script src="https://cdn.tailwindcss.com"></script>  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  >  <style>
     body {
       background:#050505;
       color:#E5E5E5;
@@ -23,125 +15,119 @@
     .mono {
       font-family:'Space Mono',monospace;
     }
-  </style>
-</head>
+  </style></head><body class="min-h-screen p-4">  <main class="w-full max-w-2xl mx-auto"><header class="border border-neutral-800 bg-neutral-950 p-4 rounded-lg mb-4">
 
-<body class="min-h-screen p-4">
+  <div class="flex justify-between items-center">
 
-  <main class="w-full max-w-2xl mx-auto">
+    <div>
 
-    <header class="border border-neutral-800 bg-neutral-950 p-4 rounded-lg mb-4">
-
-      <div class="flex justify-between items-center">
-
-        <div>
-
-          <div class="text-xs text-red-500 mono">
-            BLACK LEDGER // ADMIN
-          </div>
-
-          <h1 class="text-lg font-bold text-white">
-            Payment Verification
-          </h1>
-
-        </div>
-
-        <div
-          id="adminStatus"
-          class="text-[10px] text-yellow-500 mono"
-        >
-          AUTHENTICATING...
-        </div>
-
+      <div class="text-xs text-red-500 mono">
+        BLACK LEDGER // ADMIN
       </div>
 
-    </header>
+      <h1 class="text-lg font-bold text-white">
+        Payment Verification
+      </h1>
 
+    </div>
 
-    <!-- LOGIN -->
-
-    <section
-      id="loginBox"
-      class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg"
+    <div
+      id="adminStatus"
+      class="text-[10px] text-yellow-500 mono"
     >
+      AUTHENTICATING...
+    </div>
 
-      <div class="text-xs text-neutral-400 mono mb-3">
-        ADMIN AUTHENTICATION
-      </div>
+  </div>
 
-      <input
-        id="email"
-        type="email"
-        placeholder="Admin email"
-        class="w-full bg-neutral-900 border border-neutral-800 rounded p-3 text-sm text-white mb-2 outline-none"
-      >
-
-      <input
-        id="password"
-        type="password"
-        placeholder="Password"
-        class="w-full bg-neutral-900 border border-neutral-800 rounded p-3 text-sm text-white mb-3 outline-none"
-      >
-
-      <button
-        onclick="adminLogin()"
-        class="w-full bg-neutral-100 text-black font-bold py-3 rounded text-xs mono"
-      >
-        LOGIN
-      </button>
-
-      <p
-        id="loginMsg"
-        class="text-[10px] text-red-400 mono mt-3 text-center"
-      ></p>
-
-    </section>
+</header>
 
 
-    <!-- ADMIN PANEL -->
+<!-- LOGIN -->
 
-    <section
-      id="adminPanel"
-      class="hidden"
+<section
+  id="loginBox"
+  class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg"
+>
+
+  <div class="text-xs text-neutral-400 mono mb-3">
+    ADMIN AUTHENTICATION
+  </div>
+
+  <input
+    id="email"
+    type="email"
+    placeholder="Admin email"
+    class="w-full bg-neutral-900 border border-neutral-800 rounded p-3 text-sm text-white mb-2 outline-none"
+  >
+
+  <input
+    id="password"
+    type="password"
+    placeholder="Password"
+    class="w-full bg-neutral-900 border border-neutral-800 rounded p-3 text-sm text-white mb-3 outline-none"
+  >
+
+  <button
+    onclick="adminLogin()"
+    class="w-full bg-neutral-100 text-black font-bold py-3 rounded text-xs mono"
+  >
+    LOGIN
+  </button>
+
+  <p
+    id="loginMsg"
+    class="text-[10px] text-red-400 mono mt-3 text-center"
+  ></p>
+
+</section>
+
+
+<!-- ADMIN PANEL -->
+
+<section
+  id="adminPanel"
+  class="hidden"
+>
+
+  <div class="flex justify-between items-center mb-3">
+
+    <div class="text-xs text-neutral-400 mono">
+      LIVE PAYMENT REQUESTS
+    </div>
+
+    <button
+      onclick="adminLogout()"
+      class="text-[10px] border border-neutral-800 px-3 py-1 rounded text-neutral-400 mono"
     >
+      LOGOUT
+    </button>
 
-      <div class="flex justify-between items-center mb-3">
+  </div>
 
-        <div class="text-xs text-neutral-400 mono">
-          LIVE PAYMENT REQUESTS
-        </div>
+  <div
+    id="requestList"
+    class="flex flex-col gap-3"
+  ></div>
 
-        <button
-          onclick="adminLogout()"
-          class="text-[10px] border border-neutral-800 px-3 py-1 rounded text-neutral-400 mono"
-        >
-          LOGOUT
-        </button>
+</section>
 
-      </div>
+  </main><script type="module">
 
-      <div
-        id="requestList"
-        class="flex flex-col gap-3"
-      ></div>
+/* =========================
+   FIREBASE IMPORT
+========================= */
 
-    </section>
-
-  </main>
-
-
-<script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
 import {
   getAuth,
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut
-}
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+} from
+  "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 import {
   getDatabase,
@@ -149,9 +135,10 @@ import {
   onValue,
   update,
   get,
+  set,
   runTransaction
-}
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+} from
+  "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
 /* =========================
@@ -232,7 +219,6 @@ onAuthStateChanged(
         .add("hidden");
 
       return;
-
     }
 
 
@@ -250,7 +236,6 @@ onAuthStateChanged(
       signOut(auth);
 
       return;
-
     }
 
 
@@ -306,7 +291,6 @@ async function() {
       "Email and password required.";
 
     return;
-
   }
 
 
@@ -383,14 +367,13 @@ function loadRequests() {
         `;
 
         return;
-
       }
 
 
       const entries =
         Object.entries(data)
         .sort(
-          (a,b) =>
+          (a, b) =>
             (b[1].timestamp || 0) -
             (a[1].timestamp || 0)
         );
@@ -406,6 +389,15 @@ function loadRequests() {
           );
 
         }
+      );
+
+    },
+
+    (error) => {
+
+      console.error(
+        "Request loading error:",
+        error
       );
 
     }
@@ -483,7 +475,7 @@ function createRequestCard(
       <div
         class="text-xs font-bold text-white mono"
       >
-        ${requestId}
+        ${escapeHtml(requestId)}
       </div>
 
       <div
@@ -518,7 +510,7 @@ function createRequestCard(
                font-bold
                mono"
       >
-        NODE // ${nodeNumber}
+        NODE // ${escapeHtml(nodeNumber)}
       </div>
 
     </div>
@@ -558,7 +550,7 @@ function createRequestCard(
         <span
           class="text-white mono"
         >
-          ₹${request.amount || 0}
+          ₹${escapeHtml(request.amount || 0)}
         </span>
 
       </div>
@@ -691,6 +683,63 @@ async function generateNextNode() {
 
 
 /* =========================
+   PUBLISH TO PUBLIC FEED
+========================= */
+
+async function publishToPublicFeed(
+  requestId,
+  requestData,
+  nodeNumber
+) {
+
+  const publicFeedRef =
+    ref(
+      db,
+      "publicFeed/" + requestId
+    );
+
+
+  /*
+    Public feed contains only
+    information needed by the
+    public website.
+
+    UTR and ownerUid are NOT
+    copied to publicFeed.
+  */
+
+  const publicEntry = {
+
+    requestId:
+      requestId,
+
+    confession:
+      requestData.confession,
+
+    nodeNumber:
+      nodeNumber,
+
+    status:
+      "APPROVED",
+
+    timestamp:
+      requestData.timestamp || Date.now(),
+
+    approvedAt:
+      Date.now()
+
+  };
+
+
+  await set(
+    publicFeedRef,
+    publicEntry
+  );
+
+}
+
+
+/* =========================
    CHANGE STATUS
 ========================= */
 
@@ -702,7 +751,7 @@ async function(
 
   const confirmText =
     newStatus === "APPROVED"
-      ? "Approve this payment and assign the next Node?"
+      ? "Approve this payment and publish the confession?"
       : "Reject this payment?";
 
 
@@ -711,7 +760,6 @@ async function(
   ) {
 
     return;
-
   }
 
 
@@ -725,13 +773,48 @@ async function(
       );
 
 
+    const snapshot =
+      await get(
+        requestRef
+      );
+
+
+    if (!snapshot.exists()) {
+
+      throw new Error(
+        "Payment request no longer exists."
+      );
+
+    }
+
+
+    const existingData =
+      snapshot.val();
+
+
     /*
+      =========================
       REJECT
+      =========================
     */
 
     if (
       newStatus === "REJECTED"
     ) {
+
+      if (
+        existingData.status ===
+        "APPROVED"
+      ) {
+
+        alert(
+          "This payment is already approved and cannot be rejected from here."
+        );
+
+        return;
+
+      }
+
 
       await update(
         requestRef,
@@ -751,48 +834,23 @@ async function(
 
 
       return;
-
     }
 
 
     /*
-      APPROVE
-
-      First check whether
-      this request already has
-      a node number.
+      =========================
+      APPROVAL
+      =========================
     */
 
-    const existingSnapshot =
-      await get(
-        requestRef
-      );
-
-
-    const existingData =
-      existingSnapshot.val() || {};
-
-
     if (
-      existingData.nodeNumber
+      existingData.status ===
+      "REJECTED"
     ) {
 
-      await update(
-        requestRef,
-        {
-
-          status:
-            "APPROVED",
-
-          reviewedAt:
-            Date.now(),
-
-          reviewedBy:
-            auth.currentUser.uid
-
-        }
+      alert(
+        "This payment was already rejected."
       );
-
 
       return;
 
@@ -800,25 +858,26 @@ async function(
 
 
     /*
-      Generate next Node.
-
-      First approved entry:
-      000001
-
-      Next:
-      000002
-
-      Next:
-      000003
+      If this request already has
+      a node, do not create another
+      node number.
     */
 
-    const nodeNumber =
-      await generateNextNode();
+    let nodeNumber =
+      existingData.nodeNumber;
+
+
+    if (!nodeNumber) {
+
+      nodeNumber =
+        await generateNextNode();
+
+    }
 
 
     /*
-      Save approval + Node
-      together in the request.
+      First mark the request
+      as approved.
     */
 
     await update(
@@ -838,6 +897,25 @@ async function(
           auth.currentUser.uid
 
       }
+    );
+
+
+    /*
+      Publish the approved
+      confession to publicFeed.
+
+      publicFeed key =
+      requestId
+
+      Therefore the same request
+      cannot create multiple
+      public entries.
+    */
+
+    await publishToPublicFeed(
+      requestId,
+      existingData,
+      nodeNumber
     );
 
 
@@ -911,6 +989,6 @@ function escapeHtml(
 }
 
 </script>
-
+  
 </body>
 </html>
