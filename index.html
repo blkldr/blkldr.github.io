@@ -87,231 +87,734 @@ body{background:#050505;color:#E5E5E5;font-family:'Space Grotesk',sans-serif}
 </div>
 </div>
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {getAuth,signInAnonymously,onAuthStateChanged,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import {getDatabase,ref,set,get,onValue} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-const firebaseConfig={apiKey:"AIzaSyAlmnaSJmU5FRTcpbmDa6MO0hdUwIeLOZc",authDomain:"blackledger-759c1.firebaseapp.com",databaseURL:"https://blackledger-759c1-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"blackledger-759c1",storageBucket:"blackledger-759c1.appspot.com",messagingSenderId:"1064101172402",appId:"1:1064101172402:web:951950dd4e136c44e965eb"};
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import{getAuth,signInAnonymously,onAuthStateChanged,setPersistence,browserLocalPersistence}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import{getDatabase,ref,set,get,onValue}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyAlmnaSJmU5FRTcpbmDa6MO0hdUwIeLOZc",
+authDomain:"blackledger-759c1.firebaseapp.com",
+databaseURL:"https://blackledger-759c1-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId:"blackledger-759c1",
+storageBucket:"blackledger-759c1.appspot.com",
+messagingSenderId:"1064101172402",
+appId:"1:1064101172402:web:951950dd4e136c44e965eb"
+};
+
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getDatabase(app);
+
 const input=document.getElementById("confessionInput");
 const AMOUNT=13;
+
 let currentUser=null;
 let statusListener=null;
 let feedListener=null;
+let archiveListener=null;
 let restoreStarted=false;
-input.addEventListener("input",()=>{document.getElementById("charCount").textContent=`${input.value.length} / 280`;});
+
+input.addEventListener("input",()=>{
+document.getElementById("charCount").textContent=
+`${input.value.length} / 280`;
+});
+
 async function startAuthentication(){
-try{await setPersistence(auth,browserLocalPersistence);if(!auth.currentUser)await signInAnonymously(auth);}
-catch(error){console.error("Authentication error:",error);}
+try{
+await setPersistence(auth,browserLocalPersistence);
+if(!auth.currentUser){
+await signInAnonymously(auth);
 }
+}catch(error){
+console.error("Authentication error:",error);
+}
+}
+
 onAuthStateChanged(auth,async user=>{
 if(!user)return;
+
 currentUser=user;
-if(!restoreStarted){restoreStarted=true;await restorePayment();startRealtimeFeed();}
+
+if(!restoreStarted){
+restoreStarted=true;
+
+await restorePayment();
+
+startRealtimeFeed();
+startArchiveCounter();
+}
 });
+
 startAuthentication();
+
 window.openPaymentModal=function(){
 const text=input.value.trim();
-if(text.length<10){alert("Enter at least 10 characters of your confession to proceed.");return;}
-document.getElementById("payModal").classList.remove("hidden");
-};
-window.closeModalAndVerify=function(){
-document.getElementById("payModal").classList.add("hidden");
-document.getElementById("stepInitiate").classList.add("hidden");
-document.getElementById("stepVerify").classList.remove("hidden");
-document.getElementById("stepVerify").classList.add("flex");
-};
-function generateRequestId(){
-if(window.crypto&&crypto.randomUUID)return "REQ_"+crypto.randomUUID().replaceAll("-","").substring(0,20).toUpperCase();
-return "REQ_"+Date.now()+"_"+Math.random().toString(36).substring(2,8).toUpperCase();
+
+if(text.length<10){
+alert("Enter at least 10 characters of your confession to proceed.");
+return;
 }
+
+document.getElementById("payModal")
+.classList.remove("hidden");
+};
+
+window.closeModalAndVerify=function(){
+document.getElementById("payModal")
+.classList.add("hidden");
+
+document.getElementById("stepInitiate")
+.classList.add("hidden");
+
+document.getElementById("stepVerify")
+.classList.remove("hidden");
+
+document.getElementById("stepVerify")
+.classList.add("flex");
+};
+
+function generateRequestId(){
+
+if(window.crypto&&crypto.randomUUID){
+
+return"REQ_"+
+crypto.randomUUID()
+.replaceAll("-","")
+.substring(0,20)
+.toUpperCase();
+
+}
+
+return"REQ_"+
+Date.now()+"_"+
+Math.random()
+.toString(36)
+.substring(2,8)
+.toUpperCase();
+}
+
 window.submitUtrForVerification=async function(){
+
 const text=input.value.trim();
-const utr=document.getElementById("utrInput").value.trim();
+
+const utr=document
+.getElementById("utrInput")
+.value
+.trim();
+
 const btn=document.getElementById("verifyBtn");
+
 const msg=document.getElementById("verifyMsg");
-if(text.length<10){alert("Enter at least 10 characters.");return;}
-if(!/^\d{12}$/.test(utr)){alert("Please enter a valid 12-digit UTR.");return;}
-if(!currentUser){alert("Secure connection is starting. Please wait.");return;}
+
+if(text.length<10){
+alert("Enter at least 10 characters.");
+return;
+}
+
+if(!/^\d{12}$/.test(utr)){
+alert("Please enter a valid 12-digit UTR.");
+return;
+}
+
+if(!currentUser){
+alert("Secure connection is starting. Please wait.");
+return;
+}
+
 btn.disabled=true;
 btn.innerText="TRANSMITTING TRACE...";
+
 msg.classList.remove("hidden");
-msg.className="text-[10px] text-center text-neutral-400 mt-1 mono";
-msg.innerText="Sending payment trace securely...";
+
+msg.className=
+"text-[10px] text-center text-neutral-400 mt-1 mono";
+
+msg.innerText=
+"Sending payment trace securely...";
+
 try{
+
 const requestId=generateRequestId();
-const requestRef=ref(db,`paymentRequests/${requestId}`);
-const requestData={ownerUid:currentUser.uid,utr:utr,confession:text,amount:AMOUNT,status:"PENDING",timestamp:Date.now()};
+
+const requestRef=
+ref(db,`paymentRequests/${requestId}`);
+
+const requestData={
+ownerUid:currentUser.uid,
+utr:utr,
+confession:text,
+amount:AMOUNT,
+status:"PENDING",
+timestamp:Date.now()
+};
+
 await set(requestRef,requestData);
+
 localStorage.setItem("bl_requestId",requestId);
 localStorage.setItem("bl_confession",text);
 localStorage.setItem("bl_utr",utr);
+
 showPending(requestId);
 listenToStatus(requestId);
+
 }catch(error){
-console.error("Firebase submission error:",error);
-alert("Submission failed: "+error.message);
+
+console.error(
+"Firebase submission error:",
+error
+);
+
+alert(
+"Submission failed: "+error.message
+);
+
 btn.disabled=false;
-btn.innerText="SUBMIT FOR VERIFICATION";
+btn.innerText=
+"SUBMIT FOR VERIFICATION";
 }
 };
+
 function showPending(requestId){
-document.getElementById("stepInitiate").classList.add("hidden");
-document.getElementById("stepVerify").classList.remove("hidden");
-document.getElementById("stepVerify").classList.add("flex");
-document.getElementById("pendingBox").classList.remove("hidden");
-document.getElementById("pollStatus").innerText="Waiting for admin approval...";
-document.getElementById("pendingNode").innerText="NODE // PENDING";
+
+document.getElementById("stepInitiate")
+.classList.add("hidden");
+
+document.getElementById("stepVerify")
+.classList.remove("hidden");
+
+document.getElementById("stepVerify")
+.classList.add("flex");
+
+document.getElementById("pendingBox")
+.classList.remove("hidden");
+
+document.getElementById("pollStatus")
+.innerText=
+"Waiting for admin approval...";
+
+document.getElementById("pendingNode")
+.innerText=
+"NODE // PENDING";
+
 const msg=document.getElementById("verifyMsg");
-msg.className="text-[10px] text-center text-yellow-500 mt-1 mono";
+
+msg.className=
+"text-[10px] text-center text-yellow-500 mt-1 mono";
+
 msg.classList.remove("hidden");
-msg.innerText="Waiting for admin approval...";
+
+msg.innerText=
+"Waiting for admin approval...";
+
 const btn=document.getElementById("verifyBtn");
+
 btn.disabled=true;
-btn.innerText="VERIFICATION PENDING";
+btn.innerText=
+"VERIFICATION PENDING";
 }
+
 function listenToStatus(requestId){
-if(statusListener){statusListener();statusListener=null;}
-const statusRef=ref(db,`paymentRequests/${requestId}/status`);
-statusListener=onValue(statusRef,async snapshot=>{
+
+if(statusListener){
+statusListener();
+statusListener=null;
+}
+
+const statusRef=
+ref(
+db,
+`paymentRequests/${requestId}/status`
+);
+
+statusListener=
+onValue(
+statusRef,
+async snapshot=>{
+
 const status=snapshot.val();
+
 if(status==="APPROVED"){
-const fullRef=ref(db,`paymentRequests/${requestId}`);
-const fullSnap=await get(fullRef);
-const data=fullSnap.val()||{};
-showVerified({nodeId:data.nodeNumber||null,persona:data.persona||"THE PRAGMATIC SINNER"});
-}else if(status==="REJECTED"){showRejected();}
-else{showPending(requestId);}
+
+const fullRef=
+ref(
+db,
+`paymentRequests/${requestId}`
+);
+
+const fullSnap=
+await get(fullRef);
+
+const data=
+fullSnap.val()||{};
+
+showVerified({
+nodeId:
+data.nodeNumber||null,
+
+persona:
+data.persona||
+"THE PRAGMATIC SINNER"
+});
+
+}
+
+else if(status==="REJECTED"){
+
+showRejected();
+
+}
+
+else{
+
+showPending(requestId);
+
+}
+
+}
+);
+}
+
+function showVerified(data){
+
+document.getElementById("pendingBox")
+.classList.add("hidden");
+
+document.getElementById("stepInitiate")
+.classList.add("hidden");
+
+document.getElementById("stepVerify")
+.classList.add("hidden");
+
+document.getElementById("stepVerify")
+.classList.remove("flex");
+
+document.getElementById("accessBox")
+.classList.remove("hidden");
+
+const node=data.nodeId||"PENDING";
+
+document.getElementById("unlockedNode")
+.textContent=
+`NODE // ${node}`;
+
+document.getElementById("unlockedPersona")
+.textContent=
+data.persona||
+"THE PRAGMATIC SINNER";
+
+localStorage.setItem(
+"bl_verified",
+"true"
+);
+
+startRealtimeFeed();
+
+startArchiveCounter();
+
+window.scrollTo({
+top:
+document.getElementById("accessBox")
+.offsetTop-20,
+behavior:"smooth"
 });
 }
-  function showVerified(data){
-document.getElementById("pendingBox").classList.add("hidden");
-document.getElementById("stepInitiate").classList.add("hidden");
-document.getElementById("stepVerify").classList.add("hidden");
-document.getElementById("stepVerify").classList.remove("flex");
-document.getElementById("accessBox").classList.remove("hidden");
-const node=data.nodeId||"PENDING";
-document.getElementById("unlockedNode").textContent=`NODE // ${node}`;
-document.getElementById("unlockedPersona").textContent=data.persona||"THE PRAGMATIC SINNER";
-localStorage.setItem("bl_verified","true");
-startRealtimeFeed();
-window.scrollTo({top:document.getElementById("accessBox").offsetTop-20,behavior:"smooth"});
-}
+
 function showRejected(){
-if(statusListener){statusListener();statusListener=null;}
+
+if(statusListener){
+statusListener();
+statusListener=null;
+}
+
 localStorage.removeItem("bl_requestId");
 localStorage.removeItem("bl_confession");
 localStorage.removeItem("bl_utr");
 localStorage.removeItem("bl_verified");
-document.getElementById("pendingBox").classList.add("hidden");
-document.getElementById("stepVerify").classList.add("hidden");
-document.getElementById("stepVerify").classList.remove("flex");
-document.getElementById("stepInitiate").classList.remove("hidden");
-document.getElementById("utrInput").value="";
+
+document.getElementById("pendingBox")
+.classList.add("hidden");
+
+document.getElementById("stepVerify")
+.classList.add("hidden");
+
+document.getElementById("stepVerify")
+.classList.remove("flex");
+
+document.getElementById("stepInitiate")
+.classList.remove("hidden");
+
+document.getElementById("utrInput")
+.value="";
+
 const btn=document.getElementById("verifyBtn");
+
 btn.disabled=false;
-btn.innerText="SUBMIT FOR VERIFICATION";
+
+btn.innerText=
+"SUBMIT FOR VERIFICATION";
+
 const msg=document.getElementById("verifyMsg");
-msg.className="text-[10px] text-center text-red-500 mt-1 mono";
+
+msg.className=
+"text-[10px] text-center text-red-500 mt-1 mono";
+
 msg.classList.remove("hidden");
-msg.innerText="Payment could not be verified. Please make a new payment.";
+
+msg.innerText=
+"Payment could not be verified. Please make a new payment.";
 }
-async function restorePayment(){
-const requestId=localStorage.getItem("bl_requestId");
+  async function restorePayment(){
+
+const requestId=
+localStorage.getItem("bl_requestId");
+
 if(!requestId||!currentUser)return;
-const savedConfession=localStorage.getItem("bl_confession");
+
+const savedConfession=
+localStorage.getItem("bl_confession");
+
 if(savedConfession){
+
 input.value=savedConfession;
-document.getElementById("charCount").textContent=`${savedConfession.length} / 280`;
+
+document.getElementById("charCount")
+.textContent=
+`${savedConfession.length} / 280`;
 }
-const savedUtr=localStorage.getItem("bl_utr");
-if(savedUtr)document.getElementById("utrInput").value=savedUtr;
-const requestRef=ref(db,`paymentRequests/${requestId}`);
-onValue(requestRef,snapshot=>{
+
+const savedUtr=
+localStorage.getItem("bl_utr");
+
+if(savedUtr){
+
+document.getElementById("utrInput")
+.value=savedUtr;
+}
+
+const requestRef=
+ref(
+db,
+`paymentRequests/${requestId}`
+);
+
+onValue(
+requestRef,
+snapshot=>{
+
 const data=snapshot.val();
+
 if(!data)return;
-if(data.ownerUid&&data.ownerUid!==currentUser.uid)return;
-if(data.status==="PENDING")showPending(requestId);
-else if(data.status==="APPROVED")showVerified({nodeId:data.nodeNumber||"PENDING",persona:data.persona||"THE PRAGMATIC SINNER"});
-else if(data.status==="REJECTED")showRejected();
+
+if(
+data.ownerUid&&
+data.ownerUid!==currentUser.uid
+)return;
+
+if(data.status==="PENDING"){
+
+showPending(requestId);
+
+}
+
+else if(data.status==="APPROVED"){
+
+showVerified({
+
+nodeId:
+data.nodeNumber||"PENDING",
+
+persona:
+data.persona||
+"THE PRAGMATIC SINNER"
+
 });
+
+}
+
+else if(data.status==="REJECTED"){
+
+showRejected();
+
+}
+
+}
+);
+
 listenToStatus(requestId);
 }
+
+/* =========================
+   GLOBAL ARCHIVE COUNTER
+
+   This is NOT the user's node.
+
+   It shows total approved
+   users in the entire Ledger.
+
+   174 -> 175 -> 176...
+========================= */
+
+function startArchiveCounter(){
+
+if(archiveListener){
+archiveListener();
+archiveListener=null;
+}
+
+const counterRef=
+ref(db,"ledgerCounter");
+
+archiveListener=
+onValue(
+counterRef,
+snapshot=>{
+
+const total=
+Number(snapshot.val()||0);
+
+document.getElementById(
+"counterDisplay"
+).textContent=
+"#"+String(total).padStart(3,"0");
+
+},
+error=>{
+
+console.error(
+"Archive counter error:",
+error
+);
+
+}
+);
+}
+
+/* =========================
+   LIVE VAULT STREAM
+
+   Read approved entries directly
+   from paymentRequests.
+
+   This fixes the problem where
+   publicFeed showed empty.
+========================= */
+
 function startRealtimeFeed(){
-if(feedListener){feedListener();feedListener=null;}
-const feedRef=ref(db,"publicFeed");
-feedListener=onValue(feedRef,(snapshot)=>{
-const feed=document.getElementById("feedList");
-const badge=document.getElementById("lockBadge");
-const isVerified=localStorage.getItem("bl_verified")==="true";
-const ownRequestId=localStorage.getItem("bl_requestId");
-badge.textContent=isVerified?"UNLOCKED":"LOCKED";
+
+if(feedListener){
+feedListener();
+feedListener=null;
+}
+
+const feedRef=
+ref(db,"paymentRequests");
+
+feedListener=
+onValue(
+feedRef,
+snapshot=>{
+
+const feed=
+document.getElementById("feedList");
+
+const badge=
+document.getElementById("lockBadge");
+
+const isVerified=
+localStorage.getItem("bl_verified")
+==="true";
+
+const ownRequestId=
+localStorage.getItem("bl_requestId");
+
+badge.textContent=
+isVerified
+?"UNLOCKED"
+:"LOCKED";
+
 feed.replaceChildren();
+
 if(!snapshot.exists()){
-const p=document.createElement("p");
-p.className="text-neutral-500 text-[11px] mono";
-p.textContent="No approved confessions yet. Be the first.";
+
+const p=
+document.createElement("p");
+
+p.className=
+"text-neutral-500 text-[11px] mono";
+
+p.textContent=
+"No approved confessions yet. Be the first.";
+
 feed.appendChild(p);
-document.getElementById("counterDisplay").textContent="#000,000";
+
 return;
 }
-const data=snapshot.val();
-const entries=Object.entries(data).map(([id,val])=>({id,...val})).filter(entry=>entry.status==="APPROVED"&&entry.confession);
-entries.sort((a,b)=>{
-const aOwn=a.id===ownRequestId;
-const bOwn=b.id===ownRequestId;
-if(aOwn&&!bOwn)return -1;
-if(!aOwn&&bOwn)return 1;
-return (b.approvedAt||b.timestamp||0)-(a.approvedAt||a.timestamp||0);
-});
-document.getElementById("counterDisplay").textContent="#"+String(entries.length).padStart(3,"0");
+
+const data=
+snapshot.val();
+
+const entries=
+Object.entries(data)
+
+.map(
+([id,val])=>({
+id,
+...val
+})
+)
+
+.filter(
+entry=>
+entry.status==="APPROVED"&&
+entry.confession
+);
+
+entries.sort(
+(a,b)=>
+(b.approvedAt||
+b.reviewedAt||
+b.timestamp||
+0)
+-
+(a.approvedAt||
+a.reviewedAt||
+a.timestamp||
+0)
+);
+
 let count=0;
-for(const entry of entries){
+
+for(
+const entry of entries
+){
+
 count++;
-const itemDiv=document.createElement("div");
-const isOwn=entry.id===ownRequestId;
-itemDiv.className=isOwn?"border border-green-800 bg-green-950/20 p-3 rounded text-[11px] mono":"border border-neutral-800 bg-neutral-900/40 p-3 rounded text-[11px] mono";
-const headerRow=document.createElement("div");
-headerRow.className="flex justify-between text-neutral-500 mb-1 text-[9px]";
-const nodeLabel=entry.nodeNumber?`NODE // ${entry.nodeNumber}`:"NODE // UNKNOWN";
-const ownerLabel=isOwn?"YOUR ENTRY":"VERIFIED TRACE";
-headerRow.innerHTML=`<span>${nodeLabel}</span><span>${ownerLabel}</span>`;
+
+const itemDiv=
+document.createElement("div");
+
+const isOwn=
+entry.id===ownRequestId;
+
+itemDiv.className=
+isOwn
+?
+"border border-green-800 bg-green-950/20 p-3 rounded text-[11px] mono"
+:
+"border border-neutral-800 bg-neutral-900/40 p-3 rounded text-[11px] mono";
+
+const headerRow=
+document.createElement("div");
+
+headerRow.className=
+"flex justify-between text-neutral-500 mb-1 text-[9px]";
+
+const nodeLabel=
+entry.nodeNumber
+?
+`NODE // ${entry.nodeNumber}`
+:
+"NODE // UNKNOWN";
+
+const ownerLabel=
+isOwn
+?
+"YOUR ENTRY"
+:
+"VERIFIED TRACE";
+
+headerRow.innerHTML=
+`<span>${nodeLabel}</span>
+<span>${ownerLabel}</span>`;
+
 itemDiv.appendChild(headerRow);
+
 if(isOwn){
-const ownBadge=document.createElement("div");
-ownBadge.className="text-[9px] text-green-500 mb-2 uppercase tracking-wider";
-ownBadge.textContent="● YOUR APPROVED CONFESSION";
+
+const ownBadge=
+document.createElement("div");
+
+ownBadge.className=
+"text-[9px] text-green-500 mb-2 uppercase tracking-wider";
+
+ownBadge.textContent=
+"● YOUR APPROVED CONFESSION";
+
 itemDiv.appendChild(ownBadge);
 }
-const contentP=document.createElement("p");
-contentP.className="leading-relaxed";
+
+const contentP=
+document.createElement("p");
+
+contentP.className=
+"leading-relaxed";
+
 if(isVerified){
-contentP.classList.add("text-neutral-300");
-contentP.textContent=`"${entry.confession}"`;
+
+contentP.classList.add(
+"text-neutral-300"
+);
+
+contentP.textContent=
+`"${entry.confession}"`;
+
 }else{
-contentP.classList.add("blurred","text-neutral-400");
-contentP.textContent=`"${entry.confession}"`;
+
+contentP.classList.add(
+"blurred",
+"text-neutral-400"
+);
+
+contentP.textContent=
+`"${entry.confession}"`;
 }
+
 itemDiv.appendChild(contentP);
+
 feed.appendChild(itemDiv);
 }
+
 if(count===0){
-const p=document.createElement("p");
-p.className="text-neutral-500 text-[11px] mono";
-p.textContent="Waiting for approved archive entries...";
+
+const p=
+document.createElement("p");
+
+p.className=
+"text-neutral-500 text-[11px] mono";
+
+p.textContent=
+"Waiting for approved archive entries...";
+
 feed.appendChild(p);
 }
-},error=>{
-console.error("Realtime public feed error:",error);
-const feed=document.getElementById("feedList");
+
+},
+error=>{
+
+console.error(
+"Realtime vault error:",
+error
+);
+
+const feed=
+document.getElementById("feedList");
+
 feed.replaceChildren();
-const p=document.createElement("p");
-p.className="text-red-500 text-[11px] mono";
-p.textContent="Archive connection unavailable.";
+
+const p=
+document.createElement("p");
+
+p.className=
+"text-red-500 text-[11px] mono";
+
+p.textContent=
+"Archive connection unavailable.";
+
 feed.appendChild(p);
-});
 }
+);
+}
+
 </script>
 </body>
 </html>
