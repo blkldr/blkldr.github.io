@@ -606,38 +606,29 @@ feedListener();
 feedListener=null;
 }
 
-const feedRef=
-ref(db,"paymentRequests");
+const feedRef=ref(db,"publicFeed");
 
-feedListener=
-onValue(
+feedListener=onValue(
 feedRef,
 snapshot=>{
 
-const feed=
-document.getElementById("feedList");
-
-const badge=
-document.getElementById("lockBadge");
+const feed=document.getElementById("feedList");
+const badge=document.getElementById("lockBadge");
 
 const isVerified=
-localStorage.getItem("bl_verified")
-==="true";
+localStorage.getItem("bl_verified")==="true";
 
 const ownRequestId=
 localStorage.getItem("bl_requestId");
 
 badge.textContent=
-isVerified
-?"UNLOCKED"
-:"LOCKED";
+isVerified ? "UNLOCKED" : "LOCKED";
 
 feed.replaceChildren();
 
 if(!snapshot.exists()){
 
-const p=
-document.createElement("p");
+const p=document.createElement("p");
 
 p.className=
 "text-neutral-500 text-[11px] mono";
@@ -650,48 +641,38 @@ feed.appendChild(p);
 return;
 }
 
-const data=
-snapshot.val();
+const data=snapshot.val();
 
 const entries=
 Object.entries(data)
-
-.map(
-([id,val])=>({
+.map(([id,val])=>({
 id,
 ...val
-})
-)
-
-.filter(
-entry=>
-entry.status==="APPROVED"&&
+}))
+.filter(entry=>
+entry.status==="APPROVED" &&
 entry.confession
 );
 
-entries.sort(
-(a,b)=>
-(b.approvedAt||
-b.reviewedAt||
-b.timestamp||
-0)
+entries.sort((a,b)=>
+(b.approvedAt ||
+ b.reviewedAt ||
+ b.timestamp ||
+ 0)
 -
-(a.approvedAt||
-a.reviewedAt||
-a.timestamp||
-0)
+(a.approvedAt ||
+ a.reviewedAt ||
+ a.timestamp ||
+ 0)
 );
 
 let count=0;
 
-for(
-const entry of entries
-){
+for(const entry of entries){
 
 count++;
 
-const itemDiv=
-document.createElement("div");
+const itemDiv=document.createElement("div");
 
 const isOwn=
 entry.id===ownRequestId;
@@ -724,8 +705,7 @@ isOwn
 "VERIFIED TRACE";
 
 headerRow.innerHTML=
-`<span>${nodeLabel}</span>
-<span>${ownerLabel}</span>`;
+`<span>${nodeLabel}</span><span>${ownerLabel}</span>`;
 
 itemDiv.appendChild(headerRow);
 
@@ -776,8 +756,7 @@ feed.appendChild(itemDiv);
 
 if(count===0){
 
-const p=
-document.createElement("p");
+const p=document.createElement("p");
 
 p.className=
 "text-neutral-500 text-[11px] mono";
@@ -792,7 +771,7 @@ feed.appendChild(p);
 error=>{
 
 console.error(
-"Realtime vault error:",
+"Realtime public feed error:",
 error
 );
 
