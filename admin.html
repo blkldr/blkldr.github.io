@@ -31,8 +31,11 @@
   <main class="w-full max-w-2xl mx-auto">
 
     <header class="border border-neutral-800 bg-neutral-950 p-4 rounded-lg mb-4">
+
       <div class="flex justify-between items-center">
+
         <div>
+
           <div class="text-xs text-red-500 mono">
             BLACK LEDGER // ADMIN
           </div>
@@ -40,20 +43,27 @@
           <h1 class="text-lg font-bold text-white">
             Payment Verification
           </h1>
+
         </div>
 
-        <div id="adminStatus"
-             class="text-[10px] text-yellow-500 mono">
+        <div
+          id="adminStatus"
+          class="text-[10px] text-yellow-500 mono"
+        >
           AUTHENTICATING...
         </div>
+
       </div>
+
     </header>
 
 
     <!-- LOGIN -->
 
-    <section id="loginBox"
-      class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg">
+    <section
+      id="loginBox"
+      class="border border-neutral-800 bg-neutral-950 p-5 rounded-lg"
+    >
 
       <div class="text-xs text-neutral-400 mono mb-3">
         ADMIN AUTHENTICATION
@@ -75,20 +85,25 @@
 
       <button
         onclick="adminLogin()"
-        class="w-full bg-neutral-100 text-black font-bold py-3 rounded text-xs mono">
+        class="w-full bg-neutral-100 text-black font-bold py-3 rounded text-xs mono"
+      >
         LOGIN
       </button>
 
-      <p id="loginMsg"
-         class="text-[10px] text-red-400 mono mt-3 text-center">
-      </p>
+      <p
+        id="loginMsg"
+        class="text-[10px] text-red-400 mono mt-3 text-center"
+      ></p>
 
     </section>
 
 
-    <!-- REQUESTS -->
+    <!-- ADMIN PANEL -->
 
-    <section id="adminPanel" class="hidden">
+    <section
+      id="adminPanel"
+      class="hidden"
+    >
 
       <div class="flex justify-between items-center mb-3">
 
@@ -98,14 +113,17 @@
 
         <button
           onclick="adminLogout()"
-          class="text-[10px] border border-neutral-800 px-3 py-1 rounded text-neutral-400 mono">
+          class="text-[10px] border border-neutral-800 px-3 py-1 rounded text-neutral-400 mono"
+        >
           LOGOUT
         </button>
 
       </div>
 
-      <div id="requestList" class="flex flex-col gap-3">
-      </div>
+      <div
+        id="requestList"
+        class="flex flex-col gap-3"
+      ></div>
 
     </section>
 
@@ -129,7 +147,9 @@ import {
   getDatabase,
   ref,
   onValue,
-  update
+  update,
+  get,
+  runTransaction
 }
 from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -140,7 +160,8 @@ from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
 
-  apiKey: "AIzaSyAlmnaSJmU5FRTcpbmDa6MO0hdUwIeLOZc",
+  apiKey:
+    "AIzaSyAlmnaSJmU5FRTcpbmDa6MO0hdUwIeLOZc",
 
   authDomain:
     "blackledger-759c1.firebaseapp.com",
@@ -159,6 +180,7 @@ const firebaseConfig = {
 
   appId:
     "1:1064101172402:web:951950dd4e136c44e965eb"
+
 };
 
 
@@ -166,11 +188,14 @@ const firebaseConfig = {
    INITIALIZE
 ========================= */
 
-const app = initializeApp(firebaseConfig);
+const app =
+  initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+const auth =
+  getAuth(app);
 
-const db = getDatabase(app);
+const db =
+  getDatabase(app);
 
 
 /* =========================
@@ -185,69 +210,103 @@ const ADMIN_UID =
    AUTH STATE
 ========================= */
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(
+  auth,
+  (user) => {
 
-  if (!user) {
+    if (!user) {
 
-    document.getElementById("adminStatus")
-      .innerText = "NOT LOGGED IN";
+      document
+        .getElementById("adminStatus")
+        .innerText =
+        "NOT LOGGED IN";
 
-    document.getElementById("loginBox")
-      .classList.remove("hidden");
+      document
+        .getElementById("loginBox")
+        .classList
+        .remove("hidden");
 
-    document.getElementById("adminPanel")
-      .classList.add("hidden");
+      document
+        .getElementById("adminPanel")
+        .classList
+        .add("hidden");
 
-    return;
+      return;
+
+    }
+
+
+    if (user.uid !== ADMIN_UID) {
+
+      document
+        .getElementById("adminStatus")
+        .innerText =
+        "ACCESS DENIED";
+
+      alert(
+        "This account is not an admin."
+      );
+
+      signOut(auth);
+
+      return;
+
+    }
+
+
+    document
+      .getElementById("adminStatus")
+      .innerText =
+      "● ADMIN ONLINE";
+
+
+    document
+      .getElementById("loginBox")
+      .classList
+      .add("hidden");
+
+
+    document
+      .getElementById("adminPanel")
+      .classList
+      .remove("hidden");
+
+
+    loadRequests();
+
   }
-
-
-  if (user.uid !== ADMIN_UID) {
-
-    document.getElementById("adminStatus")
-      .innerText = "ACCESS DENIED";
-
-    alert("This account is not an admin.");
-
-    signOut(auth);
-
-    return;
-  }
-
-
-  document.getElementById("adminStatus")
-    .innerText = "● ADMIN ONLINE";
-
-  document.getElementById("loginBox")
-    .classList.add("hidden");
-
-  document.getElementById("adminPanel")
-    .classList.remove("hidden");
-
-  loadRequests();
-
-});
+);
 
 
 /* =========================
    LOGIN
 ========================= */
 
-window.adminLogin = async function() {
+window.adminLogin =
+async function() {
 
   const email =
-    document.getElementById("email").value.trim();
+    document
+      .getElementById("email")
+      .value
+      .trim();
+
 
   const password =
-    document.getElementById("password").value;
+    document
+      .getElementById("password")
+      .value;
 
 
   if (!email || !password) {
 
-    document.getElementById("loginMsg")
-      .innerText = "Email and password required.";
+    document
+      .getElementById("loginMsg")
+      .innerText =
+      "Email and password required.";
 
     return;
+
   }
 
 
@@ -259,11 +318,15 @@ window.adminLogin = async function() {
       password
     );
 
-  } catch (error) {
+  }
 
-    document.getElementById("loginMsg")
+  catch (error) {
+
+    document
+      .getElementById("loginMsg")
       .innerText =
-        "Login failed: " + error.message;
+      "Login failed: " +
+      error.message;
 
   }
 
@@ -277,57 +340,76 @@ window.adminLogin = async function() {
 function loadRequests() {
 
   const requestsRef =
-    ref(db, "paymentRequests");
+    ref(
+      db,
+      "paymentRequests"
+    );
 
 
-  onValue(requestsRef, (snapshot) => {
+  onValue(
+    requestsRef,
+    (snapshot) => {
 
-    const data = snapshot.val();
-
-    const list =
-      document.getElementById("requestList");
-
-    list.innerHTML = "";
+      const data =
+        snapshot.val();
 
 
-    if (!data) {
+      const list =
+        document.getElementById(
+          "requestList"
+        );
 
-      list.innerHTML = `
-        <div class="border border-neutral-800
-                    bg-neutral-950
-                    rounded-lg
-                    p-5
-                    text-center
-                    text-xs
-                    text-neutral-500
-                    mono">
-          NO PAYMENT REQUESTS
-        </div>
-      `;
 
-      return;
+      list.innerHTML = "";
+
+
+      if (!data) {
+
+        list.innerHTML = `
+
+          <div
+            class="border border-neutral-800
+                   bg-neutral-950
+                   rounded-lg
+                   p-5
+                   text-center
+                   text-xs
+                   text-neutral-500
+                   mono"
+          >
+            NO PAYMENT REQUESTS
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      const entries =
+        Object.entries(data)
+        .sort(
+          (a,b) =>
+            (b[1].timestamp || 0) -
+            (a[1].timestamp || 0)
+        );
+
+
+      entries.forEach(
+        ([requestId, request]) => {
+
+          createRequestCard(
+            requestId,
+            request,
+            list
+          );
+
+        }
+      );
+
     }
-
-
-    const entries =
-      Object.entries(data)
-      .sort((a,b) =>
-        (b[1].timestamp || 0) -
-        (a[1].timestamp || 0)
-      );
-
-
-    entries.forEach(([requestId, request]) => {
-
-      createRequestCard(
-        requestId,
-        request,
-        list
-      );
-
-    });
-
-  });
+  );
 
 }
 
@@ -343,7 +425,9 @@ function createRequestCard(
 ) {
 
   const card =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
 
   card.className =
@@ -351,76 +435,154 @@ function createRequestCard(
 
 
   const status =
-    request.status || "UNKNOWN";
+    request.status ||
+    "UNKNOWN";
 
 
   let statusClass =
     "text-yellow-400";
 
 
-  if (status === "APPROVED")
-    statusClass = "text-green-400";
+  if (
+    status === "APPROVED"
+  ) {
+
+    statusClass =
+      "text-green-400";
+
+  }
 
 
-  if (status === "REJECTED")
-    statusClass = "text-red-400";
+  if (
+    status === "REJECTED"
+  ) {
+
+    statusClass =
+      "text-red-400";
+
+  }
 
 
   const confession =
-    escapeHtml(request.confession || "");
+    escapeHtml(
+      request.confession || ""
+    );
+
+
+  const nodeNumber =
+    request.nodeNumber ||
+    "NOT ASSIGNED";
 
 
   card.innerHTML = `
 
-    <div class="flex justify-between items-center mb-3">
+    <div
+      class="flex justify-between items-center mb-3"
+    >
 
-      <div class="text-xs font-bold text-white mono">
+      <div
+        class="text-xs font-bold text-white mono"
+      >
         ${requestId}
       </div>
 
-      <div class="text-[10px] ${statusClass} mono">
+      <div
+        class="text-[10px] ${statusClass} mono"
+      >
         ● ${status}
       </div>
 
     </div>
 
 
-    <div class="space-y-2 text-xs">
+    <div
+      class="mb-3
+             border border-neutral-800
+             bg-neutral-900
+             rounded
+             p-3"
+    >
+
+      <div
+        class="text-[9px]
+               text-neutral-500
+               mono
+               mb-1"
+      >
+        LEDGER NODE
+      </div>
+
+      <div
+        class="text-base
+               text-white
+               font-bold
+               mono"
+      >
+        NODE // ${nodeNumber}
+      </div>
+
+    </div>
+
+
+    <div
+      class="space-y-2 text-xs"
+    >
 
       <div>
-        <span class="text-neutral-500 mono">
+
+        <span
+          class="text-neutral-500 mono"
+        >
           UTR:
         </span>
 
-        <span class="text-white mono">
-          ${escapeHtml(request.utr || "-")}
+        <span
+          class="text-white mono"
+        >
+          ${escapeHtml(
+            request.utr || "-"
+          )}
         </span>
+
       </div>
 
 
       <div>
-        <span class="text-neutral-500 mono">
+
+        <span
+          class="text-neutral-500 mono"
+        >
           AMOUNT:
         </span>
 
-        <span class="text-white mono">
+        <span
+          class="text-white mono"
+        >
           ₹${request.amount || 0}
         </span>
+
       </div>
 
 
       <div>
-        <span class="text-neutral-500 mono">
+
+        <span
+          class="text-neutral-500 mono"
+        >
           CONFESSION:
         </span>
 
-        <div class="mt-1 text-neutral-300
-                    bg-neutral-900
-                    border border-neutral-800
-                    rounded
-                    p-3">
+        <div
+          class="mt-1
+                 text-neutral-300
+                 bg-neutral-900
+                 border border-neutral-800
+                 rounded
+                 p-3"
+        >
           ${confession}
         </div>
+
       </div>
 
     </div>
@@ -430,30 +592,36 @@ function createRequestCard(
       status === "PENDING"
       ? `
 
-      <div class="grid grid-cols-2 gap-2 mt-4">
+      <div
+        class="grid grid-cols-2 gap-2 mt-4"
+      >
 
         <button
           onclick="changeStatus('${requestId}', 'APPROVED')"
-          class="bg-green-700 hover:bg-green-600
+          class="bg-green-700
+                 hover:bg-green-600
                  text-white
                  py-2.5
                  rounded
                  text-[11px]
                  font-bold
-                 mono">
+                 mono"
+        >
           APPROVE
         </button>
 
 
         <button
           onclick="changeStatus('${requestId}', 'REJECTED')"
-          class="bg-red-700 hover:bg-red-600
+          class="bg-red-700
+                 hover:bg-red-600
                  text-white
                  py-2.5
                  rounded
                  text-[11px]
                  font-bold
-                 mono">
+                 mono"
+        >
           REJECT
         </button>
 
@@ -472,20 +640,79 @@ function createRequestCard(
 
 
 /* =========================
+   GENERATE NEXT NODE
+========================= */
+
+async function generateNextNode() {
+
+  const counterRef =
+    ref(
+      db,
+      "ledgerCounter"
+    );
+
+
+  const result =
+    await runTransaction(
+      counterRef,
+      (currentValue) => {
+
+        const currentNumber =
+          Number(
+            currentValue || 0
+          );
+
+
+        return currentNumber + 1;
+
+      }
+    );
+
+
+  if (!result.committed) {
+
+    throw new Error(
+      "Node number could not be generated."
+    );
+
+  }
+
+
+  const number =
+    Number(
+      result.snapshot.val()
+    );
+
+
+  return String(number)
+    .padStart(6, "0");
+
+}
+
+
+/* =========================
    CHANGE STATUS
 ========================= */
 
 window.changeStatus =
-async function(requestId, newStatus) {
+async function(
+  requestId,
+  newStatus
+) {
 
   const confirmText =
     newStatus === "APPROVED"
-      ? "Approve this payment?"
+      ? "Approve this payment and assign the next Node?"
       : "Reject this payment?";
 
 
-  if (!confirm(confirmText))
+  if (
+    !confirm(confirmText)
+  ) {
+
     return;
+
+  }
 
 
   try {
@@ -493,22 +720,136 @@ async function(requestId, newStatus) {
     const requestRef =
       ref(
         db,
-        "paymentRequests/" + requestId
+        "paymentRequests/" +
+        requestId
       );
 
 
-    await update(requestRef, {
+    /*
+      REJECT
+    */
 
-      status: newStatus,
+    if (
+      newStatus === "REJECTED"
+    ) {
 
-      reviewedAt: Date.now(),
+      await update(
+        requestRef,
+        {
 
-      reviewedBy: auth.currentUser.uid
+          status:
+            "REJECTED",
 
-    });
+          reviewedAt:
+            Date.now(),
+
+          reviewedBy:
+            auth.currentUser.uid
+
+        }
+      );
 
 
-  } catch (error) {
+      return;
+
+    }
+
+
+    /*
+      APPROVE
+
+      First check whether
+      this request already has
+      a node number.
+    */
+
+    const existingSnapshot =
+      await get(
+        requestRef
+      );
+
+
+    const existingData =
+      existingSnapshot.val() || {};
+
+
+    if (
+      existingData.nodeNumber
+    ) {
+
+      await update(
+        requestRef,
+        {
+
+          status:
+            "APPROVED",
+
+          reviewedAt:
+            Date.now(),
+
+          reviewedBy:
+            auth.currentUser.uid
+
+        }
+      );
+
+
+      return;
+
+    }
+
+
+    /*
+      Generate next Node.
+
+      First approved entry:
+      000001
+
+      Next:
+      000002
+
+      Next:
+      000003
+    */
+
+    const nodeNumber =
+      await generateNextNode();
+
+
+    /*
+      Save approval + Node
+      together in the request.
+    */
+
+    await update(
+      requestRef,
+      {
+
+        status:
+          "APPROVED",
+
+        nodeNumber:
+          nodeNumber,
+
+        reviewedAt:
+          Date.now(),
+
+        reviewedBy:
+          auth.currentUser.uid
+
+      }
+    );
+
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Approval error:",
+      error
+    );
+
 
     alert(
       "Update failed: " +
@@ -536,19 +877,36 @@ function() {
    HTML ESCAPE
 ========================= */
 
-function escapeHtml(value) {
+function escapeHtml(
+  value
+) {
 
   return String(value)
 
-    .replaceAll("&", "&amp;")
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
 
-    .replaceAll("<", "&lt;")
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
 
-    .replaceAll(">", "&gt;")
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
 
-    .replaceAll('"', "&quot;")
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
 
-    .replaceAll("'", "&#039;");
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 
 }
 
