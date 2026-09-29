@@ -35,9 +35,9 @@ body{background:#050505;color:#E5E5E5;font-family:'Space Grotesk',sans-serif}
 <div class="text-[10px] text-green-400 mt-1 font-mono">● Secure Verification Protocol Active • 100% Anonymous</div>
 </div>
 <div class="relative mb-3">
-<textarea id="confessionInput" rows="4" maxlength="280" placeholder="Apna unsaid sach, galti ya raaz yahan likho..." class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"></textarea>
+<textarea id="confessionInput" rows="4" maxlength="1000" placeholder="Apna unsaid sach, galti ya raaz yahan likho..." class="w-full bg-neutral-900/80 border border-neutral-800 rounded p-3 text-sm focus:border-red-600 focus:outline-none text-white resize-none"></textarea>
 <div class="flex justify-between text-[10px] mono text-neutral-500 mt-1">
-<span>PII SANITIZER: ACTIVE</span><span id="charCount">0 / 280</span>
+<span>PII SANITIZER: ACTIVE</span><span id="charCount">0 / 1000</span>
 </div>
 </div>
 <div id="stepInitiate">
@@ -116,7 +116,7 @@ let restoreStarted=false;
 
 input.addEventListener("input",()=>{
 document.getElementById("charCount").textContent=
-`${input.value.length} / 280`;
+`${input.value.length} / 1000`;
 });
 
 async function startAuthentication(){
@@ -479,7 +479,7 @@ input.value=savedConfession;
 
 document.getElementById("charCount")
 .textContent=
-`${savedConfession.length} / 280`;
+`${savedConfession.length} / 1000`;
 }
 
 const savedUtr=
